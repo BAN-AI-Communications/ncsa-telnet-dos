@@ -1,0 +1,242 @@
+6.1	NCSA Telnet
+
+
+Tektronix 4014 Graphics	6.1
+
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+                                                                
+
+
+
+
+
+6.1	NCSA Telnet
+
+Tektronix 4014 Graphics	6.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 6	Tektronix 4014 Graphics
+
+
+
+Chapter Overview
+Emulating a Tektronix 4014 Graphics Terminal
+Initializing A Plotter
+Setting the Configuration File 
+Switching to and from Graphics Mode
+Graphics Mode
+Text Mode
+Using the Graphics Menu (ALT-G)
+Writing Graphics Files to Disk
+Renaming Graphics Output Files
+Setting the Viewing Region (Zoom Factor)
+Redrawing Last Image
+Plotting a Stored File
+
+Chapter Overview
+
+NCSA Telnet can emulate the Tektronix 4014 graphics terminal. 
+This emulation includes text modes, Tek 4014 text sizing, zoom, 
+pan, and multiple output devices. It supports CGA, EGA, Hercules, 
+and the Number Nine Revolution 512 x 8 video systems, with the 
+capability to write out images in PostScript, HPGL, or Tek 
+drawing commands. The use of Tektronix graphics with NCSA 
+Telnet depends upon host programs that can produce graphic 
+images. When these programs run and produce Tektronix 4014 
+graphics commands, NCSA Telnet automatically switches into 
+graphics mode and does the drawing. 
+
+This chapter describes steps in preparing to emulate the Tektronix 
+4014 and how to use the Graphics menu.
+
+
+Emulating a Tektronix 4014 Graphics Terminal
+
+Initializing a Plotter
+If you will be plotting directly to a plotter, the communications port 
+for the plotter must be initialized before you run NCSA Telnet. To 
+do so, use the DOS mode command. See the DOS manual and the 
+plotter manual for examples.
+
+
+Setting the Configuration 
+File 
+You'll use NCSA Telnet's configuration file to install the 
+hardware and software configuration for Tektronix graphics. 
+There are several settings you should insert in the configuration 
+file, detailed in Chapter 7, "Installation and Configuration," 
+before you use Tektronix emulation.
+
+1.	Include tek=yes in the configuration file to enable graphics 
+operation.
+
+2.	Specify the video type with the video parameter in the 
+configuration file. This is the only step required for selecting 
+the video display because all of the screen drivers are included 
+in NCSA Telnet.
+
+3.	Install specific filenames to be used when writing each of the 
+three different kinds of drawing commands. The hpfile 
+parameter selects the file to receive HPGL commands, the 
+psfile option selects the file to receive PostScript drawing 
+commands, and the tekfile option selects the file to receive 
+Tektronix drawing commands. If you do not make any settings 
+here, the default files are hp.out, ps.out, and tek.out.
+
+If you want HPGL output to go directly to a plotter that is connected 
+to COM1 rather than to a disk file:
+
+4.	Add hpfile=com1 to your configuration file. Note that you use 
+COM1 without a colon.
+
+
+Switching to and from Graphics Mode
+
+Graphics Mode
+When host programs produce Tektronix 4014 graphics commands,  
+NCSA Telnet automatically switches into graphics mode and does 
+the drawing.  The exact command sequence which causes the 
+switch to graphics mode is the Tektronix clear screen command, 
+ESC-FF, which is sometimes written as ESC-CTRL-L. A copy of 
+your text screen is saved while you are in graphics mode.
+
+The second way to enter graphics mode is to press CTRL-HOME. 
+This key switches from text mode to graphics mode and clears the 
+graphics screen. Host programs that produce Tektronix 4014 
+graphics commands cause the screen to automatically go to 
+graphics mode, so you will not usually need to use CTRL-HOME to 
+switch to graphics manually.
+
+The third method of starting graphics mode is to re-display the last 
+graphics image. The re-display option is from the Graphics menu, 
+described later in this chapter. At the completion of the re-display 
+command, the screen remains in graphics mode.
+
+
+Text Mode
+To return to text mode, press HOME. When you are in graphics 
+mode, HOME will set your display back to text mode and redraw 
+the text screen which was visible before the graphics mode began. 
+No host command exists which automatically returns to text mode. 
+When you are in text mode, HOME has a different function. 
+
+Using the Graphics Menu (ALT-G)
+
+You display the Graphics menu by pressing ALT-G. Figure 6.1 
+shows the Graphics menu, as it appears with the default filenames. 
+You can change the fields in bold.
+
+Figure 6.1	Graphics Menu
+ALT-G                           Graphics menu
+<            Press the appropriate function key or ESC to 
+resume        >
+
+   F1 - Write postscript to a file called: ps.out
+   F2 - Change postscript output file name
+
+   F3 - Write HPGL code to a file called: hp.out
+   F4 - Change HPGL output file name
+
+   F5 - Write Tektronix 4014 codes to a file called: tek.out
+   F6 - Change Tektronix output file name
+
+        View region is currently: 0,0,4095,3119
+   F7 - Set a new view region (Zoom, Pan)
+   RETURN - draw picture on screen in current zoom factor
+
+   Enter choice:
+
+
+From this menu, you press the appropriate function key, or 
+RETURN to redraw the most recently displayed graphics picture.
+
+
+Writing Graphics Files to 
+Disk
+To write out graphics images, use the Graphics menu. First, you 
+should display the image on the screen using host software that 
+generates Tektronix images. NCSA Telnet always keeps the last 
+graphic image in memory. Select one of the options which writes 
+this image to disk. The program writes images using the current 
+view region. 
+
+If you select Tektronix 4014 format, NCSA Telnet writes the image 
+directly to disk and then returns you to your current session. After 
+selecting the HPGL or the PostScript option from the Graphics 
+menu, you are returned to your session while the file is written to 
+disk in the background. After this image has been completely 
+copied from memory to disk, a message on the console screen tells 
+you that the process has completed.
+
+
+Renaming Graphics Output 
+Files
+If you did not set up alternate files to use in the configuration file 
+and you do not want to use the default filenames hp.out, ps.out, or 
+tek.out, you can change the names before or after writing the file. 
+Use the Graphics menu options to change one of the current file 
+names before writing the image to disk. If you want a name 
+changed after writing out the file, use ALT-E to escape to DOS, then 
+use the DOS rename command. Use exit to leave DOS and return 
+to NCSA Telnet.
+
+A special feature allows you to append the current image to an 
+existing disk file instead of overwriting. Enter any of the three file 
+names as you would normally, adding a plus (+) to the beginning 
+of the name.  NCSA Telnet takes the plus (+) to indicate that you 
+want to open that file for "append", adding another image to the 
+file. A filename which does not begin with a plus (+), causes NCSA 
+Telnet to overwrite the file when saving each image.
+
+
+Setting the Viewing Region 
+(Zoom Factor)
+Another Graphics menu choice lets you set the viewing region, or 
+zoom factor. Any portion of the image can be enlarged and made to 
+fill the screen. Tektronix drawing commands are resolved to a 
+4096 x 3120 pixel resolution. Values start with 0,0 in the lower left, 
+and go to 4095, 3119 in the upper right. 
+
+The default view region for NCSA Telnet is (0, 0, 4095, 3119), which 
+is the full image. Figure 6.1 has examples of possible viewing 
+regions that you can use.
+
+Figure 6.2	Sample Viewing 
+Regions
+                                              
+
+
+Redrawing Last Image
+Use the Graphics menu option, Redraw Last Image, is used when 
+you want to review the image that is currently in memory. This 
+option always zooms and enlarges the image according to the view 
+region that is visible. The selected view region always fills the 
+screen so you can see more detail.
+
+This command leaves you in graphics mode, so press HOME if you 
+want to return to text mode.
+
+
+Plotting a Stored File
+
+If you have used the Graphics menu to store a file of HPGL drawing 
+commands, the DOS copy command can send those commands to 
+an attached plotter (which is connected to COM1 in this example).
+
+C:> copy filename.out com1 
+

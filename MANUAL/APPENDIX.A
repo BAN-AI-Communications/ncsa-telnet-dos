@@ -1,0 +1,200 @@
+A.1	NCSA Telnet 
+
+Error Conditions	A.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+Appendix A	Error Conditions
+
+
+
+Most of the error conditions in NCSA Telnet are nonfatal. The 
+most important and common error messages are listed here with a 
+short summary of the symptoms and causes.
+
+The following messages may appear on your screen during the 
+operation of NCSA Telnet. Any other messages that appear are 
+protocol-specific messages that require additional diagnosis from 
+the system administrator. If a message that is not documented here 
+occurs repeatedly, please contact your system administrator first, 
+and if no solution is found, submit a bug report as included in the 
+Readme and Bugs pages of this manual.
+
+
+Error in config.tel file
+
+Cause:
+NCSA Telnet will not operate without a configuration file that 
+contains the PC's IP address. The program could not find this file.
+
+Solution: 
+You can place the configuration file either in the current directory 
+or specify it with the -h parameter on the command line. You 
+normally customize the file's placement in TELNET.BAT. Your 
+system administrator should check your installation and make 
+sure the configuration file is there.
+
+
+Host machine not in hosts file
+
+Cause: 
+You have entered a machine name that the program can't find in 
+the configuration file. 
+
+Solution: 
+Check that the name you entered was spelled correctly. If you want 
+this computer to be accessed by name, add its name and IP address 
+to your configuration file.
+
+
+ICMP:	Destination unreachable
+
+Cause: 
+Another machine––probably the gateway––has determined that 
+your message cannot reach its destination from your system.
+Solution: 
+Check the IP address in your configuration file. Notify your 
+system administrator that the gateway cannot connect you to the 
+destination you want to reach. A problem may exist with the 
+gateway.
+
+
+ICMP:	Echo requested (ping requested)
+
+Cause: 
+Someone has "pinged" your machine.
+
+Solution: 
+No action is required; you are just being notified that a program on 
+another computer has tried to determine if your machine is alive 
+and connected to the network. Your machine answered "yes".
+
+
+ICMP:	Redirect, another gateway is more efficient
+
+Cause: 
+NCSA Telnet is sending packets to a gateway that is reforwarding 
+them onto your local network. You will get one of these messages 
+for each packet until NCSA Telnet adjusts the local tables and 
+automatically switches to the correct gateway.
+
+Solution: 
+NCSA Telnet responds to these messages and automatically 
+switches to the correct gateway, so you don't have to take any 
+action. You may want to change the gateway assignments in your 
+configuration file to use a more appropriate gateway.  Some 
+situations will always produce redirects.
+
+
+Local HOST or gateway not responding
+
+Cause: 
+Possible reasons this error occurs are: a network problem, a 
+configuration file problem, the computer you want to connect to is 
+down, or the gateway that you need is down.
+
+Solution: 
+If the computer is on your local network, check to see that the 
+network is up and running. If the computer is not on your local 
+network, check to see if the gateway is up and running. Ask the 
+system administrator to check the specification of the gateway 
+(gateway=) in your configuration file. Check the IP number of the 
+computer that you are trying to connect to. Check to make sure that 
+your computer is attached to the network. Check the integrity of the 
+network cable.
+
+
+Memory allocation error, cannot open port
+
+Cause: 
+Your system ran out of memory. This reason is the most common 
+barrier to opening more sessions.
+
+Solution: 
+Log off of some of your sessions or provide more memory in which 
+NCSA Telnet can run. Providing more memory may mean 
+buying more or rearranging your windowing system to allow 
+more memory. NCSA Telnet Version 2.3 requires about 300K of 
+memory plus 15K per session. In addition, scrollback requires 86 
+bytes per line.
+
+
+Network jammed, probable break in wire
+
+Cause: 
+The PC's Ethernet board could not transmit a packet due to a low-
+level hardware error.
+
+Solution: 
+The system administrator should ensure that the Ethernet T 
+connector or transceiver is correctly connected to the back of your 
+PC, then check the integrity of the Ethernet wire according to 
+Ethernet specifications. There could be a short circuit in the wire, 
+but the usual cause is that the wire has been disconnected 
+somewhere.
+
+
+No internal TCP ports available
+
+Cause: 
+You are trying to do too many activities at the same time, or some 
+combination of your activities has not closed the TCP sessions 
+correctly. This error will happen if you open too many sessions to 
+other computers.
+
+Solution: 
+Close some of your existing sessions. If necessary, exit the 
+program by logging off of all of the other computers, then restart 
+NCSA Telnet.
+
+
+Packet received for invalid port -- reset sent
+
+Cause: 
+Some other computer is sending you packets that NCSA Telnet does 
+not expect or understand. This error often happens when you press 
+CTRL-SHIFT-F3 to exit NCSA Telnet and then try to start it back 
+up again. It can happen under a variety of network breakdown 
+conditions.
+
+Solution: 
+Do not press CTRL-SHIFT-F3 to exit NCSA Telnet. If you already 
+have, or some other network breakdown caused the problem, the 
+other computer will eventually time out and stop sending you the 
+extra packets. If you continue to receive them, notify your system 
+administrator.
+
+
+Reset received: syn sent
+
+Cause: 
+The machine to which you are attempting to connect is refusing 
+your telnet connection.
+
+Solution: 
+Check to see why that machine is not up and running. If it is, check 
+your configuration file to see if you are using the correct IP 
+number.
+
+
+Domain Look-up failed for: <machine>
+
+Cause:
+The nameservers you've specified in the hosts file are not aware of 
+the machine. Also, you may have misspelled a machinename.
+
+Solution:
+Check the spelling of the name you've entered. If you've entered 
+the name correctly, add that machine to your host configuration 
+file. Alternatively, you may want to add another machine as a 
+nameserver in your host file.

@@ -1,0 +1,158 @@
+1.1	NCSA Telnet
+
+
+Starting and Quitting NCSA Telnet	1.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+
+1.1	NCSA Telnet
+
+Starting and Quitting NCSA Telnet	1.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 1	Starting and Quitting NCSA Telnet
+
+
+
+Chapter Overview
+Starting the Program
+Using the Help Screen
+Quitting NCSA Telnet
+
+Chapter Overview
+
+This chapter introduces and describes the basic steps involved in 
+using NCSA Telnet for the IBM PC:
+
+¥	starting the program
+¥	setting the terminal type
+¥	opening and closing a telnet connection
+
+The chapter assumes that your system or network administrator 
+has installed NCSA Telnet on your system, assigned an IP 
+address to your IBM PC, and given you a login name and password 
+for the computer to which you want to connect. For information 
+regarding installation and customization procedures, refer to 
+Chapter 7, "Installation and Configuration."
+
+If you require additional information regarding the IBM interface 
+or command line structure, please refer to your IBM PC user's 
+guide.
+
+
+Starting the Program 
+
+To run NCSA Telnet from the PC command line, from any 
+subdirectory, enter:
+
+C:\ > telnet machinename 
+
+This command initiates a connection to the remote computer with 
+the name given as the machinename parameter. Normally the 
+host machine immediately prompts you for a login name and 
+password to begin the session.
+
+NCSA Telnet emulates a VT100 terminal. When you log in to a 
+host, the host operating system does not know what type of terminal 
+you are using. Consult the operating system manual for how to set 
+terminal type and try setting it to VT100 or VT102. For systems that 
+do not support VT100 (such as many UNIX systems), use VT100, 
+which is compatible with VT102 emulators. These examples show 
+how to set the terminal type for two popular operating systems, 
+UNIX (using the C shell) and VAX/VMS.
+
+newton% set term=vt100;tset	For UNIX hosts.
+
+B$ SET TERM/INQ			For VAX/VMS hosts.
+
+Using the Help Screen
+
+For a command summary, press ALT-H. A one-screen summary 
+of command keys appears, as shown in Figure 1.1. The online help 
+summary serves as your quick reference to the command keys.
+Figure 1.1. NCSA Telnet Help 
+Screen
+
+Keyboard usage for NCSA telnet:
+
+Alt-A	add a session	Alt-Y	Interrupt Process
+Alt-N	next session	Alt-B	Previous Session
+Alt-D	Dump Screen to Capture file	Alt-O	Abort Output
+Alt-Z	message screen	Alt-Q	Are you there?
+Alt-E	escape to DOS shell	Alt-U	Erase line
+Alt-G	graphics menu	Alt-K	Erase Kharacter
+Alt-C	toggle capture on/off	Alt-V	Paste Capture to Session
+Alt-R	reset VT100 screen	HOME	exit graphics mode
+Alt-H	this help screen	Ctrl-HOME	clear/enter graphics mode
+
+ScrLock	pause/restart screen (DO NOT
+	use Ctrl-NumLock)
+
+ScrLock	enter/exit scroll-back mode
+
+Alt-F	start file transfer as if typed:
+	ftp [internet address]
+
+Alt-I	send my internet address to host
+	as if typed
+
+Alt-S	skip scrolling, jump ahead
+
+Alt-P	change a parameter, one of:
+	color, capture file name, backspace,
+	session name, screen mode
+
+Alt-X	close connection
+
+CTRL-Shift-F3	abort program completely.
+	STRONGLY discouraged
+
+
+Press ESC for information page, space bar to return to session:
+
+
+NOTE:  See Chapter 4, "Utility Programs," for information on 
+other network utilities, such as the following:  finger, ftp, lpq, lpr, 
+lprm, rexec, and set clock.
+
+
+Quitting NCSA Telnet
+
+To exit the program, log out of the host machine using the 
+appropriate logout procedure for that machine. If you have 
+concurrent sessions with more than one machine, you must log out 
+of each machine. Then NCSA Telnet exits and the DOS prompt is 
+displayed.
+
+If one of the hosts crashes, or a session is otherwise hung up, press 
+ALT-X. NCSA Telnet first prompts you for confirmation and then 
+attempts to close the session while preserving your other live 
+sessions. 
+
+When all else fails, and it appears that all of the connections are 
+completely jammed, press CTRL-Shift-F3 to abort the program. 
+Only use CTRL-Shift-F3 as a last resort.
+
+Pressing CTRL-C or CTRL-BREAK sends a CTRL-C to the host. 
+You can neither use these commands to break out of NCSA Telnet, 
+nor end your session.

@@ -1,0 +1,372 @@
+3.1	NCSA Telnet
+
+
+More About Managing Sessions	3.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+3.1	NCSA Telnet
+
+More About Managing Sessions	3.1
+
+National Center for Supercomputing Applications	
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 3	More About Managing Sessions
+
+
+
+Chapter Overview
+Keyboard Commands
+Using the Skip Command (ALT-S)
+Resetting the VT100 Screen (ALT-R)
+Aborting the Program (CTRL-SHIFT-F3)
+Escaping to DOS Shell (ALT-E)
+Parameter Menu
+Using Screen Text Colors
+Using Remote Echo and Local Echo
+Using the Backspace Key
+Changing the Session Name
+Changing the Terminal Type 
+Using Line Wrapping
+Using Output Mapping
+Changing the Capture Filename
+Using Screen Mode 
+Using File Transfer Mode
+Using Clock Mode
+
+Chapter Overview
+
+This chapter continues the discussion of multiple sessions and 
+describes more advanced aspects of the NCSA Telnet working 
+environment. The chapter explains how to reset the VT100 screen, 
+how to abort NCSA Telnet, the DOS shell feature, and the 
+Parameters menu options.
+
+
+Keyboard Commands
+
+Using the Skip Command 
+(ALT-S)
+The skip command causes the screen to "skip ahead" over 
+scrolling text. The text is placed into the scrollback region, but the 
+screen update advances to the end of the local network buffer 
+instead of printing every line on the screen. This feature is useful 
+for quickly bypassing seemingly endless lines of output from 
+certain commands. To use the command, press ALT-S and the 
+screen will pause, then redraw at the end of the local buffer. ALT-S 
+won't solve all of the network buffering problems for interactive 
+use, but it should help. Capture to disk and scrollback commands 
+are not affected by the skip command.
+
+
+Resetting the VT100 Screen 
+(ALT-R)
+ALT-R clears and resets all modes associated with the current 
+virtual VT100 screen. Some host programs can accidentally set 
+graphics mode on or fail to leave graphics mode. By pressing 
+ALT-R, NCSA Telnet will override all VT100 mode settings 
+including the following:  turning off wrap mode, resetting 
+graphics mode, setting the keypad mode back to the default, and 
+resetting tabs to every eight spaces. After using ALT-R, you may 
+wish to set your terminal type again to allow the host to reset 
+whatever VT100 modes it needs.
+
+
+Aborting the Program 
+(CTRL-SHIFT-F3)
+If for some reason none of the current connections respond, 
+SCROLL LOCK is not on, and ALT-R and ALT-X do not appear to 
+have any effect, CTRL-SHIFT-F3 is a general abort command that 
+exits NCSA Telnet and returns you to DOS. If you do abort NCSA 
+Telnet with CTRL-SHIFT-F3, NCSA Telnet cannot notify the 
+host(s) that your session(s) are terminated. Your sessions are left 
+in an undetermined state. This situation can cause a variety of 
+problems for the host, because it cannot immediately determine 
+that the session has ended. For example, the programs may 
+continue to run on the host, even though you exited NCSA Telnet 
+with CTRL-SHIFT-F3.
+
+
+Escaping to DOS Shell 
+(ALT-E)
+Pressing ALT-E to escape to DOS preserves your connections while 
+you use the DOS command shell. You may use most DOS 
+commands and programs, including those which look at 
+directories, edit source files, or even compile programs. To return 
+to NCSA Telnet, you must enter the command exit at the DOS 
+prompt.
+During the escape to DOS, NCSA Telnet monitors the Ethernet for 
+incoming packets every one-half second. If you run other 
+programs which affect the Ethernet or the timer which NCSA 
+Telnet uses, your connections may be lost—or worse—your 
+computer may crash. The following programs are examples of 
+those which terminate the network handling of NCSA Telnet, 
+causing connections to be lost or DOS to crash:
+
+•	SideKick (it turns off timer processes, so it can cause lost 
+connections)
+
+•	All network programs (they reset the Ethernet board)
+
+•	NCSA Telnet (it is a network program)
+
+•	User FTP (it, too, is a network program)
+
+•	format, the DOS format utility for floppy disks
+
+•	FileCommand II
+
+NOTE: Watch memory usage to prevent crashing. Also, 
+remember to exit DOS when you have finished your DOS activities.
+
+Parameter Menu
+
+Press ALT-P to display the Parameter menu options, which appear 
+on the screen as shown in Figure 3.1. These options control the 
+settings for text color, echo mode, backspace key, session name, 
+terminal type, capture file name, screen mode and file transfer 
+mode. You can change the fields that are shown in bold to different 
+values.
+
+Figure 3.1	Parameter Menu
+
+ALT-P                         Parameter menu
+   <      Select parameters, F1 to accept, F10 to leave unchanged      >
+
+   --------------- Color setup and session parameters -----------------
+ Text:         normal    reverse   underline
+	Normal Foreground (nfcolor)	-	green
+	Normal Background (nbcolor)	-	black
+	Reverse Foreground (rfcolor)	-	black
+	Reverse Background (rbcolor)	-	white
+	Underline Foreground (ufcolor)	-	blue
+	Underline Background (ubcolor)	-	black
+	Use remote echo or local echo	-	Remote echo
+	Backspace key sends	-	Delete
+	Session name	*>	ahostname
+	Terminal type	-	VT102 and Tek4014
+	Line Wrapping	-	Wrapping On
+	Output Mapping	-	Mapping Off
+   -------------- Parameters which apply to all sessions --------------
+	Capture file name	*>	capfile
+  Screen mode (for BIOS compatibility)	Direct to screen
+	File transfer is	-	Enabled
+	Remote Copying is	-	Enabled
+	Clock is 	Enabled
+
+
+Use arrow keys to select, Enter clears changeable field (*>)
+
+
+The up arrow, down arrow, HOME, and END keys allow you to 
+move the cursor from option to option. The left and right arrow 
+keys rotate through the allowed settings for each option. For each 
+field that you wish to change, move the cursor to that field and press 
+the left or right arrow until the desired value appears. After 
+changing all of the fields that you wish to change, press the F1 key 
+to return to your session with the changes in effect. If you make a 
+mistake, or decide that no changes are necessary, press ESC to 
+return to your session without any changes taking place.
+
+There are two special fields, marked with the symbol *>, to 
+indicate that the present value may be changed by typing another. 
+To change one of these, place the cursor on top of the changeable 
+field and then press RETURN. The program blanks the field and 
+allows you to enter a new value. Press RETURN when you are 
+finished entering the new value. After you enter a new value, but 
+before you press F1, the old value still remains in memory and you 
+may use the left or right arrow keys to regain the old value.
+
+Following are descriptions of the parameters you can set.
+
+
+Using Screen Text Colors
+Host programs expect to be able to control the attributes of 
+characters on the VT100 screen. Command codes are sent to your 
+PC to display characters in normal, reverse, underlined, 
+blinking, and bold attributes, or combinations of these. When 
+normal, reverse, and underline text are required, you have control 
+over which colors are used. When blink or bold attributes are 
+required, NCSA Telnet adds them to your selected colors.
+
+For normal, reverse, and underlined characters, NCSA Telnet 
+gives you your choice of foreground and background colors, a total 
+of six settings. The color choices for a PC color video display are 
+black, blue, green, cyan, red, magenta, yellow, and white. The 
+foreground color command allows bright versions of these colors, 
+while the background color command allows users to set blinking 
+as an attribute. For each of the text modes, normal, reverse, and 
+underlined, use the Parameter menu to select the foreground and 
+background colors. As you change the selections, the sample text 
+on the fourth line of the screen provides an example of how the text 
+will appear in the VT100 emulation.
+
+On monochrome screens, when you display a character in the color 
+blue, the PC produces a visible underline on the screen instead of 
+blue coloring.
+
+Color screens do not have the visible underline capability and use 
+a visible blue color instead of underlining.
+
+Bold and blinking attributes from the VT100 screen appear as bold 
+and blinking characters on the PC screen.
+
+
+Using Remote Echo and 
+Local Echo
+When the response time of the network is long (such as with 
+satellite transmission), you may want to buffer your keyboard 
+input locally, only sending characters to the host when you press 
+RETURN. This action is often referred to as a line mode or local 
+echo mode. The alternative to line mode is called character mode 
+or remote echo mode, where the local program immediately sends, 
+and remote host echoes, every character over the network.
+
+In local echo mode, NCSA Telnet  buffers most characters typed at 
+the keyboard until you press RETURN, which sends the characters 
+to the host all in one packet. There are some exceptions to this rule.
+
+•	CTRL-U erases the local buffer.
+
+•	Backspace (CTRL-H) erases the most recent character added to 
+the local buffer.
+
+•	Tab (CTRL-I) forces NCSA Telnet to send the local buffer (with 
+the tab).
+
+•	All other control characters echo with a caret (e.g., ^A) and 
+force NCSA Telnet to send the local buffer with the control 
+character included.
+•	Arrow keys and all other unprintable ASCII characters, the 
+escape character for example, force NCSA Telnet to send the 
+local buffer, with the character included.
+
+•	You cannot send a CTRL-U or Backspace to the host in line 
+mode.
+
+•	ALT keys and other local command keys are not affected by 
+local echo mode.
+
+NOTE: For full screen editing, character mode (remote echo) is 
+necessary, so most hosts use this mode. When full screen editing 
+is not required, line mode may be more efficient.
+
+
+Using the Backspace Key
+NCSA Telnet automatically translates BACKSPACE keypresses 
+into DELETE codes, for compatibility with systems that prefer the 
+use of DELETE to BACKSPACE. If you find that your backspaces 
+are not being accepted, the host you are connected to may prefer the 
+reverse setting. To test this possibility, use the Parameter menu to 
+change the default translation so the BACKSPACE key functions 
+as backspace. If the result is that your backspaces are accepted, 
+then the host does prefer the BACKSPACE to DELETE. If you 
+require the reverse setting frequently, you or your system 
+administrator may want to permanently reset the backspace 
+function using the configuration file, as described in Chapter 7, 
+"Installation and Configuration."
+
+
+Changing the Session 
+Name
+The status line shows a 13-character session name for each active 
+session in the lower right-hand corner. For each session, the 
+machine name that you typed to initiate the first session displays 
+as the default name for successive sessions. The Parameter menu 
+allows you to change the status line name for the current session. 
+Press RETURN to clear the current entry and type in a new name. 
+Only the first 13 characters are used.
+
+
+Changing the Terminal 
+Type
+Generally, the default terminal type of VT100 with Tektronix 4014 
+is acceptable. Because specific cases may exist where you need to 
+force some restrictions on the way the terminal acts, you may want 
+to limit the amount of emulation that NCSA Telnet does. The three 
+choices of terminal types are: 
+
+•	VT100 terminal with Tektronix 4014 graphics
+
+•	VT100 only—graphics commands ignored, but VT100 
+commands accepted
+
+•	Dumb terminal—no VT100 codes or Tektronix codes 
+interpreted
+
+
+Using Line Wrapping
+If you enable the line wrapping feature, the text wraps when it 
+reaches the end of a line. Otherwise, the text piles up at the end of 
+the line.
+
+
+Using Output Mapping
+The output mapping function allows you to translate characters 
+from the host machine as the screen displays them. This function 
+is similar to keyboard mapping, except that keyboard mapping 
+works in reverse.
+
+
+Changing the Capture 
+Filename
+You can change the name of the current capture file in the 
+Parameter menu. Press RETURN to clear the current entry and 
+then enter your new filename. After changing the name of the 
+capture file, all subsequent ALT-C commands use the new capture 
+file. You can also change the name of the capture file 
+"permanently" in the configuration file (see Chapter 7, 
+"Installation and Configuration."). See Chapter 2, "Introduction 
+to Managing Sessions," for a description of capture file operations.
+
+
+Using Screen Mode (BIOS 
+Compatibility for 
+Windowing Packages)
+In the normal fast mode, writes are made directly to the screen for 
+increased speed; however, this mode is incompatible with 
+windowing packages like Topview or Microsoft Windows and 
+may cause snow on some screens. To avoid small problems, 
+developers have created a compatibility mode within NCSA Telnet 
+where IBM's BIOS calls are used for all access to the screen.
+
+Usually, the windowing compatibility mode is set up in the 
+configuration file with the bios option. However, if a change is 
+needed once you are in the program, the Parameter menu option is 
+available.
+
+
+Using File Transfer Mode
+NCSA Telnet separates the file transfer mode into an option for 
+File Transfer Protocol (FTP) and an option for rcp. The 
+Parameter menu allows you to disable or enable file transfers. 
+When you select Disabled, neither FTP nor rcp is allowed. When 
+you select Enabled, the FTP and rcp servers are restarted. Chapter 
+5, "File Transfer," contains more information on the file transfer 
+methods for NCSA Telnet. You or your system administrator can 
+set the default file transfer modes for FTP and rcp in the 
+configuration file (see Chapter 7, "Installation and 
+Configuration.").
+
+
+Using Clock Mode
+When you enable the clock mode option, NCSA Telnet displays a 
+digital clock in the corner of the screen.

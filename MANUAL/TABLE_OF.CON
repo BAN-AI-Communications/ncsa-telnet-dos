@@ -1,0 +1,232 @@
+i 	NCSA Telnet
+
+Table of Contents	i
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+
+
+
+
+
+	Table of Contents
+
+
+
+
+Introduction
+Overview  xi
+About NCSA Telnet  xi
+Special Features  xi
+System Requirements  xii
+Use of This Manual  xiii
+Manual Contents  xiii
+Form of Presentation  xiv
+Chapter 1	Starting and Quitting NCSA Telnet
+Chapter Overview  1.1
+Starting the Program  1.1
+Using the Help Screen  1.2
+Quitting NCSA Telnet  1.2
+Chapter 2	Introduction to Managing Sessions
+Chapter Overview  2.1
+Keyboard Usage  2.1
+Multiple Sessions  2.2
+	Opening Multiple Initial Sessions  2.2
+Using the Status Line  2.2
+Opening Additional Sessions  2.2
+Indicating the Host  2.2
+Estimating the Host Response Time  2.3
+Using Scrollback Mode  2.3
+Using the Cut and Paste Functions  2.4
+Switching Between Sessions (ALT-N)  2.4
+Displaying Console Messages (ALT-Z)  2.5
+Exiting the Present Connection (ALT-X)  
+2.5
+Capture File Operations  2.5
+Designating a Capture File  2.5
+Using PRN  2.5
+Using One Capture at a Time  2.6
+Chapter 3	More About Managing Sessions
+Chapter Overview  3.1
+Keyboard Commands  3.1
+	Using the Skip Command (ALT-S) 3.1
+Resetting the VT100 Screen  (ALT-R)  3.1
+Aborting the Program  (CTRL-ALT-F3)  3.1
+Escaping to DOS  Shell  (ALT-E)  3.1
+Parameter Menu  3.2
+Using Screen Text Colors  3.4
+Using Remote Echo and Local Echo  3.4
+Using the Backspace Key  3.5
+Changing the Session Name  3.5
+Changing the Terminal Type  3.5
+Using Line Wrapping  3.6
+Using Output Mapping  3.6
+Changing the Capture Filename  3.6
+Using Screen Mode  3.6
+Using File Transfer Mode  3.6
+Using Clock Mode  3.6
+Chapter 4	Utility Programs
+Chapter Overview  4.1
+finger  4.1
+	Name  4.1
+	Command Line  4.1
+	Description  4.1
+	Options  4.2
+ftp  4.3
+	Name  4.3
+	Command Line  4.3
+	Description  4.3
+	Options  4.3
+	Commands  4.4
+	Aborting a File Transfer  4.10
+	File Naming Conventions  4.10
+	File Transfer Parameters  4.10
+lpq  4.11
+	Name  4.11
+	Command Line  4.11
+	Description  4.11
+	Options  4.11
+	Diagnostics  4.12
+lpr  4.13
+	Name  4.13
+	Command Line  4.13
+	Description  4.13
+	Options  4.13
+	Diagnostics  4.16
+lprm  4.16
+	Name  4.16
+	Command Line  4.16
+	Description  4.16
+	Options  4.17
+	Diagnostics  4.17
+net14  4.17
+	Name  4.17
+	Command Line  4.17
+	Usage  4.18
+	Options  4.18
+rsh  4.18
+	Name  4.18
+	Command Line  4.18
+	Description  4.18
+setclock  4.20
+	Name  4.20
+	Command Line  4.20
+	Description  4.20
+	Options  4.20
+Chapter 5	File Transfer
+Chapter Overview  5.1
+File Transfer Terminology  5.1
+File Transfer Guidelines  5.2
+Full Path Specification:  Conversion of 
+Forward Slashes  5.2
+Simultaneous Activity  5.2
+Rules for Filenames Sent to the PC  5.2
+File Transfer Reports  5.3
+File Transfer Using FTP  5.3
+Setting Up FTP  5.4
+Using FTP  5.4
+Invoking FTP on the Host Computer  5.4
+Invoking FTP Using Alternate
+Methods  5.5
+Using FTP Commands  5.5
+File Transfer Using rcp  5.8
+Setting UP rcp  5.8
+Using rcp  5.9
+Avoiding Use NCSA Telnet's rcp 
+Server  5.9
+Using rcp Between the PC and UNIX  5.9
+Using Wildcards  5.10
+Chapter 6	Tektronix 4014 Graphics
+Chapter Overview  6.1
+Emulating a Tektronix 4014 Graphics 
+Terminal  6.1
+Initializing a Plotter  6.1
+Setting the Configuration File  6.1
+Switching to and from Graphics Mode  6.2
+Graphics Mode  6.2
+Text Mode  6.2
+Using the Graphics Menu (ALT-G )  6.2
+Writing Graphics Files to Disk  6.3
+Renaming Graphics Output Files  6.3
+Setting the Viewing Region 
+(Zoom Factor)  6.3
+Redrawing Last Image  6.4
+Plotting a Stored File   6.4
+Chapter 7	Installation and Configuration
+Chapter Overview  7.1
+Installing the Distribution Files  7.1
+Sample Configuration  7.1
+Required Configuration Information  7.2
+The TELNET.BAT File  7.3
+Command Line Options  7.3
+The Configuration File  7.4
+Overview  7.4
+Syntax for Entries  7.5
+PC Information Entries  7.5
+Host-Specific Parameters  7.10
+Conversion of UNIX /etc/hosts Files  7.14
+Hardware Options  7.14
+Combined Ethernet Drivers  7.14
+Performance Tuning  7.15
+RARP for Dynamic IP Address 
+Assignment  7.16
+BOOTP for Dynamic IP Address
+Assignment  7.16
+Appletalk Hardware  7.16
+Interrupts  7.17
+Domain Name Lookup  7.17
+FTP Password Protection  7.18
+Compatibility Notes  7.19
+Ping  7.19
+VT102  7.19
+FTP  7.19
+Terminate and Stay Resident (TSR) 
+Programs  7.19
+NCSA Telnet  7.19
+Limitations  7.20
+Appendix A	Error Conditions
+Appendix B	NCSA Telnet Command Reference
+Appendix C	Configuration File Summary
+Local Configuration  C.1
+Host-Specific Parameters  C.3
+Appendix D	FTPBIN Command Reference
+Appendix E	Key-mapping
+Overview  E.1
+Copyright Information  E.1
+Kermit Verb Usage  E.1
+Set Key  E.2
+	Syntax  E.2
+	Uses of Set Key  E.2
+Kermit Action Verbs  E.3
+
+Appendix F	Obtaining NCSA Software
+
+Figures
+Figure I.1	Example of Notational Conventions  xv
+Figure 1.1	NCSA Telnet Help Screen  1.2
+Figure 3.1	Parameter Menu  3.3
+Figure 5.1	Put to the PC, ASCII File  5.7
+Figure 5.2	Get from the PC, Binary File  5.7
+Figure 6.1	Graphics Menu  6.2
+Figure 6.2	Sample Viewing Regions  6.4
+Figure 7.1	Displaying the Same Information in 
+Different Entry Formats  7.5
+
+Tables
+Table 2.1	PC Keys Used for VT102 Terminal 
+Emulation  2.1
+Table 5.1	Common FTP Commands  5.6
+Table 7.1	Ethernet Boards Supported by NCSA 
+Telnet  7.14
+Table E.1	MS-Kermit Verbs for the IBM PC 
+Family  E.3
+
