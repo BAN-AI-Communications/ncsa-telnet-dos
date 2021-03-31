@@ -68,7 +68,7 @@ command at the *DOS* prompt:
 
 `3c509 /?`
 
-#### How do I run Telnet with a Novell network?
+### How do I run Telnet with a Novell network?
 
 NCSA doesn\'t use a Novell LAN. However, one of our users wrote:
 
@@ -107,7 +107,7 @@ program at the anonymous ftp site *oak.oakland.edu* in the
 anonymous ftp server. You can find `qvtws398.zip` in the
 `/PC/Windows/Contrib` directory of *ftp.ncsa.uiuc.edu*.
 
-#### Does Telnet support TN3270 teminal emulation?
+### Does Telnet support TN3270 teminal emulation?
 
 NCSA\'s PC Telnet does not support *TN3270*. However, Clarkson University
 has modified our source code to support the *TN3270* and they have
@@ -124,13 +124,13 @@ welcome to **modify and redistribute** it.
 The source code was developed using Microsoft\'s
 C/C++, version 7.0 and MASM 5.0.
 
-#### Can I use Telnet over a serial connection (modem)?
+### Can I use Telnet over a serial connection (modem)?
 
 Yes, you can find a number of *SLIP* drivers and dialers available from
 the `/SimTel/msdos/pktdrvr` directory of the anonymous ftp site
 *oak.oakland.edu*. Select a *SLIP* packet driver from the 00\_index.txt file.
 
-#### Can I use Telnet with AppleTalk?
+### Can I use Telnet with AppleTalk?
 
 Using an *AppleTalk* network involves some special considerations. First,
 you must load the *AppleTalk* driver into memory. Version 1.0 of the
