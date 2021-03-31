@@ -1,7 +1,7 @@
-3.1	NCSA Telnet
+3.1     NCSA Telnet
 
 
-More About Managing Sessions	3.1
+More About Managing Sessions    3.1
 
 
 National Center for Supercomputing Applications
@@ -14,11 +14,11 @@ June 1991
 
 
 
-3.1	NCSA Telnet
+3.1     NCSA Telnet
 
-More About Managing Sessions	3.1
+More About Managing Sessions    3.1
 
-National Center for Supercomputing Applications	
+National Center for Supercomputing Applications 
 
 June 1991
 
@@ -29,7 +29,7 @@ June 1991
 
 
 
-Chapter 3	More About Managing Sessions
+Chapter 3       More About Managing Sessions
 
 
 
@@ -121,18 +121,18 @@ computer may crash. The following programs are examples of
 those which terminate the network handling of NCSA Telnet, 
 causing connections to be lost or DOS to crash:
 
-•	SideKick (it turns off timer processes, so it can cause lost 
+•       SideKick (it turns off timer processes, so it can cause lost 
 connections)
 
-•	All network programs (they reset the Ethernet board)
+•       All network programs (they reset the Ethernet board)
 
-•	NCSA Telnet (it is a network program)
+•       NCSA Telnet (it is a network program)
 
-•	User FTP (it, too, is a network program)
+•       User FTP (it, too, is a network program)
 
-•	format, the DOS format utility for floppy disks
+•       format, the DOS format utility for floppy disks
 
-•	FileCommand II
+•       FileCommand II
 
 NOTE: Watch memory usage to prevent crashing. Also, 
 remember to exit DOS when you have finished your DOS activities.
@@ -146,31 +146,31 @@ terminal type, capture file name, screen mode and file transfer
 mode. You can change the fields that are shown in bold to different 
 values.
 
-Figure 3.1	Parameter Menu
+Figure 3.1      Parameter Menu
 
 ALT-P                         Parameter menu
    <      Select parameters, F1 to accept, F10 to leave unchanged      >
 
    --------------- Color setup and session parameters -----------------
  Text:         normal    reverse   underline
-	Normal Foreground (nfcolor)	-	green
-	Normal Background (nbcolor)	-	black
-	Reverse Foreground (rfcolor)	-	black
-	Reverse Background (rbcolor)	-	white
-	Underline Foreground (ufcolor)	-	blue
-	Underline Background (ubcolor)	-	black
-	Use remote echo or local echo	-	Remote echo
-	Backspace key sends	-	Delete
-	Session name	*>	ahostname
-	Terminal type	-	VT102 and Tek4014
-	Line Wrapping	-	Wrapping On
-	Output Mapping	-	Mapping Off
+        Normal Foreground (nfcolor)     -       green
+        Normal Background (nbcolor)     -       black
+        Reverse Foreground (rfcolor)    -       black
+        Reverse Background (rbcolor)    -       white
+        Underline Foreground (ufcolor)  -       blue
+        Underline Background (ubcolor)  -       black
+        Use remote echo or local echo   -       Remote echo
+        Backspace key sends     -       Delete
+        Session name    *>      ahostname
+        Terminal type   -       VT102 and Tek4014
+        Line Wrapping   -       Wrapping On
+        Output Mapping  -       Mapping Off
    -------------- Parameters which apply to all sessions --------------
-	Capture file name	*>	capfile
-  Screen mode (for BIOS compatibility)	Direct to screen
-	File transfer is	-	Enabled
-	Remote Copying is	-	Enabled
-	Clock is 	Enabled
+        Capture file name       *>      capfile
+  Screen mode (for BIOS compatibility)  Direct to screen
+        File transfer is        -       Enabled
+        Remote Copying is       -       Enabled
+        Clock is        Enabled
 
 
 Use arrow keys to select, Enter clears changeable field (*>)
@@ -244,25 +244,25 @@ In local echo mode, NCSA Telnet  buffers most characters typed at
 the keyboard until you press RETURN, which sends the characters 
 to the host all in one packet. There are some exceptions to this rule.
 
-•	CTRL-U erases the local buffer.
+•       CTRL-U erases the local buffer.
 
-•	Backspace (CTRL-H) erases the most recent character added to 
+•       Backspace (CTRL-H) erases the most recent character added to 
 the local buffer.
 
-•	Tab (CTRL-I) forces NCSA Telnet to send the local buffer (with 
+•       Tab (CTRL-I) forces NCSA Telnet to send the local buffer (with 
 the tab).
 
-•	All other control characters echo with a caret (e.g., ^A) and 
+•       All other control characters echo with a caret (e.g., ^A) and 
 force NCSA Telnet to send the local buffer with the control 
 character included.
-•	Arrow keys and all other unprintable ASCII characters, the 
+•       Arrow keys and all other unprintable ASCII characters, the 
 escape character for example, force NCSA Telnet to send the 
 local buffer, with the character included.
 
-•	You cannot send a CTRL-U or Backspace to the host in line 
+•       You cannot send a CTRL-U or Backspace to the host in line 
 mode.
 
-•	ALT keys and other local command keys are not affected by 
+•       ALT keys and other local command keys are not affected by 
 local echo mode.
 
 NOTE: For full screen editing, character mode (remote echo) is 
@@ -304,12 +304,12 @@ force some restrictions on the way the terminal acts, you may want
 to limit the amount of emulation that NCSA Telnet does. The three 
 choices of terminal types are: 
 
-•	VT100 terminal with Tektronix 4014 graphics
+•       VT100 terminal with Tektronix 4014 graphics
 
-•	VT100 only—graphics commands ignored, but VT100 
+•       VT100 only—graphics commands ignored, but VT100 
 commands accepted
 
-•	Dumb terminal—no VT100 codes or Tektronix codes 
+•       Dumb terminal—no VT100 codes or Tektronix codes 
 interpreted
 
 

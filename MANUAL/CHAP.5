@@ -1,7 +1,7 @@
-5.1	NCSA Telnet
+5.1     NCSA Telnet
 
 
-File Transfer	5.1
+File Transfer   5.1
 
 
 National Center for Supercomputing Applications
@@ -16,9 +16,9 @@ June 1991
 
 
 
-5.1	NCSA Telnet
+5.1     NCSA Telnet
 
-File Transfer	5.1
+File Transfer   5.1
 
 National Center for Supercomputing Applications
 
@@ -27,12 +27,12 @@ June 1991
 
 
 
-	6/30/91
+        6/30/91
 
 
 
 
-Chapter 5	File Transfer
+Chapter 5       File Transfer
 
 
 
@@ -148,21 +148,21 @@ the PC
 Whether you are using FTP or rcp to transfer files to or from a PC, 
 check these rules for PC filenames:
 
-¥	A legal PC filename is eight characters or less, followed by an 
+¥       A legal PC filename is eight characters or less, followed by an 
 optional period and an up to three-character extension.
 
-¥	Upper and lower case are considered identical for filenames on 
+¥       Upper and lower case are considered identical for filenames on 
 PC disks.
 
-¥	Names of files which are transferred from the PC are given in 
+¥       Names of files which are transferred from the PC are given in 
 all lower case.
 
-¥	A filename longer than eight characters is truncated.
+¥       A filename longer than eight characters is truncated.
 
-¥	If a period occurs in a filename, the next three characters are 
+¥       If a period occurs in a filename, the next three characters are 
 read as the extension, and any others are truncated. 
 
-¥	A filename should not contain "special characters" or spaces. 
+¥       A filename should not contain "special characters" or spaces. 
 If it does, the file may be lost or unreadable. Examples of special 
 characters are the asterisk (*), the dollar sign ($), the pound 
 sign (#), the hyphen (-), and control characters. 
@@ -176,22 +176,22 @@ messages), as documented in Chapter 2, "Introduction to
 Managing Sessions." The following list describes the 
 information which FTP provides.
 
-¥	Reports when a command connection is initiated, with the IP 
+¥       Reports when a command connection is initiated, with the IP 
 address or host name of the remote machine which initiated the 
 connection
 
-¥	Reports the name of the user who logs in, if you use the USER 
+¥       Reports the name of the user who logs in, if you use the USER 
 command
 
-¥	Reports the file names which were transferred to or from local 
+¥       Reports the file names which were transferred to or from local 
 disk
 
-¥	Reports when the command connection ends
+¥       Reports when the command connection ends
 
 The rcp server also produces reports for the console screen.
 
-¥	Reports when an rcp transfer begins
-¥	Reports when the rcp transfer ends
+¥       Reports when an rcp transfer begins
+¥       Reports when the rcp transfer ends
 
 
 File Transfer Using FTP
@@ -200,18 +200,18 @@ The FTP server in NCSA Telnet is the minimum standard FTP
 server, similar to that in 4.2 BSD UNIX. NCSA's FTP supports the 
 following features:
 
-¥	Stream transfer in text format (ASCII) or binary format 
+¥       Stream transfer in text format (ASCII) or binary format 
 (IMAGE)
 
-¥	Change, create, or delete a directory
+¥       Change, create, or delete a directory
 
-¥	Print current directory
+¥       Print current directory
 
-¥	List files in current directory (with wildcard specifications)
+¥       List files in current directory (with wildcard specifications)
 
-¥	Send and receive multiple files with one command, using 
+¥       Send and receive multiple files with one command, using 
 wildcards
-¥	Delete file
+¥       Delete file
 
 
 Setting Up FTP
@@ -232,11 +232,11 @@ enabled.
 Using FTP
 Use FTP rather than rcp in either of the following situations.
 
-1.	You are not thoroughly familiar with the host operating system. 
+1.      You are not thoroughly familiar with the host operating system. 
 FTP is easier to use than rcp, and requires less familiarity with 
 the host commands and directory structure.
 
-2.	You are transferring PC text (ASCII) files to a host. FTP is a 
+2.      You are transferring PC text (ASCII) files to a host. FTP is a 
 better choice than rcp, because FTP automatically converts the 
 end-of-line characters in text files from CRLF, used by PC-DOS, 
 to LF, used by UNIX machines.
@@ -314,30 +314,30 @@ commands because they are modeled after the Berkeley UNIX
 version of FTP. Table 5.1 lists FTP commands that are common to 
 most implementations.
 
-Table 5.1	Common FTP 
+Table 5.1       Common FTP 
 Commands
-Command		Action
+Command         Action
 
-ascii		Sets mode to ASCII transfer mode (default)
+ascii           Sets mode to ASCII transfer mode (default)
 
-binary		Sets mode to binary (image) transfer mode
+binary          Sets mode to binary (image) transfer mode
 
-cd path		Sets a new default directory on PC
+cd path         Sets a new default directory on PC
 
-dir			Shows filenames in PC's default directory
+dir                     Shows filenames in PC's default directory
 
-get filename	Gets a file from PC and sends it to host
+get filename    Gets a file from PC and sends it to host
 
-help			Shows online list of FTP commands
+help                    Shows online list of FTP commands
 
-put filename	Sends a file from host to PC
+put filename    Sends a file from host to PC
 
-pwd			Shows current PC directory name
+pwd                     Shows current PC directory name
 
-quit			Exits FTP
+quit                    Exits FTP
 
-remotehelp	Shows list of supported commands on FTP 
-				server
+remotehelp      Shows list of supported commands on FTP 
+                                server
 
 
 ASCII, Binary
@@ -383,7 +383,7 @@ actual file, named temp2. The boldface type represents user
 entries.
 
 
-Figure 5.1	Put to the PC, ASCII 
+Figure 5.1      Put to the PC, ASCII 
 File
 newton_45% ftp -n 192.17.20.124
 Connected to 192.17.20.124.
@@ -410,7 +410,7 @@ the cd command was used. Again, the boldface type represents user
 entries. If a text file were to be sent after this, the ASCII mode would 
 have to be reset, using the FTP ascii command.
 
-Figure 5.2 	Get from the PC, 
+Figure 5.2      Get from the PC, 
 Binary File
 newton_41% ftp -n 192.17.20.124
 Connected to 192.17.20.124.
@@ -477,9 +477,9 @@ Setting Up rcp
 To use rcp efficiently, you should be familiar with the UNIX host, 
 including:
 
-¥	rcp command and options
-¥	directory structures used with rcp
-¥	the relationship between the UNIX shell and rcp wildcards
+¥       rcp command and options
+¥       directory structures used with rcp
+¥       the relationship between the UNIX shell and rcp wildcards
 
 Details on these concepts are in the manuals for UNIX.
 
@@ -497,8 +497,8 @@ familiar with the UNIX hosts, as described earlier.
 There are two advantages of using rcp rather than FTP, on binary 
 file transfers to or from a UNIX machine.
 
-¥	rcp handles wildcards more efficiently than FTP does.
-¥	rcp handles directories more easily than FTP does.
+¥       rcp handles wildcards more efficiently than FTP does.
+¥       rcp handles directories more easily than FTP does.
 
 
 Avoiding Use of NCSA 
@@ -519,8 +519,8 @@ about rcp. As a reminder, the general syntax of the rcp command is
 given here. The target filename can be a directory name and 
 wildcards are allowed, as noted in the next section.
 
-% rcp mypc:filename unixfile		From PC to UNIX
-% rcp unixfile mypc:filename		From UNIX to PC
+% rcp mypc:filename unixfile            From PC to UNIX
+% rcp unixfile mypc:filename            From UNIX to PC
 
 
 Example: PC to UNIX

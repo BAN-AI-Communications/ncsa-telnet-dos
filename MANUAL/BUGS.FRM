@@ -22,39 +22,39 @@ pctelnet@ncsavmsa.bitnet
 
 
 
-Name:			
+Name:                   
 
-Institution:		
-
-
-Address (Electronic):		
+Institution:            
 
 
-Address (U.S. Mail):		
+Address (Electronic):           
 
-	
 
-	
+Address (U.S. Mail):            
+
+        
+
+        
 
 
 Telephone:   (          )                   Ð                           .
 
-Version of NCSA Telnet:	Type machine:	
+Version of NCSA Telnet: Type machine:   
 
-Version of system software:	
+Version of system software:     
 
 
 Suggestion or description of problem:
 
-	
+        
 
-	
+        
 
-	
+        
 
-	
+        
 
-	
+        
 
 
 

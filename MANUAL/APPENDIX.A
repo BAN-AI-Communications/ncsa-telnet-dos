@@ -1,6 +1,6 @@
-A.1	NCSA Telnet 
+A.1     NCSA Telnet 
 
-Error Conditions	A.1
+Error Conditions        A.1
 
 National Center for Supercomputing Applications
 
@@ -14,7 +14,7 @@ June 1991
 
 
 
-Appendix A	Error Conditions
+Appendix A      Error Conditions
 
 
 
@@ -57,7 +57,7 @@ this computer to be accessed by name, add its name and IP address
 to your configuration file.
 
 
-ICMP:	Destination unreachable
+ICMP:   Destination unreachable
 
 Cause: 
 Another machine––probably the gateway––has determined that 
@@ -69,7 +69,7 @@ destination you want to reach. A problem may exist with the
 gateway.
 
 
-ICMP:	Echo requested (ping requested)
+ICMP:   Echo requested (ping requested)
 
 Cause: 
 Someone has "pinged" your machine.
@@ -80,7 +80,7 @@ another computer has tried to determine if your machine is alive
 and connected to the network. Your machine answered "yes".
 
 
-ICMP:	Redirect, another gateway is more efficient
+ICMP:   Redirect, another gateway is more efficient
 
 Cause: 
 NCSA Telnet is sending packets to a gateway that is reforwarding 

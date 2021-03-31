@@ -1,6 +1,6 @@
-i	NCSA Telnet
+i       NCSA Telnet
 
-Introduction	i
+Introduction    i
 
 National Center for Supercomputing Applications
 
@@ -39,81 +39,81 @@ Special Features
 
 Special features of NCSA Telnet for the PC include:
 
-¥	VT100 emulation
-¥	Local printer support for VT100 emulation
-¥	Simultaneous logon to a number of computers
-¥	Ability to capture text to the PC disk or printer
-¥	File transfer server (standard FTP)
-¥	Remote copy server (rcp) for use with UNIX hosts
-¥	Ability to take full advantage of PC colors
-¥	Topview/Windows compatibility
-¥	Tektronix 4014 emulation
-¥	Added applications such as:  lpr, lpq, lprm, rexec, rsh, finger, 
+¥       VT100 emulation
+¥       Local printer support for VT100 emulation
+¥       Simultaneous logon to a number of computers
+¥       Ability to capture text to the PC disk or printer
+¥       File transfer server (standard FTP)
+¥       Remote copy server (rcp) for use with UNIX hosts
+¥       Ability to take full advantage of PC colors
+¥       Topview/Windows compatibility
+¥       Tektronix 4014 emulation
+¥       Added applications such as:  lpr, lpq, lprm, rexec, rsh, finger, 
 setclock (all similar to UNIX utilities)
-¥	Domain name lookup
-¥	Optional use of RARP and Bootp for determining PC's IP 
+¥       Domain name lookup
+¥       Optional use of RARP and Bootp for determining PC's IP 
 address 
-¥	Support for Linemode protocol
-¥	Scrollback with mouse support
-¥	Cut and paste capabilities for text between sessions
-¥	Keyboard mapping
-¥	Text output mapping
-¥	Better message routing of telnet options to console screen
-¥	Ability to dump screens to a capture file
+¥       Support for Linemode protocol
+¥       Scrollback with mouse support
+¥       Cut and paste capabilities for text between sessions
+¥       Keyboard mapping
+¥       Text output mapping
+¥       Better message routing of telnet options to console screen
+¥       Ability to dump screens to a capture file
 
 
  System Requirements
 
 To use NCSA Telnet you must have the following hardware:
 
-¥	IBM PC, PC/XT, PC/AT, IBM PS/2 model 30, or "true" 
+¥       IBM PC, PC/XT, PC/AT, IBM PS/2 model 30, or "true" 
 compatible computer with one of the following Ethernet adapter 
 boards:
 
-	Appletalk Card
-	DecNet Card
-	3COM 3C501 Etherlink 
-	3COM 3C503
-	3COM 3C505
-	AT&T Starlan 10
-	Western Digital WD8003EB
-	MICOM NI5210 
-	Ungermann-Bass PC-NIC (same as IBM Baseband Adapter)
-	Western Digital WD8003E EtherCard PLUS
+        Appletalk Card
+        DecNet Card
+        3COM 3C501 Etherlink 
+        3COM 3C503
+        3COM 3C505
+        AT&T Starlan 10
+        Western Digital WD8003EB
+        MICOM NI5210 
+        Ungermann-Bass PC-NIC (same as IBM Baseband Adapter)
+        Western Digital WD8003E EtherCard PLUS
 
-¥	or IBM PS/2 models 50,60 or 80, or "true" compatible computer 
+¥       or IBM PS/2 models 50,60 or 80, or "true" compatible computer 
 with one of the following Ethernet adapter boards:
 
-	Ungermann-Bass NICps/2
-	3COM 3C523 Etherlink/MC
-	Western Digital WD8003A
+        Ungermann-Bass NICps/2
+        3COM 3C523 Etherlink/MC
+        Western Digital WD8003A
 
-¥	The following adapters have been tested successfully with 
+¥       The following adapters have been tested successfully with 
 packet drivers:
 
-	3Com's 3C501, 3C503, 3C505, 3C507, and 3C523
-	Any SMC-mode ARCnet card
-	Any AT&T Ethernet or StarLAN card
-	D-Link Systems' DE-600 Pocket LAN Adapter
-	Simulated driver over NetWare's IPX
-	BICC Data Networks' ISOLAN
-	Apple Computer's LocalTalk PC Card
-	Sun/TOPS (Sitka) FlashCard
-	Simulated driver over NetBIOS
-	NCR's ET-105B
-	Novell's NE1000, NE2000, and clones
-	Racal-InterLan's NI5010, NI5210, NI6510, and NI9210
-	Ungermann-Bass's NIC and NICps/2
-	All Western Digital's models
+        3Com's 3C501, 3C503, 3C505, 3C507, and 3C523
+        Any SMC-mode ARCnet card
+        Any AT&T Ethernet or StarLAN card
+        D-Link Systems' DE-600 Pocket LAN Adapter
+        Simulated driver over NetWare's IPX
+        BICC Data Networks' ISOLAN
+        Apple Computer's LocalTalk PC Card
+        Sun/TOPS (Sitka) FlashCard
+        Simulated driver over NetBIOS
+        NCR's ET-105B
+        Novell's NE1000, NE2000, and clones
+        Racal-InterLan's NI5010, NI5210, NI6510, and NI9210
+        Ungermann-Bass's NIC and NICps/2
+        All Western Digital's models
 
-¥	384K minimum memory
+¥       384K minimum memory
 
-¥	Ethernet or Thin Ethernet to connect the PC and other computers
+¥       Ethernet or Thin Ethernet to connect the PC and other computers
 
 To use NCSA Telnet you must have the following software:
 
-¥	PC-DOS or MS-DOS Version 2.0 or later
-¥	a standard text editor (helpful when editing the configuration 
+¥       PC-DOS or MS-DOS Version 2.0 or later
+¥       a standard text editor (helpful when editing the configuration 
 file)
 
 
@@ -177,7 +177,7 @@ Figure I.1 shows some typical screen/user interactions using the
 conventions employed in this manual. Those conventions, and 
 others, are explained here.
 
-Figure I.1	Example of 
+Figure I.1      Example of 
 Notational 
 Conventions
 C:\> telnet machinename [machinename...]
@@ -197,30 +197,30 @@ login:
 
 
 
-dothis	Information shown in courier boldface type 
-	represents user entries.
+dothis  Information shown in courier boldface type 
+        represents user entries.
 
-ALT-key	Press and hold the ALT key and then press the 
-	key designated by key. Then release both 
-	keys at the same time.
+ALT-key Press and hold the ALT key and then press the 
+        key designated by key. Then release both 
+        keys at the same time.
 
-variable	Do not enter the actual characters shown. 
-	Command line characters shown in 
-	lowercase courier bold italic type represent an 
-	entry that may consist of different characters 
-	every time you make the entry. In other 
-	words, it is a variable entry. If it indicates a 
-	machine response, it means the actual 
-	wording of the response will vary, depending 
-	on the filename, machinename, and so on.
+variable        Do not enter the actual characters shown. 
+        Command line characters shown in 
+        lowercase courier bold italic type represent an 
+        entry that may consist of different characters 
+        every time you make the entry. In other 
+        words, it is a variable entry. If it indicates a 
+        machine response, it means the actual 
+        wording of the response will vary, depending 
+        on the filename, machinename, and so on.
 
-...	Do not enter an ellipsis. The ellipsis 
-	indicates that you may enter more material 
-	similar to the material preceding the ellipsis.
+...     Do not enter an ellipsis. The ellipsis 
+        indicates that you may enter more material 
+        similar to the material preceding the ellipsis.
 
-[ ]	Do not enter square brackets. Material or 
-	actions presented between square brackets is 
-	optional and should be entered only in certain 
-	cases.
+[ ]     Do not enter square brackets. Material or 
+        actions presented between square brackets is 
+        optional and should be entered only in certain 
+        cases.
 
 

@@ -1,7 +1,7 @@
-F.1	NCSA Telnet 
+F.1     NCSA Telnet 
 
 
-Obtaining NCSA Software	F.1
+Obtaining NCSA Software F.1
 
 
 National Center for Supercomputing Applications
@@ -19,7 +19,7 @@ June 1991
 
 
 
-Appendix  F	Obtaining NCSA Software
+Appendix  F     Obtaining NCSA Software
 
 
 
@@ -39,28 +39,28 @@ NCSA. The steps you should follow to do so are enumerated below.
 If you have any questions regarding the connection or procedure, 
 consult your local system administrator or network expert.
 
-1.	Log on to a host at your site that is connected to Internet and is 
+1.      Log on to a host at your site that is connected to Internet and is 
 running software supporting the FTP command.
 
-2.	Invoke FTP on most systems by entering the Internet address of 
+2.      Invoke FTP on most systems by entering the Internet address of 
 the server:
 
-	%  ftp  ftp.ncsa.uiuc.edu
+        %  ftp  ftp.ncsa.uiuc.edu
 
-	or
+        or
 
-	%  ftp  141.142.20.50
+        %  ftp  141.142.20.50
 
-3.	Log in by entering anonymous for the name.
+3.      Log in by entering anonymous for the name.
 
-4.	Enter your e-mail address for the password.
+4.      Enter your e-mail address for the password.
 
-5.	Enter get README.FIRST to transfer the instructions file 
+5.      Enter get README.FIRST to transfer the instructions file 
 (ASCII) to your local host.
 
-6.	Enter quit to exit FTP and return to your local host.
+6.      Enter quit to exit FTP and return to your local host.
 
-7.	Review the README.FIRST file for complete instructions 
+7.      Review the README.FIRST file for complete instructions 
 concerning the organization of the FTP directories and the 
 procedures you should follow to download the README files 
 specific to the application you want.
@@ -92,15 +92,15 @@ The README.FIRST file instructs you to copy the HDF README
 file to your directory and read it before proceeding. Your FTP 
 session should resemble the one listed below:
 
-ftp>	cd HDF
+ftp>    cd HDF
 250 CWD command successful.
-ftp>	get README
+ftp>    get README
 200 PORT command successful.
 150 Opening ASCII mode data connection for README (10283 bytes)
 226 Transfer complete.
-local:  README	remote:  README
+local:  README  remote:  README
 2080 bytes received in .14 seconds (15 Kbytes/s)
-ftp>	quit
+ftp>    quit
 221 Goodbye.
 harriet_52%
 
@@ -115,20 +115,20 @@ HDFÑUNICOS or other.
 Archive Server
 To obtain NCSA software via an archive server:
 
-1.	E-mail a request to:
+1.      E-mail a request to:
 
-	archive-server@ncsa.uiuc.edu
+        archive-server@ncsa.uiuc.edu
 
-2.	Include in the subject or message line, the word "help."
+2.      Include in the subject or message line, the word "help."
 
-3.	Press RETURN.
+3.      Press RETURN.
 
-4.	Send another e-mail request to:
+4.      Send another e-mail request to:
 
-	archive-server@ncsa.uiuc.edu
+        archive-server@ncsa.uiuc.edu
 
-5.	Include in the subject or message line, the word "index."
-6.	Press RETURN.
+5.      Include in the subject or message line, the word "index."
+6.      Press RETURN.
 
 For example, if you use the UNIX mailing system, your login 
 session should resemble the following sample, where user entries 

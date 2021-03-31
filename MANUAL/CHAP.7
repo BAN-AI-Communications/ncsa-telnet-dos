@@ -1,7 +1,7 @@
-	
+        
 
 
-Installation and Configuration	7.1
+Installation and Configuration  7.1
 
 
 
@@ -15,20 +15,20 @@ June 1991
 
 
 
-7.1	NCSA Telnet
+7.1     NCSA Telnet
 
-Installation and Configuration	7.1
+Installation and Configuration  7.1
 
 National Center for Supercomputing Applications
 
 June 1991
 
-		6/30/91
+                6/30/91
 
 
 
 
-Chapter 7	Installation and Configuration
+Chapter 7       Installation and Configuration
 
 
 
@@ -134,43 +134,43 @@ tune your configuration to match your local computing situation
 more closely. In the meantime, you must install the following 
 fields in the configuration file for NCSA Telnet to operate.
 
-Field	Meaning
+Field   Meaning
 
-myip=192.17.20.10	You must provide a unique IP address 
-	for each machine on your network. IP 
-	addresses must be installed in the 
-	configuration file of each computer.
+myip=192.17.20.10       You must provide a unique IP address 
+        for each machine on your network. IP 
+        addresses must be installed in the 
+        configuration file of each computer.
 
-netmask=255.255.255.0	This field is the subnet mask, (in decimal),  
-	and is required if you are using subnets on 
-	your network. 
+netmask=255.255.255.0   This field is the subnet mask, (in decimal),  
+        and is required if you are using subnets on 
+        your network. 
 
-hardware=3C501	NCSA Telnet can support several 
-	different brands of Ethernet adapters. 
-	Each brand has its own unique 
-	identifier which you must set for the 
-	hardware parameter. See the 
-	hardware section in this chapter for a 
-	complete list of settings. Most brands 
-	also require address and ioaddr to be 
-	set.
+hardware=3C501  NCSA Telnet can support several 
+        different brands of Ethernet adapters. 
+        Each brand has its own unique 
+        identifier which you must set for the 
+        hardware parameter. See the 
+        hardware section in this chapter for a 
+        complete list of settings. Most brands 
+        also require address and ioaddr to be 
+        set.
 
-video=ega	If you wish to use the Tektronix 
-	graphics options, you must provide the 
-	correct screen type. Incorrectly 
-	installed, this option can crash NCSA Telnet. 
-	The  alternative is to install the tek=no 
-	option.  Legal types are cga, ega, 
-	hercules, no9, mono, ega43, vga50.
+video=ega       If you wish to use the Tektronix 
+        graphics options, you must provide the 
+        correct screen type. Incorrectly 
+        installed, this option can crash NCSA Telnet. 
+        The  alternative is to install the tek=no 
+        option.  Legal types are cga, ega, 
+        hercules, no9, mono, ega43, vga50.
 
-gateway=1	If you are going to be using gateways 
-	to reach other networks, at least one 
-	machine must be designated as a 
-	gateway, using this gateway option 
-	after the name field. The entry for each 
-	gateway must include a hostip  field, 
-	according to the configuration file 
-	directions in this chapter.
+gateway=1       If you are going to be using gateways 
+        to reach other networks, at least one 
+        machine must be designated as a 
+        gateway, using this gateway option 
+        after the name field. The entry for each 
+        gateway must include a hostip  field, 
+        according to the configuration file 
+        directions in this chapter.
 
 
 The TELNET.BAT File
@@ -207,63 +207,63 @@ must include the parameters for each option. Include one space
 between the options and between each option and the parameter for 
 that option. The options are:
 
-Option		Function
+Option          Function
 
-?	Shows command line options. This option causes 
-	NCSA Telnet to display a summary version 
-	of the command line options instead of 
-	initiating the program. 
+?       Shows command line options. This option causes 
+        NCSA Telnet to display a summary version 
+        of the command line options instead of 
+        initiating the program. 
 
--c colorcode	Sets the default color for screens. The 
-	colorcode string is six digits long and follows the 
-	coding scheme documented later in this chapter.
+-c colorcode    Sets the default color for screens. The 
+        colorcode string is six digits long and follows the 
+        coding scheme documented later in this chapter.
 
--h filename	Specifies where to find the configuration file. 
-	Normally, this option is included in TELNET.BAT, 
-	and you never have to use it explicitly. If you do 
-	not specify the configuration file there or on the 
-	command line, there must be a file named 
-	CONFIG.TEL in the default directory, or you must 
-	set an environment variable named CONFIG.TEL 
-	to your configuration file. If a suitable 
-	configuration file cannot be found according to 
-	these rules, NCSA Telnet terminates. 
+-h filename     Specifies where to find the configuration file. 
+        Normally, this option is included in TELNET.BAT, 
+        and you never have to use it explicitly. If you do 
+        not specify the configuration file there or on the 
+        command line, there must be a file named 
+        CONFIG.TEL in the default directory, or you must 
+        set an environment variable named CONFIG.TEL 
+        to your configuration file. If a suitable 
+        configuration file cannot be found according to 
+        these rules, NCSA Telnet terminates. 
 
-	For example, if you name your configuration file 
-	"TELNET.CFG", and the file resided in the 
-	directory C:APPS, you would put the following 
-	command in your AUTO.EXEC.BAT file:
+        For example, if you name your configuration file 
+        "TELNET.CFG", and the file resided in the 
+        directory C:APPS, you would put the following 
+        command in your AUTO.EXEC.BAT file:
 
-	"set CONFIG.TEL=C:\APPS\TELNET.CFG"
+        "set CONFIG.TEL=C:\APPS\TELNET.CFG"
 
-	NOTE: filename should include a 
-	pathname. For example, 
+        NOTE: filename should include a 
+        pathname. For example, 
 
-	C:\bat\config.tel
+        C:\bat\config.tel
 
-	NCSA Telnet uses the filename specified for the -h 
-	parameter first. If that filename isn't available, it 
-	first looks in an environment variable, then the 
-	current directory, then all the directories specified 
-	by the "PATH" environment variable in order to 
-	find the filename.
+        NCSA Telnet uses the filename specified for the -h 
+        parameter first. If that filename isn't available, it 
+        first looks in an environment variable, then the 
+        current directory, then all the directories specified 
+        by the "PATH" environment variable in order to 
+        find the filename.
 
--s	Enters server mode. NCSA Telnet waits for 
-	external FTP and rcp requests. It allows you to 
-	leave your PC and access files there from a remote 
-	machine. 
+-s      Enters server mode. NCSA Telnet waits for 
+        external FTP and rcp requests. It allows you to 
+        leave your PC and access files there from a remote 
+        machine. 
 
--t	Disables direct writes to the screen. Without 
-	the -t option, NCSA Telnet defaults to 
-	writing directly to screen memory. This option 
-	greatly enhances the screen speed, but makes 
-	NCSA Telnet incompatible with Topview, 
-	Microsoft Windows, and other windowing 
-	systems. To make NCSA Telnet completely 
-	compatible with BIOS-level programs, use the -t 
-	option. You can install this option permanently 
-	in the TELNET.BAT file or the CONFIG.TEL file 
-	(bios option).
+-t      Disables direct writes to the screen. Without 
+        the -t option, NCSA Telnet defaults to 
+        writing directly to screen memory. This option 
+        greatly enhances the screen speed, but makes 
+        NCSA Telnet incompatible with Topview, 
+        Microsoft Windows, and other windowing 
+        systems. To make NCSA Telnet completely 
+        compatible with BIOS-level programs, use the -t 
+        option. You can install this option permanently 
+        in the TELNET.BAT file or the CONFIG.TEL file 
+        (bios option).
 
 
 The Configuration File
@@ -304,11 +304,11 @@ Figure 7.1.aDisplaying the
 Same Information 
 in Different Entry 
 Formats
-	name=nic      # comment field to end of line ->
-	host=sri-nic.arpa
-	hostip=10.0.0.51
-	scrollback=300
-	contime=60
+        name=nic      # comment field to end of line ->
+        host=sri-nic.arpa
+        hostip=10.0.0.51
+        scrollback=300
+        contime=60
 
 
 Figure 7.1.b
@@ -329,9 +329,9 @@ entries. They specify what types of hardware are to be used, the
 names of graphics output files, and the network configuration 
 information. Following is a list of these entries:
 
-Entry	Meaning
+Entry   Meaning
 
-address=d000	entered as four hex digits, address=d000, 
+address=d000    entered as four hex digits, address=d000, 
 is the segment address of the Ethernet 
 board's shared memory. The address only 
 applies to boards that have jumpers or 
@@ -343,9 +343,9 @@ Telnet with the same setting. d000 (hex) is
 a common address to use and it rarely 
 conflicts with other boards.
 
-Entry	Meaning
+Entry   Meaning
 
-arptime=3	specifies how long to try to reach a host 
+arptime=3       specifies how long to try to reach a host 
 on the local wire, in ticks, where 18.2 ticks 
 is equivalent to one second. A value of 20 
 works fine for the network at NCSA, but 
@@ -353,19 +353,19 @@ larger values may be needed for hosts
 that are slow to respond. Smaller values 
 are more convenient to use.
 
-autoscroll=yes	specifies whether the screen continues to 
+autoscroll=yes  specifies whether the screen continues to 
 scroll in scrollback mode when the cursor 
 reaches the top of the screen or not. (It 
 will only scroll up one line if this option is 
 off.) Default is yes.
 
-beep=yes	specifies whether the musical note symbol 
+beep=yes        specifies whether the musical note symbol 
 will appear in a session's indicator box 
 when NCSA Telnet receives a "beep" 
 character. This command is useful for 
 alert conditions.
 
-bios=no	indicates NCSA Telnet has two screen-
+bios=no indicates NCSA Telnet has two screen-
 writing modes. One is direct-to-screen 
 (bios=no) which is considerably faster on 
 most machines. The other uses BIOS 
@@ -377,38 +377,38 @@ reduce the amount of flicker and snow on
 the screens of IBM CGA-equipped 
 systems.
 
-broadcast=255.255.	specifies the network address to use 
-255.255	for broadcast messages.
+broadcast=255.255.      specifies the network address to use 
+255.255 for broadcast messages.
 
-capfile=	specifies a name for the capture file. For 
+capfile=        specifies a name for the capture file. For 
 example,
 
-		capfile ="c:\temp\myfile"
+                capfile ="c:\temp\myfile"
 
-		When you capture to disk, all data is 
+                When you capture to disk, all data is 
 appended to this file. If no name is 
 included in the configuration file, "capfile" 
 is used by default.
 
-capfile=prn	specifies that the printer device (PRN) 
+capfile=prn     specifies that the printer device (PRN) 
 should be used for the capture file.
 
-clock=on	specifies that the clock should be 
+clock=on        specifies that the clock should be 
 displayed on the status line.  Default is 
 clock=on.
 
-concolor=431070 	specifies the colors used in the console 
+concolor=431070         specifies the colors used in the console 
 window.
 
-Entry	Meaning
+Entry   Meaning
 
-cursorbottom=8	specifies the bottom of the cursor block 
+cursorbottom=8  specifies the bottom of the cursor block 
 using a number from 0 to 15.
 
-cursortop=11	specifies the top of the cursor block using 
+cursortop=11    specifies the top of the cursor block using 
 a number from 0 to 15.
 
-domain="ncsa.uiuc.edu"	affects hostname lookups which are sent 
+domain="ncsa.uiuc.edu"  affects hostname lookups which are sent 
 to the domain nameserver. All names 
 which do not contain a period have the 
 default domain appended before the 
@@ -419,7 +419,7 @@ Telnet sends it to the nameserver. There is
 no "ring-down" or multiple lookup feature 
 to try more than one form of the name.
 
-domainretry=4	specifies number of times to query 
+domainretry=4   specifies number of times to query 
 domain nameserver(s). Each time a retry 
 is sent, the timeout value (above) is 
 doubled. Each time a retry occurs, NCSA 
@@ -427,7 +427,7 @@ Telnet tries the next nameserver,
 wrapping around to the first nameserver 
 when there are no more.
 
-domaintime=20	specifies time in ticks to wait between the 
+domaintime=20   specifies time in ticks to wait between the 
 first domain lookup and the second. If you 
 only have one nameserver, then this is the 
 same as a simple timeout. If you want to 
@@ -438,12 +438,12 @@ of retries, set this to a smaller number. To
 wait longer for a domain response, 
 increase this value.
 
-ftp=yes	enables FTP serving by default. Access to 
+ftp=yes enables FTP serving by default. Access to 
 your PC can be controlled by the FTP 
 password file. To disable FTP serving 
 completely, change this line to ftp=no.
 
-hardware=3C501	specifies that NCSA Telnet can support 
+hardware=3C501  specifies that NCSA Telnet can support 
 several different brands of Ethernet 
 adapters. Each brand has its own unique 
 identifier which must be set for the 
@@ -451,22 +451,22 @@ hardware parameter. See the hardware
 section in this chapter for a complete list 
 of settings.
 
-hpfile=COM1	sends HPGL plotter codes directly to the 
+hpfile=COM1     sends HPGL plotter codes directly to the 
 plotter, as long as a HP plotter hooked up 
 to your PC. Use the mode command to 
 preconfigure the serial port first.
 
-hpfile=hp.out	dumps Tektronix graphics to a file in 
+hpfile=hp.out   dumps Tektronix graphics to a file in 
 several formats from the Graphics menu. 
 When you write out HPGL (HP plotter) 
 codes, this file name is used. For example,
 
-		hpfile="c:\hpgrafs\hp.out"
+                hpfile="c:\hpgrafs\hp.out"
 
-		The default is hp.out in the current 
+                The default is hp.out in the current 
 directory.
 
-interrupt=3	specifies several choices for interrupt 
+interrupt=3     specifies several choices for interrupt 
 vector on the Ethernet board. NCSA 
 Telnet defaults to IRQ3, but can be set to 
 use different interrupts by indicating the 
@@ -474,56 +474,56 @@ interrupt number here. Match this
 number with the interrupt setting from 
 your Ethernet board.
 
-ioaddr=360	specifies the I/O base address of the 
+ioaddr=360      specifies the I/O base address of the 
 Ethernet board in hex. Some Ethernet 
 boards have selectable I/O addresses. 
 These generally range from 200 to 400 
 (hex) and must be entered as two, three, 
 or four digits.
 
-keyfile=filename	specifies an additional keyboard mapping 
+keyfile=filename        specifies an additional keyboard mapping 
 file to provide move key definitions. This 
 file over-rides the definitions in the 
 telnet.key file.
 
-myip=BOOTP	indicates that this entry is a special form 
+myip=BOOTP      indicates that this entry is a special form 
 of the myip entry. Setting myip to 
 BOOTP will cause NCSA Telnet to query 
 a BOOTP server to get its IP address.
 
 
-myip=RARP	indicates that this entry is a special form 
+myip=RARP       indicates that this entry is a special form 
 of the myip entry. Setting myip to RARP 
 will cause NCSA Telnet to query a RARP 
 server to get its IP address. See the section 
 on RARP in this chapter.
 
-myip=10.0.0.51	specifies the IP address to use for the PC. 
+myip=10.0.0.51  specifies the IP address to use for the PC. 
 This number must contain all four parts 
 of the IP address. This field is required.
 
 myname="hawkind.
-ncsa.uiuc.edu"	specifies the network name used to 
+ncsa.uiuc.edu"  specifies the network name used to 
 identify the PC on the network.
 
-netmask=255.255.255.0	specifies the subnet mask for your local 
+netmask=255.255.255.0   specifies the subnet mask for your local 
 network. It is optional for networks 
 without subnets.
 
-outputfile=filename	specifies that this entry is the same as 
+outputfile=filename     specifies that this entry is the same as 
 keyfile option, except it specifies the 
 output mapping file to over-ride the 
 default telnet.out mappings.
 
-Entry	Meaning
+Entry   Meaning
 
-passfile=	specifies the file in which FTP usernames 
+passfile=       specifies the file in which FTP usernames 
 and passwords can be found. For 
 example,
 
-		passfile="c:\bat\ftppass"
+                passfile="c:\bat\ftppass"
 
-		No default name exists for this file. If the 
+                No default name exists for this file. If the 
 file is specified, then FTP will require a 
 username and password for all attempted 
 FTP connections. If the file is not 
@@ -533,7 +533,7 @@ TELPASS.EXE to encrypt new
 passwords. See the FTP Password 
 Protection section later in this chapter.
 
-psfile=ps.out	prints PostScript commands to several 
+psfile=ps.out   prints PostScript commands to several 
 types of available laser printers. NCSA 
 Telnet's PostScript output has been tested 
 on the Apple (Sun) LaserWriter, which is 
@@ -541,23 +541,23 @@ connected to Sun workstations. The
 default filename is ps.out in the current 
 directory.
 
-rcp=yes	specifies that rcp serving is enabled by 
+rcp=yes specifies that rcp serving is enabled by 
 default. To disable rcp serving, change 
 this line to rcp=no.
 
-tek=yes	specifies there is no overhead to unused 
+tek=yes specifies there is no overhead to unused 
 Tektronix graphics emulation. However, 
 you may wish to disable graphics 
 support. tek=no will disable Tektronix 
 graphics emulation.
 
-tekfile=tek.out	specifies the filename to use when you 
+tekfile=tek.out specifies the filename to use when you 
 write Tektronix codes to disk. The default 
 name is tek.out.Tektronix 4014 graphics 
 commands are a very compact way to 
 store a Tektronix graphics image. 
 
-video=ega	specifies Tektronix 4014 graphics 
+video=ega       specifies Tektronix 4014 graphics 
 emulation is included in NCSA Telnet for 
 a variety of video devices. Supported are: 
 hercules (Hercules monochrome 
@@ -569,13 +569,13 @@ vga 50 (vga 50 - line mode) and no9
 (Number Nine Computer's Revolution 
 512 x 8 board).
 
-windowgoaway=yes	specifies that a session doesn't wait for a 
+windowgoaway=yes        specifies that a session doesn't wait for a 
 keypress after it has been closed. This 
 defaults to windowgoaway=no.
 
-Entry	Meaning
+Entry   Meaning
 
-wire=thin	specifies which type of ethernet cable to 
+wire=thin       specifies which type of ethernet cable to 
 use on the ethernet board. Options are 
 thin and thick. Use this command only for 
 3Com3C503 ethernet cards.
@@ -601,9 +601,9 @@ The parameters following name up to the next keyword name are all
 associated with the session name. The parameters are installed 
 whenever a connection is opened with that session name.
 
-Entry	Meaning
+Entry   Meaning
 
-copyfrom=nic	copies all unspecified parameters from a 
+copyfrom=nic    copies all unspecified parameters from a 
 previous session name. Note that the 
 session name which you want to 
 reference with copyfrom must appear 
@@ -613,7 +613,7 @@ specified for a session name along with a
 copyfrom directive override that 
 copyfrom directive.
 
-clearsave=yes	updates scrollback when the screen is 
+clearsave=yes   updates scrollback when the screen is 
 cleared. When clearing the screen, all of 
 the visible lines are saved into the 
 scrollback region. If you prefer not to 
@@ -623,16 +623,16 @@ host programs which clear the screen one
 line at a time, the lines are never saved 
 into the scrollback region.
 
-contime=10	gives the connection timeout in seconds. 
+contime=10      gives the connection timeout in seconds. 
 When you are making a connection 
 attempt, after this amount of time has 
 elapsed NCSA Telnet gives up on opening 
 the connection and deletes the window. 
 For congested or slow networks, this 
 value should be made larger. 
-Entry	Meaning
+Entry   Meaning
 
-crmap=4.3BSDCRNUL	specifies a special compatibility option for 
+crmap=4.3BSDCRNUL       specifies a special compatibility option for 
 4.3 BSD UNIX. Now, a UNIX bug fix to 
 take care of the problem, but some hosts 
 may still want crnul to be used for end-of-
@@ -640,21 +640,21 @@ line. The default is crmap=crlf, which
 sends CRLF when you press RETURN. 
 In line mode, CRLF is always used.
 
-duplex=half	applies only to hosts that negotiate non-
+duplex=half     applies only to hosts that negotiate non-
 echoing mode and does not expect local 
 line editing. All character keys are sent 
 and echoed to the screen immediately. 
 This parameter has no effect in echo 
 mode.
 
-erase=delete	sets the backspace translation for this 
+erase=delete    sets the backspace translation for this 
 host. Some hosts prefer the backspace key 
 to be DELETE and some prefer the 
 backspace key to be BACKSPACE. Set 
 this value erase=delete or 
 erase=backspace.
 
-gateway=1	specifies the gateway precedence for this 
+gateway=1       specifies the gateway precedence for this 
 host. To reach hosts not connected to your 
 local network, you must have at least one 
 gateway entry. The hostip keyword must 
@@ -666,7 +666,7 @@ respond to an ARP will be used. ICMP
 redirects can affect how gateways are 
 used, but not permanently.
 
-host=sri-nic.arpa	specifies the hostname or alternate name. 
+host=sri-nic.arpa       specifies the hostname or alternate name. 
 If you want to associate both a session 
 name and a hostname with a particular 
 set of parameters, you may include both. 
@@ -680,7 +680,7 @@ and host=hostname. When you want to
 open a new connection, either hostname 
 or sessionname works.
 
-hostip=10.0.0.51	gives the IP address of the host. If this is 
+hostip=10.0.0.51        gives the IP address of the host. If this is 
 not present, the domain nameserver must 
 be queried to get the IP number of the 
 host. For efficiency, include the IP 
@@ -689,7 +689,7 @@ IP addresses of gateways and
 nameservers must be in the configuration 
 file. 
 
-maxseg=512	gives a byte count (1-1024) of the largest 
+maxseg=512      gives a byte count (1-1024) of the largest 
 TCP segment that can be received. This 
 value can control the size of packets that 
 are sent over the connection. Reducing 
@@ -698,14 +698,14 @@ that we cannot reassemble. maxseg=512
 should force the sending host to never 
 fragment.
 
-mtu=512	specifies a byte count (1-1024) of the 
+mtu=512 specifies a byte count (1-1024) of the 
 largest amount of data to put in the 
 packets that are sent. If you are sending to 
 the ARPANET you should use mtu=512. If 
 you are sending to local hosts, you should 
 use mtu=1024.
 
-name=nic	specifies the name that you want to 
+name=nic        specifies the name that you want to 
 appear on the bottom line of the screen 
 when the connection opens. It is the 
 primary name associated with a list of 
@@ -716,7 +716,7 @@ different colors or different amounts of
 scrollback. This parameter is required 
 because it separates entries.
 
-nameserver=1	specifies the nameserver precedence for 
+nameserver=1    specifies the nameserver precedence for 
 this host. NCSA Telnet uses UDP to query 
 domain nameservers for machinenames 
 that are not in the configuration file. Each 
@@ -728,45 +728,45 @@ the highest precedence. Nameserver
 numbers must start at 1 and increase by 
 ones.
 
-nfcolor=white	specifies a normal, foreground
+nfcolor=white   specifies a normal, foreground
 
-nbcolor=black	specifies a normal, background
+nbcolor=black   specifies a normal, background
 
-rfcolor=black	specifies a reverse, foreground
+rfcolor=black   specifies a reverse, foreground
 
-rbcolor=white	specifies a reverse, background
+rbcolor=white   specifies a reverse, background
 
-ufcolor=blue	specifies a underline, foreground
+ufcolor=blue    specifies a underline, foreground
 
-ubcolor=black	specifies a underline, background
+ubcolor=black   specifies a underline, background
 
-		You can use these new color options 
+                You can use these new color options 
 instead of the more complicated color 
 code from previous versions. For each 
 value, specify a string from the following 
 list of colors available on IBM-PC class 
 machines with color displays:
 
-		Also for machines with EGA or better 
+                Also for machines with EGA or better 
 graphics adapters, the following colors 
 are available:
 
-		BLACK
-		BLUE
-		GREEN
-		CYAN
-		RED
-		MAGENTA
-		YELLOW
-		WHITE
+                BLACK
+                BLUE
+                GREEN
+                CYAN
+                RED
+                MAGENTA
+                YELLOW
+                WHITE
 
-		The colors are in all caps, and for the 
+                The colors are in all caps, and for the 
 foreground colors they are the 
 highlighted version of the lowercase 
 colors. For background colors, they make 
 the foreground blink.
 
-		The foreground and background colors 
+                The foreground and background colors 
 are combined to create the text 
 appearance on the screen. You may wish 
 to experiment with the Parameter menu 
@@ -774,13 +774,13 @@ to experiment with the Parameter menu
 you to select a color scheme. The previous 
 version's color= entries are still supported.
 
-retrans=7	gives the initial retransmit timeout in 
+retrans=7       gives the initial retransmit timeout in 
 18ths of a second. Increasing the value of 
 this parameter may help in reducing the 
 initial burst of retries that is typical of 
 connections with high round-trip times.
 
-rwin=512	gives a byte count (1-4096) of the largest 
+rwin=512        gives a byte count (1-4096) of the largest 
 size of the TCP window to advertise to 
 other hosts. Unfortunately, some 
 hardware and networks, the 3COM 
@@ -793,7 +793,7 @@ or when using the other brands of
 Ethernet boards, a larger window (4096) 
 may work better.
 
-scrollback=100	specifies the number of lines of scrollback 
+scrollback=100  specifies the number of lines of scrollback 
 for this session. Be aware that scrollback 
 occupies at least 86 bytes per line saved. 
 There can be a different number of lines 
@@ -829,57 +829,57 @@ requirements for interrupt, address, and ioaddr entries in the
 configuration file are listed.
 
 
-Table 7.1	Ethernet Boards 
+Table 7.1       Ethernet Boards 
 Supported by NCSA 
 Telnet
-Value	Ethernet Board	Requires          
+Value   Ethernet Board  Requires          
 For PC bus
 
-3C501	3COM 3C501 Etherlink	interrupt,ioaddr
+3C501   3COM 3C501 Etherlink    interrupt,ioaddr
 
-3c503	3COM3C503	interrupt, address, 
-			ioaddr, wire
+3c503   3COM3C503       interrupt, address, 
+                        ioaddr, wire
 
-3c505	3COM 3C505	interrupt, address, 
-			ioaddr
+3c505   3COM 3C505      interrupt, address, 
+                        ioaddr
 
-atalk	PCAppletalk Card	(software) 	
-			interrupt,
-			address, ioaddr
+atalk   PCAppletalk Card        (software)      
+                        interrupt,
+                        address, ioaddr
 
-bicc	BICC 411x Ethernet Cards	interrupt, address, 
-		ioaddr
+bicc    BICC 411x Ethernet Cards        interrupt, address, 
+                ioaddr
 
-decnet	DEC Decnet Protocol	interrupt, address, 
-			ioaddr
+decnet  DEC Decnet Protocol     interrupt, address, 
+                        ioaddr
 
-NI5210	MICOM NI5210 	interrupt, address, 
-		ioaddr
+NI5210  MICOM NI5210    interrupt, address, 
+                ioaddr
 
-packet	Any packet driver	interrupt
+packet  Any packet driver       interrupt
 **also for 
  PS/2 MCA Bus
 
-PCNIC	Ungermann-Bass PC-NIC	address,ioaddr
-	or IBM Baseband adapter
+PCNIC   Ungermann-Bass PC-NIC   address,ioaddr
+        or IBM Baseband adapter
 
-starlan	AT&T Starlan IO Card	address, oiaddr
+starlan AT&T Starlan IO Card    address, oiaddr
 
-WD8003	Western Digital WD8003 	address,ioaddr
+WD8003  Western Digital WD8003  address,ioaddr
 
-Table 7.1	Ethernet Boards 
+Table 7.1       Ethernet Boards 
 Supported by NCSA 
 Telnet (continued)
-Value	Ethernet Board	Requires          
-WD8003e	Western Digital WD80033e	address,ioaddr
+Value   Ethernet Board  Requires          
+WD8003e Western Digital WD80033e        address,ioaddr
 
 For PS/2 MCA bus
 
-NICps2	Ungermann-Bass NICps/2 	address
+NICps2  Ungermann-Bass NICps/2  address
 
-3C523	3COM 3C523 Etherlink/MC	address,ioaddr
+3C523   3COM 3C523 Etherlink/MC address,ioaddr
 
-WD8003a	Western Digital WD8003a	address, ioaddr
+WD8003a Western Digital WD8003a address, ioaddr
 
 
 Performance Tuning
@@ -888,30 +888,30 @@ be set correctly to get maximum data transfer throughput between
 machines. Some rules of thumb to use when setting these values 
 include the following:
 
-•	The maximum reasonable values for these parameters are:
-	rwin=4096
-	mtu=1024
-	maxseg=1024
+•       The maximum reasonable values for these parameters are:
+        rwin=4096
+        mtu=1024
+        maxseg=1024
 
-•	The best setting for local network use, with a high performance 
+•       The best setting for local network use, with a high performance 
 Ethernet board is:
-	rwin=4096
-	mtu=1024
-	maxseg=1024
+        rwin=4096
+        mtu=1024
+        maxseg=1024
 
-•	The best setting for ARPANET use, or any situation with a lot of 
+•       The best setting for ARPANET use, or any situation with a lot of 
 unknown gateways, but with a high performance Ethernet board 
 is:
-	rwin=4096
-	mtu=512
-	maxseg=512
+        rwin=4096
+        mtu=512
+        maxseg=512
 
-•	The setting required for the 3COM 3C501, and any other 
+•       The setting required for the 3COM 3C501, and any other 
 troublesome network situation, also the most conservative 
 setting, is:
-	rwin=512
-	mtu=512
-	maxseg=512
+        rwin=512
+        mtu=512
+        maxseg=512
 
 rwin specifies what the other computer is allowed to send you at any 
 one time, so it depends mostly upon your local Ethernet board. If the 
@@ -1032,14 +1032,14 @@ telnet connection.
 When you enter a name to open a connection, NCSA Telnet follows 
 specific search order:
 
-1.	It looks up the name as a session name from the configuration 
+1.      It looks up the name as a session name from the configuration 
 file.
 
-2.	It looks up the name as a hostname from the configuration file.
+2.      It looks up the name as a hostname from the configuration file.
 
-3.	It sends the name as a domain query to the first nameserver.
+3.      It sends the name as a domain query to the first nameserver.
 
-4.	If the domain request times out, the program repeats the query, 
+4.      If the domain request times out, the program repeats the query, 
 but to another nameserver. NCSA Telnet repeats this process 
 until it reaches the maximum number of retries or receives a 
 response.
@@ -1100,9 +1100,9 @@ The FTP server in NCSA Telnet is close to the DARPA
 specification of the minimum implementation. Exceptions are the 
 following:
 
-•	The command connection does not perform telnet negotiation.
-•	The block mode of FTP is not supported.
-•	Some error conditions may display as command not 
+•       The command connection does not perform telnet negotiation.
+•       The block mode of FTP is not supported.
+•       Some error conditions may display as command not 
 understood instead of returning more appropriate messages.
 
 FTP has not been thoroughly tested on low-bandwidth or low-

@@ -1,7 +1,7 @@
-E.1	NCSA Telnet
+E.1     NCSA Telnet
 
 
-Key-mapping	E.1
+Key-mapping     E.1
 
 
 National Center for Supercomputing Applications
@@ -18,7 +18,7 @@ June 1991
 
 
 
-Appendix  E	Key-mapping
+Appendix  E     Key-mapping
 
 
 
@@ -67,25 +67,25 @@ SET KEY key-specified {key-definition}
 
 
 Uses of SET KEY
-¥	You're used to having the ESC key in the upper-left corner of the 
+¥       You're used to having the ESC key in the upper-left corner of the 
 keyboard, but your new PC keyboard has an accent grave (" ' ") 
 key there. You can use SET KEY to make the accent key 
 transmit an ESC, and you can assign accent grave to some other 
 key.
 
-¥	You send a lot of electronic mail, and always sign it the same 
+¥       You send a lot of electronic mail, and always sign it the same 
 way. You can put your "signature" on a single key to save 
 yourself a lot of repetitive typing.
 
-¥	You must set up your PC's function keys or numeric keypad to 
+¥       You must set up your PC's function keys or numeric keypad to 
 work properly with a host application.
 
 The SET KEY command does these things and more, while SHOW 
 KEY gives us assistance. A key can be defined to:
 
-¥	send a single character other than what it would normally send
-¥	send a string of multiple characters
-¥	send itself again
+¥       send a single character other than what it would normally send
+¥       send a string of multiple characters
+¥       send itself again
 
 SET KEY specifies that when you press the designated key during 
 terminal emulation, the specified character or string is sent or the 
@@ -104,18 +104,18 @@ specifier should be.
 A string definition is one or more characters, including 8-bit 
 values expressed in backslash form, such as
 
-SET KEY	\315 directory\13	IBM F1 key sends 	
-		"directory<cr>"
+SET KEY \315 directory\13       IBM F1 key sends        
+                "directory<cr>"
 
-SET KEY	S  X	S key sends upper case X
-		(a mean trick)
+SET KEY S  X    S key sends upper case X
+                (a mean trick)
 
-SET KEY	T  \27 [m	T key sends three bytes:  
-			ESC, [, m
+SET KEY T  \27 [m       T key sends three bytes:  
+                        ESC, [, m
 
-SET KEY	\2336  {del } xxx	ALT-D sends "del"
-SET KEY	\324  \Kexit	F10 escapes back to Kermit-MS> 
-		prompt.
+SET KEY \2336  {del } xxx       ALT-D sends "del"
+SET KEY \324  \Kexit    F10 escapes back to Kermit-MS> 
+                prompt.
 
 The string begins with the first non-spacing character following 
 the key identification and continues until the end of line, 
@@ -160,39 +160,39 @@ keys, see section 1.17.2 of the original Kermit documentation).
 The SET KEY command shows the list of available verbs when a 
 query mark (?)  is given as a definition. 
 
-Table E.1	MS-Kermit Verbs 
+Table E.1       MS-Kermit Verbs 
 for the IBM PC 
 Family
-Verb	Meaning
+Verb    Meaning
 
-\Kupscn	Roll up (back) to previous screen
-\Kdnscn	Roll down (forward) to next screen
-\Khomscn	Roll up to top of screen memory
-\Kendscn	Roll down to end of screen memory (current 
-	position)
-\Kupone	Roll screen up one line
-\Kdnone	Roll screen down one line
-\Kprtscn	Print the current screen
-\Kdump	Append the current screen to dump file
-\Kholdscrn	Toggle hold screen mode
-\Klogoff	Turn off session logging
-\Klogon	Turn on session logging
-\Ktermtype	Toggle terminal type
-\Kreset	Reset terminal emulator to initial state
-\Kmodeline	Toggle modeline off/on
-\Kbreak	Send a BREAK signal
-\Klbreak	Send a "long BREAK" signal
-\Khangup	Drop dTR so modem will hang up phone
-*\Knull	Send a null (ASCII 0)
-\Kdos	"Push" to DOS
-\Khelp	Display CONNECT help message
-\Kstatus	Display STATUS message
-\Kterminals	Invoke user-defined macro TERMIANLS, if any
-\Kterminalr	Invoke user-defined macro TERMINALR, if any
-\Kexit	Escape back from CONNECT mode
-*\Kgold, \Kpf1	VT102 keypad function key PF1
-*\Kpf2..\Kpf4	VT102 keypad function keys
-*\Kkp0..\Kkp9	VT102 keypad numeric keys
+\Kupscn Roll up (back) to previous screen
+\Kdnscn Roll down (forward) to next screen
+\Khomscn        Roll up to top of screen memory
+\Kendscn        Roll down to end of screen memory (current 
+        position)
+\Kupone Roll screen up one line
+\Kdnone Roll screen down one line
+\Kprtscn        Print the current screen
+\Kdump  Append the current screen to dump file
+\Kholdscrn      Toggle hold screen mode
+\Klogoff        Turn off session logging
+\Klogon Turn on session logging
+\Ktermtype      Toggle terminal type
+\Kreset Reset terminal emulator to initial state
+\Kmodeline      Toggle modeline off/on
+\Kbreak Send a BREAK signal
+\Klbreak        Send a "long BREAK" signal
+\Khangup        Drop dTR so modem will hang up phone
+*\Knull Send a null (ASCII 0)
+\Kdos   "Push" to DOS
+\Khelp  Display CONNECT help message
+\Kstatus        Display STATUS message
+\Kterminals     Invoke user-defined macro TERMIANLS, if any
+\Kterminalr     Invoke user-defined macro TERMINALR, if any
+\Kexit  Escape back from CONNECT mode
+*\Kgold, \Kpf1  VT102 keypad function key PF1
+*\Kpf2..\Kpf4   VT102 keypad function keys
+*\Kkp0..\Kkp9   VT102 keypad numeric keys
 
 Other VT102 keypad keys:
 *\Kkpdot, \Kkpminus, \Kkpcoma, \Kkpenter

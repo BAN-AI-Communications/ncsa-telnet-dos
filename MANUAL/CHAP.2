@@ -1,7 +1,7 @@
-2.1	NCSA Telnet
+2.1     NCSA Telnet
 
 
-Introduction to Managing Sessions	2.1
+Introduction to Managing Sessions       2.1
 
 
 National Center for Supercomputing Applications
@@ -15,9 +15,9 @@ June 1991
 
 
 
-2.1	NCSA Telnet
+2.1     NCSA Telnet
 
-Introduction to Managing Sessions	2.1
+Introduction to Managing Sessions       2.1
 
 National Center for Supercomputing Applications
 
@@ -31,7 +31,7 @@ June 1991
 
 
 
-Chapter 2	Introduction to Managing Sessions
+Chapter 2       Introduction to Managing Sessions
 
 
 
@@ -76,41 +76,41 @@ PC keys to emulate the operation of VT100 keys.
 
 Table 2.1 lists the PC keys to use for VT100 terminal emulation. 
 
-Table 2.1	Keys Used for 
+Table 2.1       Keys Used for 
 VT100 Terminal 
 Emulation
-To Send the VT100 Code	Press PC Key(s)
+To Send the VT100 Code  Press PC Key(s)
 
-RETURN	ENTER
+RETURN  ENTER
 
-DELETE*	BACKSPACE*
+DELETE* BACKSPACE*
 
-BACKSPACE*	CTRL-
-	BACKSPACE*
+BACKSPACE*      CTRL-
+        BACKSPACE*
 
-LINE FEED	CTRL-ENTER
+LINE FEED       CTRL-ENTER
 
-Keypad ENTER 	Keypad ENTER 
+Keypad ENTER    Keypad ENTER 
 (not identical to RETURN)
 
-Keypad . (decimal point)	Keypad .
+Keypad . (decimal point)        Keypad .
 
-Keypad - (hyphen)	Keypad -
+Keypad - (hyphen)       Keypad -
 
-Keypad , (comma)	Keypad ,
+Keypad , (comma)        Keypad ,
 
-Keypad 0 to 9	Keypad 0 to 9
+Keypad 0 to 9   Keypad 0 to 9
 
-­, ¯, ¬, ®	CTRL-Keypad ­, ¯, ¬, ®
+­, ¯, ¬, ®      CTRL-Keypad ­, ¯, ¬, ®
 
-PF1 to PF4	F1 to F4
+PF1 to PF4      F1 to F4
 
 NOTE:  "Keypad" refers to the numbers and characters on the 
 right-hand side of your keyboard.
 
 
 For Extended Keyboards:
-­, ¯, ¬, ®	Grey ­, ¯, ¬, ®
+­, ¯, ¬, ®      Grey ­, ¯, ¬, ®
 
 *See Chapter 3, "More About Managing Sessions," and Chapter 7, 
 "Installation and Configuration," for information on how to 
@@ -143,10 +143,10 @@ session name appears in reverse video. The name in the lower-left
 corner of the screen is the current session. Beside each name is a 
 status box that indicates various attributes of a session:
 
-gray	Connection is established, waiting
-small box	Active connection, always in lower left corner
-*	Connection pending, trying to connect to host
-/ or \	Text has been written to this invisible session
+gray    Connection is established, waiting
+small box       Active connection, always in lower left corner
+*       Connection pending, trying to connect to host
+/ or \  Text has been written to this invisible session
 
 Flags appear in the lower-right corner if you are either in the 
 Scrollback mode or have a capture file open. If you are 
@@ -168,18 +168,18 @@ NCSA Telnet can only communicate with host computers that have
 IP addresses. You or the NCSA Telnet program can look up IP 
 addresses in several different ways.
 
-1.	Use any name that is in the configuration file. (Your system 
+1.      Use any name that is in the configuration file. (Your system 
 administrator can tell you the names listed there.)
-2.	Your system administrator can configure NCSA Telnet to use 
+2.      Your system administrator can configure NCSA Telnet to use 
 the domain-based nameserver to look up host names. Any name 
 that can be resolved by the domain nameserver can be used. An 
 example is sri-nic.arpa.
 
-3.	Use the full IP number of the machine, in decimal, separated by 
+3.      Use the full IP number of the machine, in decimal, separated by 
 periods, such as 192.17.22.20.If the machine is on the same 
 Ethernet,
 
-4.	 If the machine is on the same Ethernet, enter a pound sign (#), 
+4.       If the machine is on the same Ethernet, enter a pound sign (#), 
 followed by the host number it uses on your Ethernet. The host 
 number the machine determined by the class of addressing and 
 the subnet mask (which your system administrator can 
@@ -236,21 +236,21 @@ The cut and paste functions allow you to copy blocks of text from
 one session to another, or within the same session. To use these 
 functions, follow these steps:
 
-1.	Enter Scrollback mode via Scrl_Lock or the right mouse button.
+1.      Enter Scrollback mode via Scrl_Lock or the right mouse button.
 
-2.	Move the cursor to the beginning position of the text you wish to 
+2.      Move the cursor to the beginning position of the text you wish to 
 copy, and press the space bar.
 
-3.	Move the cursor to the end of the text and press the space bar 
+3.      Move the cursor to the end of the text and press the space bar 
 again. This action selects the area to copy. 
 
-4.	Press ALT-C while still in scrollback mode. This action copies 
+4.      Press ALT-C while still in scrollback mode. This action copies 
 the text into a buffer.
 
-5.	Exit Scrollback mode, and switch sessions by pressing ALT-N 
+5.      Exit Scrollback mode, and switch sessions by pressing ALT-N 
 or ALT-B, if you desire. 
 
-6.	Position the cursor where you wish to insert the text, and press 
+6.      Position the cursor where you wish to insert the text, and press 
 ALT-V. This action inserts the text at the current position as if 
 you had typed it in.
 
@@ -258,19 +258,19 @@ You can use the copy and paste functions without touching the
 keyboard if you have a Microsoft-compatible mouse attached and 
 driver loaded. 
 
-1.	Press the right mouse button to enter Scrollback mode. 
+1.      Press the right mouse button to enter Scrollback mode. 
 
-2.	Scroll to the beginning of the text you wish to copy, and press the 
+2.      Scroll to the beginning of the text you wish to copy, and press the 
 left mouse button. 
 
-3.	Move the cursor to the end of the text, and press the left mouse 
+3.      Move the cursor to the end of the text, and press the left mouse 
 button again. 
 
-4.	Press and hold the left mouse button, press the right mouse 
+4.      Press and hold the left mouse button, press the right mouse 
 button, then release both buttons. This action copies the text into 
 the buffer. 
 
-5.	Exit Scrollback mode by pressing the right mouse button. 
+5.      Exit Scrollback mode by pressing the right mouse button. 
 
 To paste the buffer to the screen, press and hold the right mouse 
 button, then press the left mouse button, then release them both. The 
