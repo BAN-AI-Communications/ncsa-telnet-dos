@@ -2,8 +2,8 @@
 
 ## Overview
 
-* **NCSA Telnet** for MS-DOS
-  * Version 2.3.08 (April 20th 1996)
+* **NCSA Telnet** for *MS-DOS*
+  * **Version 2.3.08** (*April 20th 1996*)
 
 ## Bugs Fixed
 
