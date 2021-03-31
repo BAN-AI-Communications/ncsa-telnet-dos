@@ -1,2 +1,12 @@
 *.PHP linguist-vendored
 *.php linguist-vendored
+*.INC linguist-vendored
+*.inc linguist-vendored
+*.MSC linguist-vendored
+*.msc linguist-vendored
+.php linguist-vendored
+.PHP linguist-vendored
+.INC linguist-vendored
+.inc linguist-vendored
+.MSC linguist-vendored
+.msc linguist-vendored
