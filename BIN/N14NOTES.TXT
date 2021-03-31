@@ -1,0 +1,91 @@
+This information was accidentally left out of the documention for
+using the net14 driver.  The net14 driver is a shell which installs
+inself to manage the interrupt 14h for serial communications and
+re-direct int 14h reads and writes to/from the ethernet network.
+It then starts up another program which uses the int 14h interface
+with the following programming interface:
+
+Int 14h Function 00H:   Initialize communications
+    Call With:
+        AH = 00H
+        AL = Ignored (serial communication programs use this for
+                additional communication parameters, which are un-used
+                in the net14 driver).
+        DX = Comm. port number to initialize
+
+    Returns:
+        AH is returned with the port status:
+            Bit:        Meaning (if set):
+            ----        -----------------
+             7          Timed-out
+             6          Transmit shift register empty
+             5          Transmit holding register empty
+             4          Break detected
+             3          Framing error detected
+             2          Parity error detected
+             1          Overrun error detected
+             0          Receive data ready
+
+        AL has the modem status:
+            Bit:        Meaning (if set):
+            ----        -----------------
+             7          Receive line signal detect
+             6          Ring indicator
+             5          Data-set-ready
+             4          Clear-to-send
+             3          Change in receive line signal detect
+             2          Trailing edge ring indicator
+             1          Change in data-set-ready status
+             0          Change in clear-to-send status
+
+Int 14h Function 01H:   Send Character
+    Call With:
+        AH = 01H
+        AL = Character
+        DX = Comm. port to send through
+    Returns:
+        Bit 7 of AH is zero if successful, otherwise Bit 7 of AH is one.
+
+Int 14h Function 02H:   Receive Character
+    Call With:
+        AH = 02H
+        DX = Comm. port to receive from
+
+    Returns:
+        Bit 7 of AH is zero if successful, otherwise Bit 7 of AH is one.
+        Character read is in AL if the call was successful.
+
+Int 14h Function 03H:   Get Comm. Port Status
+    Call With:
+        AH = 03H
+        DX = Comm. port to get status of
+
+    Returns:
+        AH is returned with the port status, and AL has the modem status.
+        (See function 00H above)
+
+
+Notes:
+    In order to establish a connection, the following steps must be
+followed in order:
+
+1.  Call function 00H with the port to initialize.
+2.  Send the following sequence to the port: one ascii 02 code
+    (control-B), the name of the machine to connect to (or its
+    IP address) one character at a time, and the ascii 03 code
+    (control-C).
+
+    Following a connection being established, the net14 driver
+will ignore any control-C's and control-B's in the data stream
+send or received.  A connection can be closed by re-initializing
+the comm. port (function 00H).
+
+So, to use net14 with another application, first verify that the other
+application uses interrupt 14 to write to the communications port.
+In Kermit, for instance, this is done with "set port bios1".  If the
+application is using interrupt 14 to access the port, it will have
+initialized it for you.  Now send the ^Bhostname^C sequence out.
+Once again, in kermit this is done by going to connect mode with
+"connect" and then typing ^Bhostname^C.  Net14 will deinstall itself
+and close all connections when you exit the application.
+

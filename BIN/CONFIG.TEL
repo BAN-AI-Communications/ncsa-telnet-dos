@@ -1,0 +1,326 @@
+#
+#  Example host file for Telnet 2.3
+#    Distributed with 2.3.07
+#
+#  "funny, this configuration file is readable ..."
+#  "It's been funny for a loooong time now ..."
+# 
+#  This file is free form
+#  Separators are any char <33 and :;=
+#
+#  The form is keyword=value for each parameter.
+#  The first set of parameters refer to the whole program's defaults.
+#  These parameter values can be in any order.
+#  Following this are the individual machine specs.
+#  If the first machine is name "default", then it contains default
+#  values for the rest of the machines.
+#
+
+
+myip=???                    # Required: your IP number
+                            #   legal values are:
+                            #     a number of the form: x.x.x.x
+                            #     RARP
+                            #     BOOTP
+#myip=127.0.0.1             # example IP specified in number form
+#myip=RARP                  # receive my IP number from a RARP server
+#myip=BOOTP                 # receive my IP number from a BOOTP server
+
+netmask=255.255.255.0       # subnetting mask
+                            #   Default is 0.0.0.0
+
+# Pick a hardware interface: packet driver, ISA board, or EISA board
+
+# This is the packet driver interface
+hardware=packet            # network adapter board (packet driver interface)
+interrupt=0                # IRQ which adapter is set to
+ioaddr=0                   # software interrupt vector driver is using
+
+###  If you are not using a version with hardware support compiled in,
+###     then the following ethernet board options do not apply.
+
+#The following are the ISA ethernet boards supported:
+
+#hardware=3c501             # network adapter board (3 COM 501)
+#address=d000               # shared memory address
+#ioaddr=300                 # I/O address
+#interrupt=5                # hardware IRQ interrupt
+
+#hardware=star10            # network adapter board (AT&T starlan 10)
+#address=d800               # shared memory address
+#ioaddr=300                 # I/O address
+#interrupt=5                # hardware IRQ interrupt
+
+#hardware=pcnic             # network adapter board (Ungermann-Bass PC-NIC)
+#address=d800
+#interrupt=5
+
+#hardware=3c503             # network adapter board ( 3 Com 503)
+#ioaddr=280
+#address=dc00
+#interrupt=5
+#wire=thick
+
+#hardware=ni5210             # network adapter board (Micom NI5210 )
+#address=d000
+#ioaddr=360
+#interrupt=2
+
+#hardware=wd800             # network adapter board (Western Digital WD8003E)
+#address=d800
+#ioaddr=360
+#interrupt=5
+
+#hardware=wd800             # network adapter board (Western Digital WD8003EB)
+#address=d800               # Remember to run the 'SETUP' program
+#ioaddr=360                 #       provided by Western Digital to enable
+#interrupt=3                #       the board correctly!
+
+##hardware=atalk             # network adapter board (Appletalk)
+##interrupt=60
+
+#The following are the MCA ethernet boards supported:
+
+#hardware=wd8003a            # network adapter board (Western Digital WD8003A)
+#address=c400
+#interrupt=10
+#ioaddr=280
+
+#hardware=ni9210            # network adapter board (Micom ni9210)
+#address=c800
+#interrupt=9
+#ioaddr=300
+
+#hardware=nicps2            # network adapter board (Ungermann-Bass NICps/2)
+#address=d000
+#interrupt=5
+#ioaddr=1550
+
+#hardware=3c523             # network adapter board (3Com 523)
+#address=d800
+#interrupt=7
+#ioaddr=1300
+
+
+#cursortop=2                # option to set the top of the cursor block
+                            # measured in scanlines from the top of the
+                            # character block
+                            #  Default is -1 (don't modify the existing setting)
+
+#cursorbottom=7             # option to set the bottom of the cursor block
+                            # measured in scanlines from the top of the
+                            # character block
+                            #  Default is -1 (don't modify the existing setting)
+
+#broadcast=141.142.103.0    # broadcast IP number
+                            #   Default is 255.255.255.255
+
+windowgoaway=yes            # whether windows go away when closed
+                            #   Default is no
+
+autoscroll=no               # whether to autoscroll when at the top of the
+                            # screen in scrollback
+                            #   Default is yes
+
+#clock=off                  # whether the clock is displayed or not
+                            #   Default is on
+
+#myname=me.ncsa.uiuc.edu    # used in LPR to notify the LPR server
+                            # who is printing
+                            #   Defaults to none
+
+termtype="vt100"            # the type of terminal emulation to perform
+                            # currently only vt100 is supported
+                            #   Default is vt100
+
+#outputfile="outmap.tel"    # path name of the output mapping file
+                            #   Defaults to none
+
+keyfile="c:\ncsa\keymap.tel" # path name of your keyboard re-mapping file
+                             #   Defaults to no mapping (do not omit)
+
+beep=yes                    # display musical note in session status
+                            # on the status line when a ascii 7 is received
+                            # in that session
+                            #   Defaults to no
+
+services="services.tel"     # path to the services file for displaying
+                            # network information
+                            #   Defaults to none
+
+tek=no                      # enable tektronix graphics
+                            #   Default is on
+
+video=ega                   # type of video screen
+                            #    Legal values for video are:
+                            #    cga,ega,pga,no9,hercules,ega43,vga50
+                            #   Default is ega
+
+bios=no                     # don't use slow BIOS screen access
+                            #    bios=yes to reduce flicker on cga
+                            #    bios=yes for TopView or Windows
+                            #   Default is no
+
+rcp=no                      # do you want rcp enabled?
+                            #   Default is no
+
+ftp=no                      # do you want ftp enabled?
+                            #   Default is no
+
+ftpwrt=yes                  # if ftp is enabled, should any writes be allowed?
+                            #   Default is yes
+                            #   (Denial on user basis using password file)
+
+passfile="c:\ncsa\password.tel" # Full Pathname of file with FTP passwords.
+                                #   Default is none.
+                                # If ftp is allowed, use Telpass.exe to create
+                                # a password file.
+
+#domainretry=3              # number of domain lookup retries
+                            #   Default is 3
+
+#domain="ncsa.uiuc.edu"      # default domain for hostname lookup
+                            #   Default is none
+
+domaintime=4                # timeout in seconds for a domain lookup
+                            #   Defaults to 4
+
+concolor=020170             # Set the console colors
+                            #   Default is 070170 (white on black)
+
+capfile="c:\ncsa\capfile.tel" # default name for capture file
+                              #   Default is none
+
+#hpfile="hp.out"            # file to write HPGL to,
+                            #    COM1 can be used for attached plotter
+                            #   Defaults to none
+
+#psfile="ps.out"            # file to write postscript to
+                            #   Detaults to none
+
+#tekfile="tek.out"          # file to write Tek codes to
+                            #   Defaults to none
+
+arptime=8                   # arp timeout in seconds
+                            #   affects machines on your local network
+                            #   Defaults to 8
+
+#
+#  Following are individual machine specifications
+#  Gateways are used in order that they appear in the file
+#  Nameservers rotate, #1, #2, #3, #1, #2 when a request fails
+#
+#  The machine named "default" contains the fields which are automatically
+#  filled in for later hosts
+#
+name=default                # Session name, "default" is a reserved name
+                            #   Not a real machine, default parameters only
+#host=sri-nic.arpa          # Actual host name of machine, not session name
+                            #   Required
+#hostip=10.0.0.51           # IP address of host, example is for SRI-NIC
+                            #   Required
+#gateway=1                  # This machine is a gateway for me
+                            #   Default is no (0)
+#nameserver=1               # This machine has a DOMAIN name server for me
+                            #   Default is no (0)
+scrollback=400              # number of lines of scrollback per session
+                            #   Default is (0)
+#clearsave=on               # whether to save cleared line in scrollback
+                            #   Default is on
+
+# color codes for a specific session:
+#       black, blue, green, cyan, red, magenta, yellow, white
+#       BLACK, BLUE, GREEN, CYAN, RED, MAGENTA, YELLOW, WHITE
+#
+#       NOTE: when the highlighted colors are used for a background color,
+#               they produce blinking text.
+nfcolor=white                   # vt100 normal foreground color
+                                #   Default is green
+nbcolor=black                   # vt100 normal background color
+                                #   Default is black
+bfcolor=red                     # vt100 blink foreground color
+                                #   Default is black
+bbcolor=blue                    # vt100 blink background color
+                                #   Default is green
+rfcolor=black                   # vt100 reverse foreground color
+                                #   Default is blue
+rbcolor=white                   # vt100 reverse background color
+                                #   Default is black
+ufcolor=red                     # vt100 underline foreground color
+                                #   Default is blue
+ubcolor=cyan                    # vt100 underline background color
+                                #   Default is black
+
+erase=backspace                 # use delete code or backspace code for <- key?
+                                #   legal values are "delete" and "backspace"
+                                #   Default is "backspace"
+vtwrap=yes                      # should VT100 be in wrap mode or not?
+                                #   Default is no
+#vtwidth=80                     # width of the vt100 screen
+                                #   legal values are 80 and 132
+                                #   Default is 80 (132 may not work correctly)
+#crmap=crlf                     # crmap by default is "crlf" other options:
+                                #   "cr", "lf", "crnul", and "4.3BSDCRNUL"
+                                #   the last two both do the same thing.
+#outputmap=yes                  # Whether to use the output mapping for this
+                                #   machine.  (may need to change crmap)
+                                #   Legal values are: "yes" or "no"
+                                #   Default is no
+#duplex=half                    # modifier for non-echo mode, forces send
+                                #   legal value are "full" and "half"
+                                #   Default is full duplex
+#font=Monaco                    # font for the window text (Unsupported)
+                                #   Default is Monaco
+#fsize=9                        # fontsize for the window text (Unsupported)
+                                #   Default is 9
+#port=23                        # value of the port to telnet to
+                                #   Default is 23
+#ftpoptions="-n"                # modifier for the 'ftp back to PC' string
+                                # The string is sent as:
+                                #       "ftp <ftpoptions> <IP>
+                                #   Default is none
+#consoledebug=0                 # Debug information level to display on colsole
+
+
+#  The following entries affect the tuning of TCP connections to this host.
+#  They should be set by the network administrator who is familiar with
+#    the requirements of your specific network.
+contime=20              # timeout in seconds to try connection
+                        #   before returning error to user
+                        #   Default is (20)
+retrans=4               # time in seconds to wait before retransmit
+                        #   Default is (5)
+mtu=1024                # maximum transmit unit in bytes.
+                        #   outgoing packet size, MAX=1024
+                        #   Default is (512)
+maxseg=1024             # largest segment we can receive
+                        #   whatever the hardware can take, MAX=2048
+                        #   Default is (1024)
+rwin=1024               # most bytes we can receive without ACK
+                        #   =TCP window size, MAX=4096
+                        #   larger isn't always better
+                        #   Default is (1024)
+
+#
+#  Below this line, most of the communication parameters are obtained
+#   from the "default" host entry.
+#  Machine names, IP addresses, and special communication parameters are
+#   present when needed.
+
+#examples:
+name=yoyodyne ; hostip=141.142.103.46; nameserver=1 erase=delete
+name=yoyo; copyfrom=yoyodyne
+
+name=imsasun.imsa.edu ; hostip=143.195.1.2; erase=delete
+name=imsa; copyfrom imsasun.imsa.edu
+
+name=uiucuxa ; hostip=128.174.2.3 ; erase=backspace;
+name=uxa ; copyfrom=uiucuxa
+
+#name=103gate  hostip=141.142.103.145 gateway=1
+name=next hostip=192.42.172.1 gateway=1; erase=delete; consoledebug=1; #outputmap=yes;
+
+name=ncsad ; hostip=128.174.10.48
+
+name=uicsrd ; hostip=128.174.1.2
+name=csrd ; copyfrom=uicsrd

@@ -1,0 +1,80 @@
+finger          79/tcp
+telnet          23/tcp
+authentication  113/tcp                         # authentication verification
+login           513/tcp
+#these are most likely to be requested
+
+#
+# @(#)services 1.12 88/02/07 SMI
+#
+# Network services, Internet style
+# This file is never consulted when the yellow pages are running
+#
+echo		7/udp
+echo		7/tcp
+discard		9/udp		sink null
+discard		9/tcp		sink null
+systat		11/tcp
+daytime		13/udp
+daytime		13/tcp
+netstat		15/tcp
+ftp-data	20/tcp
+ftp		21/tcp
+telnet		23/tcp
+smtp		25/tcp		mail
+time		37/tcp		timserver
+time		37/udp		timserver
+name		42/udp		nameserver
+whois		43/tcp		nicname		# usually to sri-nic
+domain		53/udp
+domain		53/tcp
+hostnames	101/tcp		hostname	# usually to sri-nic
+sunrpc		111/udp
+sunrpc		111/tcp
+#
+# Host specific functions
+#
+tftp		69/udp
+rje		77/tcp
+finger		79/tcp
+link		87/tcp		ttylink
+supdup		95/tcp
+iso-tsap	102/tcp
+x400		103/tcp				# ISO Mail
+x400-snd	104/tcp
+csnet-ns	105/tcp
+pop-2		109/tcp				# Post Office
+authentication  113/tcp                         # authentication verification
+uucp-path	117/tcp
+nntp            119/tcp         usenet		# Network News Transfer
+ntp		123/tcp				# Network Time Protocol
+NeWS		144/tcp		news		# Window System
+#
+#
+# UNIX specific services
+#
+# these are NOT officially assigned
+#
+exec		512/tcp
+login		513/tcp
+shell		514/tcp		cmd		# no passwords used
+printer		515/tcp		spooler		# experimental
+courier		530/tcp		rpc		# experimental
+biff		512/udp		comsat
+who		513/udp		whod
+syslog		514/udp
+talk		517/udp
+route		520/udp		router routed
+new-rwho	550/udp		new-who		# experimental
+rmonitor	560/udp		rmonitord	# experimental
+monitor		561/udp				# experimental
+#
+#at-rtmp		769/udp
+#at-nbp		770/udp
+#at-echo		772/udp
+#at-zip		774/udp
+#
+ingreslock      1524/tcp
+
+htc-co    600/tcp  co   # UIUC Print system central
+htc-sat   601/tcp  sat  # UIUC Print system satellites

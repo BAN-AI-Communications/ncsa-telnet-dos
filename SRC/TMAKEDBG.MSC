@@ -1,0 +1,489 @@
+#
+#   Microsoft C makefile for NCSA Telnet 2.3
+#
+
+I       = ..\include
+
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /Gs /W3      # for making more portable versions
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /Od /W3      # for making more portable versions
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /Ot /Gs /W3  # for making more portable versions, with the best optimization
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /Ox /W3  # for making more portable versions, with the best optimization
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /DMAL_DEBUG /I$(I) /Od /W3   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /DMAL_DEBUG /DCHECKNULL /DCHECKRARP /I$(I) /Od /W3   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /DMAL_DEBUG /DCHECKNULL /I$(I) /Od /W3   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /DMAL_DEBUG /DCHECKNULL /I$(I) /Od /W3 /Zi   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /Od /W3 /Zi   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /DMAL_DEBUG /I$(I) /Od /Zi /Zd /W3   # for debugging memory errors (re-compile the whole source)
+#CC     = CL /c /EM /AL /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /G2 /Ox /W3 # for making versions which only need to run on 80286s
+#CC     = CL /c /EM /AL /FPi87 /Gm /DTELBIN /DMSC /DFTP /DRCP /I$(I) /G2 /Ox /W3 # for making versions which only need to run on 80286s with 80287 math coprocessors
+#CC     = CL /c /EM /AL //Gm DTELBIN /DMSC /DFTP /DRCP /I$(I) /Zg  # for generating function declarations
+
+#CC   = CL /Gs /c /AL /DTELBIN /DMSC /DFTP /DRCP /DMOUSE /I$(I) /Od /Zi /W3  # debug
+#CC   = CL /Gs /c /AL /DTELBIN /DMSC /DFTP /DRCP /DMOUSE /I$(I) /Od /W3      # release
+##CC  = CL /Gs /c /AL /DAUX /DRMG_DEBUG /DTELBIN /DMSC /DFTP /DRCP /DMOUSE /I$(I) /Od /Zi /W3   # debug
+CC    = CL /Gs /c /AL /DAUX /DRMG_AUX /DTELBIN /DMSC /DFTP /DRCP /DMOUSE /I$(I) /Od
+                        ^^^\-this will probably crash your machine
+
+##MM      = masm /W2 /P /DMicrosoft /Zi /I..\..\include  # assembly w/ debug
+##MM      = masm /W2 /P /DMicrosoft /DRMG_DEBUG /I..\..\include  # assembly
+MM      = masm /W2 /P /DMicrosoft /I..\..\include  # assembly
+
+LINKER  = link                              # Microsoft's linker
+#LINKLINE = ncsaio+ncsabrk+look+memdebug+mcb,telbin,nul,telnet+tcp+vs+sess+tek+enet+msmouse; # Microsoft link line
+#LINKLINE= ncsaio+ncsabrk+look+memdebug,telbin,nul,telnet+tcp+vs+sess+tek+enet+msmouse+graphics; # Microsoft link line
+#LINKLINE= ncsaio+ncsabrk+look+memdebug,telbin,telbin,telnet+tcp+vs+sess+tek+enet+msmouse ; # Microsoft link line
+##LINKLINE= ncsaio+ncsabrk+look,telbin,telbin,telnet+tcp+vs+sess+tek+enet+msmouse+debug ; # Microsoft link line
+LINKLINE= ncsaio+ncsabrk+look,telbin,telbin,telnet+tcp+vs+sess+tek+enet+msmouse ; # Microsoft link line
+
+LINK   = /ST:4096 /E /F /PACKC /PACKF /DOSSEG      # for final versions
+##LINK   = /ST:4096 /DOSSEG
+##LINK   = /ST:4096 /CO /DOSSEG             # for debugging
+##LINK   = /ST:4096 /E /F /DOSSEG
+#LINK   = /ST:4096 /E /F /PAC /DOSSEG      # for final versions
+
+net\enet\net.obj : net\enet\net.c include\protocol.h include\data.h
+	cd net\enet
+	$(CC) /I..\..\include net.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\net ;
+
+engine\ip.obj : engine\ip.c include\protocol.h include\data.h
+	cd engine
+	$(CC) ip.c
+	cd ..
+	lib lib\tcp.lib -+engine\ip ;
+
+engine\bootp.obj : engine\bootp.c include\protocol.h include\data.h include\bootp.h include\windat.h include\hostform.h
+	cd engine
+	$(CC) bootp.c
+	cd ..
+	lib lib\sess.lib -+engine\bootp ;
+
+engine\user.obj : engine\user.c include\protocol.h include\data.h
+	cd engine
+	$(CC) user.c
+	cd ..
+	lib lib\tcp.lib -+engine\user ;
+
+engine\mouse.obj : engine\mouse.c include\mouse.h
+	cd engine
+	$(CC) mouse.c
+	cd ..
+	lib lib\telnet.lib -+engine\mouse ;
+
+engine\rspc.obj : engine\rspc.c include\windat.h include\vskeys.h include\whatami.h
+	cd engine
+	$(CC) rspc.c
+	cd ..
+	lib lib\telnet.lib -+engine\rspc ;
+
+engine\tools.obj : engine\tools.c include\protocol.h include\data.h
+	cd engine
+	$(CC) /DSERVICES tools.c
+	cd ..
+	lib lib\tcp.lib -+engine\tools ;
+
+engine\udp.obj : engine\udp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) udp.c
+	cd ..
+	lib lib\tcp.lib -+engine\udp ;
+
+engine\arp.obj : engine\arp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) arp.c
+	cd ..
+	lib lib\tcp.lib -+engine\arp;
+
+engine\domain.obj : engine\domain.c include\protocol.h include\data.h
+	cd engine
+	$(CC) domain.c
+	cd ..
+	lib lib\tcp.lib -+engine\domain ;
+
+engine\bkgr.obj : engine\bkgr.c include\hostform.h include\whatami.h
+	cd engine
+	$(CC) bkgr.c
+	cd  ..
+	lib lib\sess.lib -+engine\bkgr ;
+
+engine\util.obj : engine\util.c include\whatami.h include\hostform.h
+	cd engine
+	$(CC) util.c
+	cd ..
+	lib lib\sess.lib -+engine\util ;
+
+engine\tcp.obj : engine\tcp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) tcp.c
+	cd ..
+	lib lib\tcp.lib -+engine\tcp ;
+
+engine\pcutil.obj : engine\pcutil.c include\whatami.h
+	cd engine
+	$(CC) pcutil.c
+	cd ..
+	lib lib\sess.lib -+engine\pcutil ;
+
+engine\protinit.obj : engine\protinit.c include\protocol.h include\data.h
+	cd engine
+	$(CC) protinit.c
+	cd ..
+	lib lib\tcp.lib -+engine\protinit ;
+
+engine\look.obj : engine\look.c include\windat.h include\whatami.h include\nkeys.h include\hostform.h include\data.h include\telopts.h
+	cd engine
+ 	$(CC) look.c 
+	copy look.obj ..\lib
+	cd ..
+
+engine\negotiat.obj : engine\negotiat.c include\telopts.h
+	cd engine
+    $(CC) negotiat.c
+	cd ..
+    lib lib\telnet.lib -+engine\negotiat;
+
+engine\linemode.obj : engine\linemode.c include\telopts.h
+	cd engine
+    $(CC) linemode.c
+	cd ..
+    lib lib\telnet.lib -+engine\linemode;
+
+engine\scrlback.obj : engine\scrlback.c include\windat.h include\whatami.h include\nkeys.h include\hostform.h
+	cd engine
+ 	$(CC) scrlback.c 
+	cd ..
+	lib lib\telnet.lib -+engine\scrlback ;
+
+engine\services.obj : engine\services.c
+	cd engine
+	$(CC) services.c
+	cd ..
+	lib lib\telnet.lib -+engine\services ;
+
+engine\menu.obj : engine\menu.c include\windat.h include\whatami.h include\nkeys.h include\hostform.h
+	cd engine
+	$(CC) menu.c
+	cd ..
+	lib lib\telnet.lib -+engine\menu ;
+	
+engine\confile.obj : engine\confile.c include\whatami.h include\hostform.h include\confile.h
+	cd engine
+	$(CC) confile.c
+	cd ..
+    lib lib\telnet.lib -+engine\confile ;
+
+vs\vsinterf.obj : vs\vsinterf.c include\vsdata.h include\vsinit.h include\vskeys.h
+	cd vs
+	$(CC) vsinterf.c
+	cd ..
+	lib lib\vs.lib -+vs\vsinterf ;
+
+vs\vsem.obj : vs\vsem.c include\vsdata.h include\vsinit.h include\vskeys.h
+	cd vs
+	$(CC) vsem.c
+        cd ..
+	lib lib\vs.lib -+vs\vsem ;
+
+vs\vsintern.obj : vs\vsintern.c include\vsdata.h include\vsinit.h include\vskeys.h
+	cd vs
+	$(CC) vsintern.c
+	cd ..
+	lib lib\vs.lib -+vs\vsintern ;
+
+rg\rg0.obj : rg\rg0.c
+	cd rg
+	$(CC) rg0.c
+	cd ..
+	lib lib\tek.lib -+rg\rg0 ;
+
+rg\rge.obj : rg\rge.c
+	cd rg
+	$(CC) rge.c
+	cd ..
+	lib lib\tek.lib -+rg\rge ;
+
+rg\rgv.obj : rg\rgv.c
+	cd rg
+	$(CC) rgv.c
+	cd ..
+	lib lib\tek.lib -+rg\rgv ;
+
+rg\rgh.obj : rg\rgh.c
+	cd rg
+	$(CC) rgh.c
+	cd ..
+	lib lib\tek.lib -+rg\rgh ;
+
+rg\rg9.obj : rg\rg9.c
+	cd rg
+	$(CC) rg9.c
+	cd ..
+	lib lib\tek.lib -+rg\rg9 ;
+
+rg\rgp.obj : rg\rgp.c
+	cd rg
+	$(CC) rgp.c
+	cd ..
+	lib lib\tek.lib -+rg\rgp ;
+
+rg\rgc.obj : rg\rgc.c
+	cd rg
+	$(CC) rgc.c
+	cd ..
+	lib lib\tek.lib -+rg\rgc ;
+
+rg\rgep.obj : rg\rgep.c
+	cd rg
+	$(CC) rgep.c
+	cd ..
+	lib lib\tek.lib -+rg\rgep ;
+
+rg\rghp.obj : rg\rghp.c
+	cd rg
+	$(CC) rghp.c
+	cd ..
+	lib lib\tek.lib -+rg\rghp ;
+
+tek\vgtek.obj : tek\vgtek.c
+	cd tek
+	$(CC) vgtek.c
+	cd ..
+	lib lib\tek.lib -+tek\vgtek ;
+
+tek\tekstor.obj : tek\tekstor.c
+	cd tek
+	$(CC) tekstor.c
+	cd ..
+	lib lib\tek.lib -+tek\tekstor ;
+
+rg\egaset.obj : rg\egaset.asm
+	cd rg
+	$(MM) egaset.asm ;
+	cd ..
+	lib lib\tek.lib -+rg\egaset ;
+
+rg\vgaset.obj : rg\vgaset.asm
+	cd rg
+	$(MM) vgaset.asm ;
+	cd ..
+	lib lib\tek.lib -+rg\vgaset ;
+
+net\enet\netbicc.obj : net\enet\netbicc.c include\protocol.h include\data.h
+	cd net\enet
+	$(CC) /I..\..\include netbicc.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\netbicc ;
+
+net\enet\netbicc2.obj : net\enet\netbicc2.asm
+	cd net\enet
+	$(MM) netbicc2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netbicc2 ;
+
+net\enet\packet.obj : net\enet\packet.c include\windat.h include\whatami.h include\packet.h
+	cd net\enet
+	$(CC) /I..\..\include packet.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\packet ;
+
+net\enet\packet2.obj : net\enet\packet2.asm
+	cd net\enet
+	$(MM) packet2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\packet2 ;
+
+net\enet\dndll.obj : net\enet\dndll.c include\protocol.h include\decnet.h
+	cd net\enet
+	$(CC) /I..\..\include dndll.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\dndll ;
+
+net\enet\dndll2.obj : net\enet\dndll2.asm
+	cd net\enet
+	$(MM) dndll2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\dndll2 ;
+
+net\enet\netatt10.obj : net\enet\netatt10.asm
+	cd net\enet
+	$(MM) netatt10.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netatt10 ;
+
+net\enet\net3com.obj : net\enet\net3com.asm
+	cd net\enet
+	$(MM) net3com.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net3com ;
+
+net\enet\net501.obj : net\enet\net501.asm
+	cd net\enet
+	$(MM) net501.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net501 ;
+
+net\enet\nov3com.obj : net\enet\nov3com.asm
+	cd net\enet
+	$(MM) nov3com.asm ;
+	cd ..\..
+#	lib lib\enet.lib -+net\enet\nov3com ;
+
+net\enet\net503.obj : net\enet\net503.asm
+	cd net\enet
+	$(MM) net503.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net503 ;
+
+net\enet\net505.obj : net\enet\net505.asm
+	cd net\enet
+	$(MM) net505.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net505 ;
+
+net\enet\net9210.obj : net\enet\net9210.asm
+	cd net\enet
+	$(MM) net9210.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net9210 ;
+
+net\enet\ltalk.obj : net\enet\ltalk.c include\kip.h
+	cd net\enet
+	$(CC) /I..\..\include ltalk.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\ltalk ;
+
+net\enet\ltlisten.obj : net\enet\ltlisten.asm
+	cd net\enet
+	$(MM) ltlisten.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\ltlisten ;
+
+net\enet\net523.obj : net\enet\net523.asm
+	cd net\enet
+	$(MM) net523.asm ;
+	cd..\..
+	lib lib\enet.lib -+net\enet\net523 ;
+
+net\enet\netub.obj : net\enet\netub.asm
+	cd net\enet
+	$(MM) netub.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netub ;
+	
+net\enet\net5210.obj : net\enet\net5210.asm
+	cd net\enet
+	$(MM) net5210.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net5210 ;
+
+net\enet\net8003.obj : net\enet\net8003.asm
+	cd net\enet
+	$(MM) net8003.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net8003 ;
+
+net\enet\net8003a.obj : net\enet\net8003a.asm
+	cd net\enet
+	$(MM) net8003a.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net8003a ;
+
+net\enet\netzyp.obj : net\enet\netzyp.asm
+	cd net\enet
+	$(MM) netzyp.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netzyp ;
+
+#         /* RMG */
+engine\ipasm.obj : engine\ipasm.asm
+	cd engine
+	$(MM) ipasm.asm ;
+	cd ..
+	lib lib\tcp.lib -+engine\ipasm ;
+
+engine\ncsaio.obj : engine\ncsaio.asm
+	cd engine
+	$(MM) ncsaio ;
+	copy ncsaio.obj ..\lib
+	cd ..
+
+engine\ncsabrk.obj : engine\ncsabrk.asm
+	cd engine
+	$(MM) ncsabrk ;
+	copy ncsabrk.obj ..\lib
+	cd ..
+
+debug\memdebug.obj : debug\memdebug.c include\memdebug.h
+	cd debug
+	$(CC) /I..\include memdebug.c
+	cd ..
+    lib lib\debug.lib -+debug\memdebug ;
+
+debug\maldebug.obj : debug\maldebug.c include\maldebug.h
+	cd debug
+    $(CC) maldebug.c
+	cd ..
+    lib lib\debug.lib -+debug\maldebug ;
+
+debug\strdebug.obj : debug\strdebug.c include\strdebug.h
+	cd debug
+    $(CC) strdebug.c
+	cd ..
+    lib lib\debug.lib -+debug\strdebug ;
+
+debug\mcb.obj : debug\mcb.c
+	cd debug
+	$(CC) /I..\include mcb.c
+	cd ..
+    lib lib\debug.lib -+debug\mcb ;
+
+engine\keymap.obj : engine\keymap.c include\keymap.h
+	cd engine
+	$(CC) /I..\include keymap.c
+	copy keymap.obj ..\lib
+	cd ..
+	lib lib\telnet.lib -+engine\keymap ;
+
+engine\map_out.obj : engine\map_out.c include\map_out.h
+	cd engine
+	$(CC) /I..\include map_out.c
+	copy map_out.obj ..\lib
+	cd ..
+	lib lib\telnet.lib -+engine\map_out ;
+
+engine\scr_rest.obj : engine\scr_rest.c include\vidinfo.h
+	cd engine
+	$(CC) /I..\include scr_rest.c
+        copy scr_rest.obj ..\lib
+        cd ..
+	lib lib\telnet.lib -+engine\scr_rest ;
+
+#engine\translat.obj : engine\translat.asm
+#    cd engine
+#    $(MM) translat;
+#    copy translat.obj ..\lib
+#    cd ..
+
+#lib\debug.lib: debug\memdebug.obj debug\maldebug.obj debug\strdebug.obj debug\mcb.obj
+#lib\telnet.lib: engine\mouse.obj engine\rspc.obj engine\negotiat.obj engine\linemode.obj engine\scrlback.obj engine\services.obj engine\menu.obj engine\confile.obj engine\keymap.obj engine\map_out.obj engine\scr_rest.obj
+#lib\enet.lib: net\enet\net.obj net\enet\netbicc.obj net\enet\netbicc2.obj net\enet\packet.obj net\enet\packet2.obj net\enet\dndll.obj net\enet\dndll2.obj net\enet\netatt10.obj net\enet\net3com.obj net\enet\net501.obj net\enet\nov3com.obj \              net\enet\net503.obj net\enet\net505.obj net\enet\net9210.obj net\enet\ltalk.obj net\enet\ltlisten.obj net\enet\net523.obj net\enet\netub.obj net\enet\net5210.obj net\enet\net8003.obj net\enet\net8003a.obj net\enet\netzyp.obj
+#lib\tcp.lib: engine\ip.obj engine\user.obj engine\tools.obj engine\udp.obj engine\arp.obj engine\domain.obj engine\tcp.obj engine\protinit.obj engine\ipasm.obj
+#lib\sess.lib: engine\bootp.obj engine\bkgr.obj engine\util.obj engine\pcutil.obj lib\vs.lib: vs\vsinterf.obj vs\vsem.obj vs\vsintern.obj
+#lib\tek.lib: rg\rg0.obj rg\rge.obj rg\rgv.obj rg\rgh.obj rg\rg9.obj rg\rgp.obj rg\rgc.obj rg\rgep.obj rg\rghp.obj tek\vgtek.obj tek\tekstor.obj rg\egaset.obj rg\vgaset.obj
+
+
+#Use the folowing lines for Microsoft Linker
+telbin.exe : engine\look.obj engine\ncsaio.obj engine\ncsabrk.obj    lib\telnet.lib lib\tek.lib lib\sess.lib lib\tcp.lib lib\vs.lib lib\enet.lib lib\msmouse.lib
+##telbin.exe : engine\look.obj engine\ncsaio.obj engine\ncsabrk.obj lib\debug.lib lib\telnet.lib lib\tek.lib lib\sess.lib lib\tcp.lib lib\vs.lib lib\enet.lib lib\msmouse.lib
+    cd lib
+    $(LINKER) $(LINK) $(LINKLINE)
+#    link /ST:4096 /CO /DOSSEG ncsaio+ncsabrk+look+memdebug,telbin,telbin,telnet+tcp+vs+sess+tek+enet+msmouse ;
+    copy telbin.exe ..
+    del telbin.exe
+    cd ..
+
+#Use the following lines for RTLINK
+#telbin.exe : engine\look.obj engine\ncsaio.obj engine\ncsabrk.obj lib\debug.lib lib\telnet.lib lib\tek.lib lib\sess.lib lib\tcp.lib lib\vs.lib lib\enet.lib lib\msmouse.lib
+#    $(LINKER) $(LINK) $(LINKLINE)
+

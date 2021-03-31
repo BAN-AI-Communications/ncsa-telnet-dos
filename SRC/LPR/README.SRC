@@ -1,0 +1,27 @@
+        LPR, LPQ, LPRM - printing utilities based on NCSA TCP/IP
+              (Version 2.2D and 2.2TN for MS-DOS)
+                       Novemeber 15, 1989
+
+Author: Paul Hilchey   Paul_Hilchey@mtsg.ubc.ca
+
+Included in the zip file are the following files:
+
+    lpr.c          - source code for the utilities
+    lpq.c
+    lprm.c
+    lp.c
+    lp.h
+
+    lpr.exe        - executables
+    lpq.exe
+    lprm.exe
+
+    makefile
+
+    manual.msw     - user manual done with Microsoft Word, including
+    manual.sty       style sheet
+
+The executables in the zip file have been linked with a modified version
+of the 2.2tn libraries, that does not have uneeded components such as
+an FTP server.  If you re-link with the 2.2tn libraries, the executables
+will grow by about 10k each.

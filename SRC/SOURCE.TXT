@@ -1,0 +1,7 @@
+This is the source tree for NCSA PC Telnet 2.3.07
+The binaries are in a separate zipfile.
+
+  PC Telnet is compiled with Microsoft C/C++ 7.0 and MASM 5.1
+  The makefiles work with Microsoft's MAKE utility, version 4.07
+
+NCSA does not support the source.

@@ -1,0 +1,1059 @@
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-1
+
+
+       1						page 60,132
+       2				;
+       3				;  Int 14h support routines
+       4				;****************************************************************************
+       5				;*                                                                          *
+       6				;*                                                                          *
+       7				;*      part of NCSA Telnet                                                 *
+       8				;*      by Tim Krauskopf, VT100 by Gaige Paulsen, Tek by Aaron Contorer     *
+       9				;*          Kurt Mahan, Heeren Pathak, Quincey Koziol, & Chris Wilson       *
+      10				;*                                                                          *
+      11				;*      National Center for Supercomputing Applications                     *
+      12				;*      152 Computing Applications Building                                 *
+      13				;*      605 E. Springfield Ave.                                             *
+      14				;*      Champaign, IL  61820                                                *
+      15				;*                                                                          *
+      16				;****************************************************************************
+      17				;*                                                                *
+      18				;* DATE                   REASON                      DEVELOPER   *
+      19				;* ----                   ------                      ---------   *
+      20				;* 01/03/92   Update the timer ISR to prevent lock ups    LJD     *
+      21				;*                                                                *
+      22				;******************************************************************
+      23				
+      24				;
+      25				    NAME    INT14
+      26				;Microsoft EQU 1
+      27				;Lattice EQU 1
+      28				;
+      29				;******************************************************************
+      30				;*
+      31				;*	We need to set up a stack for netsleep when we exit to DOS.
+      32				
+      33 = 0006				X   EQU     6
+      34 = 0001				PORT    EQU 1
+      35				
+      36				ifdef Microsoft
+      37				.8086
+      38				.MODEL	LARGE
+      39				.DATA
+      40				endif
+      41					even
+      42 0000  0000			TIM_OLDSS           dw ?
+      43 0002  0000			TIM_OLDSP           dw ?
+      44				ifndef Watcom
+      45 0004  0000			TIM_OLDSTKHQQ       dw 0
+      46				endif
+      47				
+      48 0006  0000			SER_OLDSS           dw ?
+      49 0008  0000			SER_OLDSP           dw ?
+      50				ifndef Watcom
+      51 000A  0000			SER_OLDSTKHQQ       dw 0
+      52				endif
+      53				
+      54				    even            ; Align the stack on an even boundary
+      55 000C  0400[			SER_NEWSTACK dw 1024 dup(?)     ; define a stack for netsleep when we shell to DOS
+      56	   ????			
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-2
+
+
+      57			 ]	
+      58				
+      59 080C				SER_STCK label word
+      60				
+      61				;/* rmg  Added TIMstack.  Having both interrupts use the same stack didn't
+      62				;                         look completely safe.  I could be wrong.  931100
+      63				    even            ; Align the stack on an even boundary
+      64 080C  0400[			TIM_NEWSTACK dw 1024 dup(?)     ; define a stack for netsleep when we shell to DOS
+      65	   ????			
+      66			 ]	
+      67				
+      68 100C				TIM_STCK label word
+      69				
+      70				ifndef Watcom
+      71				extrn _STKHQQ:word           ; Microsoft heap/stack bound
+      72				endif
+      73				
+      74 = 0004				NUM_COMM_PORTS  EQU     4
+      75				
+      76				ifdef Microsoft
+      77				PUBLIC  _CONNECTED_FLAGS
+      78				PUBLIC  _PORT_BUFFER
+      79				PUBLIC  _PNUM,_DATA_BEGIN,_DATA_MAX,_DATA_END,_DATA_START
+      80				EXTRN   _PRINT_INT:PROC         ; FOR DEBUGGING
+      81				EXTRN   _PRINT_INT2:PROC        ; FOR DEBUGGING
+      82				EXTRN   _GET_COMM_CHAR:PROC     ; GET A CHARACTER FROM A COMM BUFFER
+      83				EXTRN   _NETCLOSE:PROC          ; EXTERNAL PROCEDURE TO CLOSE A CONNECTION
+      84				EXTRN   _NETWRITE:PROC          ; EXTERNAL PROCEDURE TO WRITE TO A CONNECTION
+      85				EXTRN   _INT14OPEN:PROC         ; EXTERNAL PROCEDURE TO OPEN A CONNECTION
+      86				EXTRN   _SPEEDUP:WORD           ; EXTERNAL TIMER SPEEDUP FACTOR
+      87				
+      88 100C  0004[			_PNUM   DW NUM_COMM_PORTS DUP(0)    ; PORT WE ARE CONNECTED TO
+      89	   0000			
+      90			 ]	
+      91				
+      92				
+      93 1014  00			_CONNECTED_FLAGS DB 0           ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+      94				                                ; COMM. PORT IS CONNECTED (BIT 0 IS COMM PORT
+      95				                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+      96 1015  00			_OPENING_FLAGS DB 0             ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+      97				                                ; COMM. PORT IS OPENING (BIT 0 IS COMM PORT
+      98				                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+      99 1016  0004[			_PORT_BUFFER    DB  NUM_COMM_PORTS DUP (64 DUP (0)) ; SPECIFY THE FOUR BUFFERS FOR THE CONNE
+					CTION NAMES
+     100	0040[			
+     101	    00			
+     102			]	
+     103			 ]	
+     104				
+     105 1116  0004[			_BUFFER_OFFSET  DB  NUM_COMM_PORTS DUP (0)   ; THE OFFSETS INTO THE FOUR PORT BUFFERS
+     106	   00			
+     107			 ]	
+     108				
+     109 111A  00			_CHAR_TO_SEND   DB 0            ; SPACE TO STORE THE CHARACTER TO SEND ON THE NET
+     110 111B  0004[			_DATA_BEGIN     DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE BEGINNING OF
+     111	   00000000		
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-3
+
+
+     112			 ]	
+     113				
+     114				                                ;   THE DATA BUFFER FOR EACH COMM. PORT
+     115 112B  0004[			_DATA_END       DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE END OF
+     116	   00000000		
+     117			 ]	
+     118				
+     119				                                ;   THE DATA BUFFER FOR EACH COMM. PORT
+     120 113B  0004[			_DATA_MAX       DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE MAX OF
+     121	   00000000		
+     122			 ]	
+     123				
+     124				                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+     125 114B  0004[			_DATA_START     DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE START OF
+     126	   00000000		
+     127			 ]	
+     128				
+     129				                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+     130 115B  0000			_CLOCK_TICK     DW  0           ;   The number of clock ticks which have elapsed
+     131				endif
+     132				
+     133				ifdef Microsoft
+     134				.CODE
+     135				endif	
+     136				;
+     137				;**************************************************************************
+     138				;
+     139				;  Routines to install and deinstall a routine which manages the
+     140				;       serial port
+     141				;
+     142				;
+     143 = 0050				SERIALINT     EQU 4*14H       ; User hook to timer int
+     144				
+     145				ifdef Microsoft
+     146				    PUBLIC  _INT14INST,_INT14DEINST
+     147				    EXTRN   _int14netsleep:FAR   ; C routine which gets called from handler
+     148				    PUBLIC  _TIMEINST,_TIMEDEINST
+     149				endif   
+     150				;
+     151				;**************************************************************************
+     152				;
+     153				;  Routines to install and deinstall a timer routine which calls
+     154				;  netsleep(0);
+     155				;  The timer is set to go off every 1/18 second to check for packets
+     156				;  in the incoming packet buffer.  We use the user-hook into the system 
+     157				;  timer which occurs every 1/18th of a second.
+     158				;
+     159				;
+     160 = 0070				TIMEINT		EQU	4*1CH		; User hook to timer int
+     161				
+     162				;*************************************************************************
+     163				;
+     164				;  Take out the timer interrupt handler, restore previous value
+     165				;
+     166				ifdef Microsoft
+     167 0000				_TIMEDEINST    PROC    FAR
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-4
+
+
+     168				endif
+     169				;
+     170				;$$$ 01-05-1992 LJD + Stop using the timer routine. !!! THIS NEEDS FURTHER TESTING. !!!!
+     171				;
+     172 0000  9C				pushf
+     173 0001  FA				cli
+     174 0002  2E: C6 06 005A R FF		mov	CS:INTENTER,-1		; Prevent use of the timer routine while removing it
+					 from the system
+int14.ASM(228): warning A5036: Extra NOP inserted
+     175       90			
+     176 0009  9D				popf
+     177				;
+     178				;$$$ 01-05-1992 LJD -
+     179				;
+     180				
+     181 000A  2E: 8B 0E 005B R			MOV		CX,CS:TIP		; GET OLD IP FROM SAVE SPOT
+     182 000F  2E: 8B 16 005D R			MOV		DX,CS:TCS		; GET OLD CS FROM SAVE SPOT
+     183 0014  BB 0070				MOV		BX,TIMEINT		; INTERRUPT IN TABLE FOR TIMER
+     184				
+     185 0017  1E				PUSH	DS
+     186 0018  33 C0				XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+     187 001A  8E D8				MOV		DS,AX		
+     188				
+     189 001C  9C				PUSHF					; $$$ 01-03-92 LJD +-
+     190 001D  FA				CLI
+     191				
+     192 001E  89 0F				MOV		[BX],CX			; STORE OLD IP INTO THE TABLE
+     193				;
+     194				;$$$ 01-03-1992 ljd +
+     195				;
+     196				;	INC		BX
+     197				;	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+     198				;	MOV		[BX],DX			; STORE OLD CS INTO THE TABLE
+     199 0020  89 57 02				MOV		[BX+2],DX			; STORE OLD CS INTO THE TABLE
+     200				
+     201 0023  9D				POPF
+     202				;	STI
+     203				;
+     204				;$$$ 01-03-1992 LJD -
+     205				;
+     206 0024  1F				POP		DS
+     207 0025  CB				RET
+     208				ifdef Microsoft
+     209 0026				_TIMEDEINST    ENDP
+     210				endif
+     211				
+     212				;
+     213				;
+     214				;  install the timer interrupt handler, the handler is technically
+     215				;  part of this procedure.
+     216				;
+     217				ifdef Microsoft
+     218 0026				_TIMEINST  PROC    FAR
+     219				endif
+     220 0026  33 C0				XOR		AX,AX
+     221 0028  2E: A2 005A R		    MOV     CS:INTENTER,AL    ; CLEAR THIS FLAG
+     222 002C  2E: 8C 1E 0057 R		    MOV     CS:_TMYDS,DS    ; STORE FOR USE BY HANDLER
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-5
+
+
+     223 0031  BB 0070				MOV		BX,TIMEINT		; INTERRUPT IN TABLE FOR TIMER (1c)
+     224				
+     225 0034  1E				PUSH	DS
+     226 0035  33 C0				XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+     227 0037  8E D8				MOV		DS,AX		
+     228 0039  B8 005F R			MOV		AX,OFFSET THAND	; WHERE THE HANDLER IS
+     229				;
+     230				;$$$ 01-03-1992 ljd +
+     231				;	
+     232 003C  9C				PUSHF					; save the current flag states
+     233 003D  FA				CLI
+     234				
+     235 003E  8B 17				MOV		DX,[BX]			; KEEP COPY OF THE IP
+     236 0040  89 07				MOV		[BX],AX			; STORE IP INTO THE TABLE
+     237				;	INC		BX
+     238				;	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+     239				;	MOV		CX,[BX]			; KEEP COPY OF THE CS, TOO
+     240 0042  8B 4F 02				MOV		CX,[BX+2]			; KEEP COPY OF THE CS, TOO
+     241				
+     242 0045  8C C8				MOV		AX,CS
+     243 0047  89 47 02				MOV		[BX+2],AX			; STORE NEW CS INTO THE TABLE
+     244				
+     245 004A  9D				POPF					; restore the int. flag to what it was origi
+					nally
+     246				;	STI
+     247				;
+     248				;$$$ 01-03-1992 LJD -
+     249				;
+     250 004B  1F				POP	DS
+     251 004C  2E: 89 16 005B R			MOV	CS:TIP,DX			; STORE THEM AWAY
+     252 0051  2E: 89 0E 005D R			MOV	CS:TCS,CX
+     253 0056  CB				RET
+     254				;
+     255				;  Code segment addressable data for keeping track of the interrupt handler
+     256				;  stuff
+     257				;
+     258				;PUBLIC  _TMYDS
+     259 0057  0000			_TMYDS      DW  00H         ; THE DATA SEGMENT FOR THIS ASSEMBLY CODE
+     260 0059  00			TICNT		DB	0			; COUNTER OF 1/18THS SEC
+     261 005A  00			INTENTER    DB  00
+     262 005B  0000			TIP  		DW  00
+     263 005D  0000			TCS  		DW  00
+     264				;
+     265				;   The handler itself.
+     266				;
+     267				;$$$ 01-03-1992 ljd + Serious modifications made!
+     268				;
+     269 005F				THAND:			       		; not a public name, only handles ints
+     270 005F  FA				cli				; make sure interrupts are off!
+     271 0060  50				push	ax
+     272 0061  1E				push	ds
+     273 0062  06				push	es
+     274				
+     275				;
+     276				; Call the routine we replaced  to proceed with chaining process.
+     277				; (Properly simulate the INT instruction.)
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-6
+
+
+     278				;
+     279 0063  9C				pushf
+     280 0064  FA				cli
+     281 0065  2E: FF 1E 005B R			call	dword ptr cs:tip
+     282				
+     283 006A  FA				cli					; disable interrupts
+     284				
+     285 006B  FC				CLD						; SET THE DIRECTION FLAG FORWARD
+     286				
+     287 006C  2E: 80 3E 005A R 00		cmp	cs:intenter,0
+     288 0072  75 5E				jnz	time2				; leave if already active
+     289				
+     290 0074  2E: FE 06 005A R			inc	cs:intenter
+     291					
+     292				;
+     293				;
+     294				;  SET UP CORRECT DS & ES
+     295				;
+     296 0079  2E: 8E 1E 0057 R		    MOV     DS,CS:_TMYDS     ; GET CORRECT DS
+     297 007E  2E: 8E 06 0057 R		    MOV     ES,CS:_TMYDS     ; GET CORRECT ES
+     298				;
+     299				;  do we have to set up our own stack here?
+     300				;
+     301 0083  8C D0				MOV		AX,SS
+     302 0085  A3 0000 R			MOV     TIM_OLDSS,AX			; save the stack segment set upon entry
+     303 0088  89 26 0002 R			MOV     TIM_OLDSP,SP			; save the stack pointer set upon entry
+     304				;
+     305				;                                /* (was SER_STCK)  rmg 931100 */
+     306 008C  B8 ---- R		    MOV     AX,seg DGROUP:TIM_STCK
+     307 008F  8E D0			    MOV     SS,AX                          ; set a new stack segment
+     308 0091  BC 100C R		    MOV     SP,OFFSET DGROUP:TIM_STCK      ; set a new stack pointer
+     309				;    MOV     AX,seg DGROUP:SER_STCK
+     310				;        MOV     SS,AX                           ; set a new stack segment
+     311				;    MOV     SP,OFFSET DGROUP:SER_STCK   ; set a new stack pointer
+     312				
+     313				ifndef Watcom
+     314 0094  A1 0000 E		    mov     ax,_STKHQQ                   ; save old end of stack
+     315 0097  A3 0004 R		    mov     TIM_OLDSTKHQQ,ax
+     316 009A  B8 000C R		    mov     ax,offset DGROUP:SER_NEWSTACK          ; load new end of stack
+     317 009D  A3 0000 E		    mov     _STKHQQ,ax
+     318				endif
+     319 00A0  FB				STI						; enable interrupts
+     320				
+     321 00A1  1E				PUSH	DS
+     322 00A2  06				PUSH 	ES
+     323 00A3  50				PUSH	AX
+     324 00A4  53				PUSH	BX
+     325 00A5  51				PUSH	CX
+     326 00A6  52				PUSH	DX
+     327 00A7  57				PUSH	DI
+     328 00A8  56				PUSH	SI
+     329				
+     330				ifdef Microsoft
+     331 00A9  9A 0000 ---- E		    CALL _int14netsleep
+     332				endif
+     333				
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-7
+
+
+     334 00AE  5E				POP 		SI
+     335 00AF  5F				POP		DI
+     336 00B0  5A				POP		DX
+     337 00B1  59				POP		CX
+     338 00B2  5B				POP		BX
+     339 00B3  58				POP		AX
+     340 00B4  07				POP		ES
+     341 00B5  1F				POP		DS
+     342				
+     343				
+     344 00B6  FA				cli
+     345 00B7  2E: FE 0E 005A R			dec	cs:intenter
+     346 00BC  75 14				jnz	time2
+     347				
+     348 00BE  2E: 8E 1E 0057 R			MOV     DS,CS:_TMYDS     ; GET CORRECT DS
+     349				
+     350 00C3  A1 0000 R			MOV     AX,TIM_OLDSS
+     351 00C6  8E D0				MOV	SS,AX			; RESTORE STACK SEGMENT
+     352 00C8  8B 26 0002 R			MOV     SP,TIM_OLDSP		; RESTORE STACK POINTER
+     353				
+     354				ifndef Watcom
+     355 00CC  A1 0004 R		    mov     ax,TIM_OLDSTKHQQ                ; restore end of stack
+     356 00CF  A3 0000 E		    mov     _STKHQQ,ax
+     357				endif
+     358				
+     359				comment #
+     360				TSKIP:
+     361					XOR		AL,AL
+     362				    MOV     CS:INTENTER,AL    ; REENTER FLAG, DONE NOW
+     363				#
+     364				
+     365 00D2				TIME2:
+     366				;
+     367				;   forward to any other existing routines
+     368				;
+     369 00D2  07				pop	es
+     370 00D3  1F				pop	ds
+     371 00D4  58				pop	ax
+     372 00D5  CF			    IRET
+     373				;
+     374				;$$$ 01-03-1992 ljd -
+     375				;
+     376				ifdef Microsoft
+     377 00D6				_TIMEINST      ENDP
+     378				endif
+     379				
+     380				
+     381				;*************************************************************************
+     382				;
+     383				;  Take out the serial interrupt handler, restore previous value
+     384				;
+     385				ifdef Microsoft
+     386 00D6				_INT14DEINST    PROC    FAR
+     387				endif
+     388 00D6  2E: 8B 0E 011F R		    MOV     CX,CS:SIP       ; GET OLD IP FROM SAVE SPOT
+     389 00DB  2E: 8B 16 0121 R		    MOV     DX,CS:SCS       ; GET OLD CS FROM SAVE SPOT
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-8
+
+
+     390 00E0  BB 0050			    MOV     BX,SERIALINT    ; INTERRUPT IN TABLE FOR TIMER
+     391 00E3  1E				PUSH	DS
+     392 00E4  33 C0				XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+     393 00E6  8E D8				MOV		DS,AX		
+     394 00E8  FA				CLI
+     395 00E9  89 0F				MOV		[BX],CX			; STORE OLD IP INTO THE TABLE
+     396 00EB  43				INC		BX
+     397 00EC  43				INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+     398 00ED  89 17				MOV		[BX],DX			; STORE OLD CS INTO THE TABLE
+     399 00EF  FB				STI
+     400 00F0  1F				POP		DS
+     401 00F1  CB				RET
+     402				ifdef Microsoft
+     403 00F2				_INT14DEINST    ENDP
+     404				endif
+     405				;
+     406				;
+     407				;  install the serial interrupt handler, the handler is technically
+     408				;  part of this procedure.
+     409				;
+     410				ifdef Microsoft
+     411 00F2				_INT14INST  PROC    FAR
+     412				endif
+     413				
+     414				;
+     415				;$$$ 01-05-1992 LJD + Don't do this twice!
+     416				;	XOR		AX,AX
+     417				;    MOV     CS:INTENTER,AL    ; CLEAR THIS FLAG
+     418				;
+     419				;$$$ 01-05-1992 LJD -
+     420				;
+     421 00F2  2E: 8C 1E 011C R		    MOV     CS:_SMYDS,DS     ; STORE FOR USE BY HANDLER
+     422 00F7  BB 0050			    MOV     BX,SERIALINT    ; INTERRUPT IN TABLE FOR TIMER (1c)
+     423 00FA  1E				PUSH	DS
+     424 00FB  33 C0				XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+     425 00FD  8E D8				MOV		DS,AX		
+     426 00FF  B8 0123 R		    MOV     AX,OFFSET SHAND ; WHERE THE HANDLER IS
+     427 0102  FA				CLI
+     428 0103  8B 17				MOV		DX,[BX]			; KEEP COPY OF THE IP
+     429 0105  89 07				MOV		[BX],AX			; STORE IP INTO THE TABLE
+     430 0107  43				INC		BX
+     431 0108  43				INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+     432 0109  8B 0F				MOV		CX,[BX]			; KEEP COPY OF THE CS, TOO
+     433 010B  8C C8				MOV		AX,CS
+     434 010D  89 07				MOV		[BX],AX			; STORE NEW CS INTO THE TABLE
+     435 010F  FB				STI
+     436 0110  1F				POP	DS
+     437 0111  2E: 89 16 011F R		    MOV CS:SIP,DX           ; STORE THEM AWAY
+     438 0116  2E: 89 0E 0121 R		    MOV CS:SCS,CX
+     439 011B  CB				RET
+     440				;
+     441				;  Code segment addressable data for keeping track of the interrupt handler
+     442				;  stuff
+     443				;
+     444				;PUBLIC  _SMYDS
+     445 011C  0000			_SMYDS       DW  00H         ; THE DATA SEGMENT FOR THIS ASSEMBLY CODE
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-9
+
+
+     446 011E  00			SICNT       DB  0           ; COUNTER OF 1/18THS SEC
+     447				;SENTER      DB  00
+     448 011F  0000			SIP         DW  00
+     449 0121  0000			SCS         DW  00
+     450				;
+     451				;   The handler itself.
+     452				;
+     453				;$$$ 01-05-1992 LJD + Modify to protect protocol layer from reentrancy problems
+     454				;
+     455				;
+     456 0123				SHAND:                      ; not a public name, only handles ints
+     457 0123  FA				cli			; make sure interrupts are off
+     458 0124  1E				PUSH	DS
+     459 0125  06				PUSH 	ES
+     460 0126  50				PUSH	AX
+     461 0127  53				PUSH	BX
+     462 0128  51				PUSH	CX
+     463 0129  52				PUSH	DX
+     464 012A  57				PUSH	DI
+     465 012B  56				PUSH	SI
+     466				
+     467 012C  FC				CLD			; ALL MOVES WILL BE FORWARD
+     468 012D				TRYAGAIN:
+     469 012D  2E: 80 3E 005A R 00		cmp	cs:intenter,0
+     470 0133  74 06				jz	no_re_entry
+     471 0135  FB				sti			; enable interrupts
+     472 0136  90				nop
+     473 0137  90				nop	
+     474 0138  FA				cli
+     475 0139  EB F2				jmp	tryagain
+     476				
+     477 013B				NO_RE_ENTRY:
+     478 013B  2E: FE 06 005A R			inc	cs:intenter	; increment the flags (lock out the timer interrupt)
+     479				;
+     480				;	Now it is safe to enable interrupts!
+     481				;
+     482 0140  FB				STI
+     483				;
+     484				;
+     485				;
+     486				;  SET UP CORRECT DS and ES
+     487				;
+     488 0141  2E: 8E 1E 011C R		    MOV     DS,CS:_SMYDS     ; GET CORRECT DS
+     489 0146  2E: 8E 06 011C R		    MOV     ES,CS:_SMYDS     ; GET CORRECT ES
+     490				
+     491				;
+     492				;  do we have to set up our own stack here?
+     493				;
+     494 014B  8C D3			    MOV     BX,SS
+     495 014D  89 1E 0006 R		    MOV     SER_OLDSS,BX
+     496 0151  89 26 0008 R		    MOV     SER_OLDSP,SP
+     497 0155  FA				CLI
+     498 0156  BB ---- R		    MOV     BX,seg DGROUP:SER_STCK
+     499 0159  8E D3			    MOV     SS,BX
+     500 015B  BC 080C R		    MOV     SP,OFFSET DGROUP:SER_STCK
+     501				ifndef Watcom
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-10
+
+
+     502 015E  8B 1E 0000 E		    mov     bx,_STKHQQ                   ; save old end of stack
+     503 0162  89 1E 000A R		    mov     SER_OLDSTKHQQ,bx
+     504 0166  BB 000C R		    mov     bx,offset DGROUP:SER_NEWSTACK          ; load new end of stack
+     505 0169  89 1E 0000 E		    mov     _STKHQQ,bx
+     506				endif
+     507 016D  FB			    STI
+     508				
+     509 016E  8B CA			    MOV     CX,DX           ; MOVE THE COMM. PORT INTO THE CX REGISTER
+     510 0170  B3 01			    MOV     BL,1            ; MOVE A FLAG INTO THE BL REGISTER
+     511 0172  D2 E3			    SHL     BL,CL           ; SHIFT THE FLAG TO LINE UP WITH THE CORRECT INITIALIZATION FLAG
+     512				
+     513				
+     514 0174  80 FC 03			    CMP     AH,03           ; CHECK FOR READ STATUS
+     515 0177  75 2B			    JNE     NOT_STATUS_CHECK; A COMMUNICATION REQUEST WHICH WE DON'T HANDLE
+     516				
+     517				
+     518 0179				READ_STATUS:                ; CHECK FOR A CHARACTER
+     519				ifdef Microsoft
+     520 0179  84 1E 1014 R		    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IS CONNECTED
+     521				endif
+     522 017D  75 05			    JNE     GET_PORT_STATUS         ; GET THE PORT STATUS
+     523 017F  B8 2000			    MOV     AX,2000H                ; REPORT ERROR CONDITION
+     524 0182  EB 1D			    JMP     SHORT STATUS_FINISHED   ;
+     525				
+     526 0184				GET_PORT_STATUS:
+     527				ifdef Microsoft
+     528 0184  BE 111B R		    MOV     SI,OFFSET _DATA_BEGIN   ; GET THE POINTER TO THE BEGINNING OF THE DATA BUFFER
+     529 0187  BF 112B R		    MOV     DI,OFFSET _DATA_END     ; GET THE POINTER TO THE END OF THE DATA BUFFER
+     530				endif
+     531 018A  D1 E2			    SHL     DX,1                    ; MULTIPLY THE PORT NUMBER BY 4 TO GET THE
+     532 018C  D1 E2			    SHL     DX,1                    ;   OFFSET TO THE CORRECT ARRAY ELEMENT
+     533 018E  03 F2			    ADD     SI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+     534 0190  03 FA			    ADD     DI,DX
+     535				
+     536 0192  8B 04			    MOV     AX,DS:[SI]              ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+     537 0194  3B 05			    CMP     AX,DS:[DI]              ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+     538 0196  74 06			    JE      CHARACTER_NOT_READY     ; IF THE TWO POINTERS ARE THE SAME, THEN THERE IS NO DAT
+					A
+     539				
+     540 0198  B8 2100			    MOV     AX,2100h                ; SET THE DATA READY FLAG
+     541				
+     542				;    JMP     STATUS_FINISHED
+     543 019B  E9 02FB R		    JMP     SSKIP2                  ; JUMP TO THE END OF THE ROUTINE
+     544 019E				CHARACTER_NOT_READY:
+     545 019E  B8 2000			    MOV     AX,2000H                ; RESET THE DATA READY FLAG
+     546				
+     547 01A1				STATUS_FINISHED:
+     548 01A1  E9 02FB R		    JMP     SSKIP2                  ; JUMP TO THE END OF THE ROUTINE
+     549				
+     550 01A4				NOT_STATUS_CHECK:
+     551 01A4  80 FC 02			    CMP     AH,02           ; CHECK FOR RECEIVING CHARACTER
+     552 01A7  75 44			    JNE     NOT_RECEIVE_CHARACTER;  JUMP AROUND RECEIVING A CHARACTER
+     553				
+     554 01A9				RECEIVE_CHARACTER:          ; GET A CHARACTER
+     555				ifdef Microsoft
+     556 01A9  84 1E 1014 R		    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-11
+
+
+     557				endif
+     558 01AD  75 04			    JNE     GET_PORT_CHARACTER; GET A CHARACTER FROM THE PORT
+     559 01AF  B4 80			    MOV     AH,80H          ; REPORT ERROR CONDITION
+     560 01B1  EB 37			    JMP     SHORT RECEIVE_FINISHED   ;
+     561				
+     562 01B3				GET_PORT_CHARACTER:
+     563				ifdef Microsoft
+     564 01B3  BE 111B R		    MOV     SI,OFFSET _DATA_BEGIN   ; GET THE POINTER TO THE array of the BEGINNING OF THE D
+					ATA BUFFERs
+     565 01B6  BF 112B R		    MOV     DI,OFFSET _DATA_END     ; GET THE POINTER TO THE END OF THE DATA BUFFER
+     566				endif
+     567 01B9  D1 E2			    SHL     DX,1                    ; MULTIPLY THE PORT NUMBER BY 4 TO GET THE
+     568 01BB  D1 E2			    SHL     DX,1                    ;   OFFSET TO THE CORRECT ARRAY ELEMENT
+     569 01BD  03 F2			    ADD     SI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+     570 01BF  03 FA			    ADD     DI,DX
+     571 01C1				WAIT_FOR_CHARACTER:
+     572 01C1  8B 04			    MOV     AX,DS:[SI]              ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+     573 01C3  3B 05			    CMP     AX,DS:[DI]              ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+     574 01C5  74 FA			    JE      WAIT_FOR_CHARACTER      ; IF THE TWO POINTERS ARE THE SAME, THEN WAIT FOR DATA
+     575				
+     576 01C7  1E			    PUSH    DS
+     577 01C8  8B F8			    MOV     DI,AX                   ; SAVE THE OFFSET OF THE BEGINING POINTER
+     578 01CA  8B 44 02			    MOV     AX,DS:[SI+2]            ; GET THE SEGMENT OF THE BEGINNING POINTER
+     579 01CD  8E D8			    MOV     DS,AX
+     580 01CF  8A 05			    MOV     AL,BYTE PTR DS:[DI]     ; GET THE CHARACTER FROM THE BEGINNING OF THE QUEUE
+     581 01D1  1F			    POP     DS                      ; RECOVER THE DATA SEGMENT
+     582				ifdef Microsoft
+     583 01D2  BF 113B R		    MOV     DI,OFFSET _DATA_MAX     ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+     584				endif
+     585 01D5  03 FA			    ADD     DI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+     586 01D7  FF 04			    INC     WORD PTR DS:[SI]        ; INCREMENT THE BEGINNING OF THE QUEUE
+     587 01D9  8B 0C			    MOV     CX,DS:[SI]              ; GET THE BEGINNING OF THE QUEUE
+     588 01DB  3B 0D			    CMP     CX,DS:[DI]              ; CHECK FOR WRAPPING AROUND
+     589 01DD  7C 09			    JL      NOT_WRAPPED             ; JUMP AROUND WRAP-AROUND FIX
+     590				ifdef Microsoft
+     591 01DF  BF 114B R		    MOV     DI,OFFSET _DATA_START   ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+     592				endif
+     593 01E2  03 FA			    ADD     DI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+     594 01E4  8B 0D			    MOV     CX,DS:[DI]              ; GET THE START OF THE QUEUE
+     595 01E6  89 0C			    MOV     DS:[SI],CX              ; MOVE THE BEGINNING OF THE QUEUE AROUND
+     596				
+     597 01E8				NOT_WRAPPED:
+     598				;    MOV     AH,21                   ; REPORT SUCCESS
+     599 01E8  32 E4			        xor     ah,ah
+     600				
+     601 01EA				RECEIVE_FINISHED:
+     602 01EA  E9 02FB R		    JMP     SSKIP2                  ; JUMP TO THE END OF THE ROUTINE
+     603				
+     604 01ED				NOT_RECEIVE_CHARACTER:
+     605 01ED  80 FC 01			    CMP     AH,01           ; CHECK FOR SEND CHARACTER
+     606 01F0  74 03			    JE      SEND_CHARACTER  ; JUMP TO SENDING THE CHARACTER
+     607 01F2  E9 02A7 R		    JMP     NOT_SEND_CHARACTER; JUMP AROUND SENDING THE CHARACTER
+     608				
+     609 01F5				SEND_CHARACTER:             ; SEND A CHARACTER
+     610				ifdef Microsoft
+     611 01F5  84 1E 1014 R		    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-12
+
+
+     612 01F9  74 03			    JE      DONT_NET_SEND   ; CONNECTION NOT OPEN YET, DON'T SEND THE CHARACTER
+     613 01FB  E9 0286 R		    JMP     NET_SEND        ; OK, THE CONNECTION IS INITIALIZED, SEND THE CHARACTER
+     614 01FE				DONT_NET_SEND:
+     615 01FE  84 1E 1015 R		    TEST    BL,_OPENING_FLAGS; IF THE OPENING FLAG IS SET FOR THE PORT, CACHE THE CHARACTER 
+					IN A BUFFER
+     616				endif
+     617 0202  75 10			    JNE     CACHE_PORT_NAME ; GO CACHE THE CHARACTER
+     618				              ; /* RMG */ Location of Hardcoded ^B
+     619 0204  3C 02			    CMP     AL,02           ; CHECK WHETHER THIS IS THE BEGINNING OF A PORT NAME
+     620 0206  74 05			    JE      START_PORT_NAME ; START CACHING THE PORT NAME
+     621 0208  B4 80			    MOV     AH,80H          ; REPORT ERROR CONDITION
+     622 020A  E9 02A5 R		    JMP     SEND_FINISHED   ;
+     623				
+     624 020D				START_PORT_NAME:            ; INITIALIZE THE PORT NAME CACHING
+     625				ifdef Microsoft
+     626 020D  08 1E 1015 R		    OR      _OPENING_FLAGS,BL; SET THE OPENING FLAG
+     627				endif
+     628 0211  E9 02A3 R		    JMP     SEND_DONE       ; INDICATE A SUCCESSFUL CHARACTER SEND, BUT DON'T REALLY
+     629				
+     630 0214				CACHE_PORT_NAME:            ; STUFF THE CHARACTER INTO A BUFFER, OR OPEN A CONNECTION
+     631 0214  3C 03			    CMP     AL,03H          ; CHECK WHETHER THIS IS THE TERMINATING CHARACTER IN A PORT NAME
+     632 0216  74 2E			    JE      NET_OPEN        ; GO, OPEN THE CONNECTION
+     633				ifdef Microsoft
+     634 0218  BF 1116 R		    MOV     DI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+     635				endif
+     636 021B  03 FA			    ADD     DI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     637 021D  8A C8			    MOV     CL,AL           ; SAVE THE CHARACTER TEMPORARILY
+     638 021F  B0 40			    MOV     AL,64           ; MOVE THE SIZE OF THE PORT NAME BUFFER INTO AL
+     639 0221  F6 E2			    MUL     DL              ; GET THE OFFSET OF THE PORT BUFFER TO USE
+     640 0223  03 05			    ADD     AX,DS:[DI]      ; GET THE OFFSET TO STORE THE CHARACTER AT
+     641 0225  FE 05			    INC     BYTE PTR DS:[DI]    ; INCREMENT THE BUFFER OFFSET FOR THE COMM. PORT
+     642 0227  80 3D 40			    CMP     BYTE PTR DS:[DI],64 ; CHECK WHETHER WE HAVE TOO LONG OF A NAME
+     643 022A  74 0B			    JE      NAME_TOO_LONG   ; JUMP FOR TOO LONG OF A NAME
+     644				ifdef Microsoft
+     645 022C  BE 1016 R		    MOV     SI,OFFSET _PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+     646				endif
+     647 022F  03 F0			    ADD     SI,AX           ; GET THE CORRECT OFFSET TO STORE THIS CHARACTER AT
+     648 0231  8A C1			    MOV     AL,CL           ; RESTORE THE CHARACTER TO STORE
+     649 0233  88 04			    MOV     [SI],AL         ; APPEND THE CHARACTER TO THE PORT NAME
+     650 0235  EB 6C			    JMP     SHORT SEND_DONE       ; INDICATE A GOOD TRANSFER
+     651				
+     652 0237				NAME_TOO_LONG:              ; THE PORT NAME WAS TOO LONG
+     653 0237  C6 05 00			    MOV     BYTE PTR DS:[DI],0  ; RESET THE LENGTH OF THE PORT NAME
+     654 023A  F6 D3			    NOT     BL              ;
+     655				ifdef Microsoft
+     656 023C  20 1E 1015 R		    AND     _OPENING_FLAGS,BL; RESET THE OPENING FLAG
+     657				endif
+     658 0240  8A C1			    MOV     AL,CL           ; RESTORE THE CHARACTER TO SEND
+     659 0242  B4 80			    MOV     AH,80H          ; INDICATE ERROR CONDITION
+     660 0244  EB 5F			    JMP     SHORT SEND_FINISHED   ; JUMP TO THE END OF THE ROUTINE
+     661				
+     662 0246				NET_OPEN:                   ; OPEN THE CONNECTION TO THE NETWORK
+     663 0246  F6 D3			    NOT     BL              ;
+     664				ifdef Microsoft
+     665 0248  20 1E 1015 R		    AND     _OPENING_FLAGS,BL; RESET THE OPENING FLAG
+     666 024C  BF 1116 R		    MOV     DI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-13
+
+
+     667				endif
+     668 024F  03 FA			    ADD     DI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     669 0251  8A C8			    MOV     CL,AL           ; SAVE THE CHARACTER TEMPORARILY
+     670 0253  B0 40			    MOV     AL,64           ; MOVE THE SIZE OF THE PORT NAME BUFFER INTO AL
+     671 0255  F6 E2			    MUL     DL              ; GET THE OFFSET OF THE PORT BUFFER TO USE
+     672 0257  03 05			    ADD     AX,DS:[DI]      ; GET THE OFFSET TO STORE THE CHARACTER AT
+     673				ifdef Microsoft
+     674 0259  BE 1016 R		    MOV     SI,OFFSET _PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+     675				endif
+     676 025C  53			    PUSH    BX              ; SAVE THE COMM. PORT FLAGS
+     677 025D  03 F0			    ADD     SI,AX           ; GET THE CORRECT OFFSET TO STORE THIS CHARACTER AT
+     678 025F  8A C1			    MOV     AL,CL           ; RESTORE THE CHARACTER TO STORE
+     679 0261  C6 04 00			    MOV     BYTE PTR [SI],0 ; APPEND THE TERMINATING ZERO
+     680				
+     681 0264  52			    PUSH    DX              ; PUSH THE COMM. PORT WE ARE OPENING
+     682				
+     683				ifdef Microsoft
+     684 0265  9A 0000 ---- E		    CALL    _INT14OPEN      ; OPEN THE CONNECTION
+     685				endif
+     686 026A  5A			    POP     DX              ; RECOVER THE COMM. PORT WE USED
+     687 026B  5B			    POP     BX              ; RECOVER THE COMM. PORT FLAGS
+     688 026C  3D 0001			    CMP     AX,1            ; CHECK FOR GOOD OPENING
+     689 026F  75 10			    JNE     BAD_NET_OPEN    ; CONNECTION DIDN'T OPEN
+     690				
+     691 0271  F6 D3			    NOT     BL              ;
+     692				ifdef Microsoft
+     693 0273  08 1E 1014 R		    OR      _CONNECTED_FLAGS,BL; SET THE CONNECTED FLAG
+     694 0277  BE 1116 R		    MOV     SI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+     695				endif
+     696				
+     697 027A  03 F2			    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     698 027C  C6 04 00			    MOV     BYTE PTR [SI],0     ; ZERO OUT THE BUFFER OFFSET FOR THE COMM. PORT
+     699 027F  EB 22			    JMP     SHORT SEND_DONE       ; INDICATE A SUCCESSFUL CONNECTION OPENING
+     700				
+     701 0281				BAD_NET_OPEN:
+     702 0281  B8 0050			    MOV     AX,80           ; INDICATE A BAD NETWORK OPEN
+     703 0284  EB 1F			    JMP     SHORT SEND_FINISHED   ; RETURN FROM THE INTERRUPT
+     704				
+     705 0286				NET_SEND:                   ; SEND THE CHARACTER IN AL ONTO THE NET
+     706				ifdef Microsoft
+     707 0286  A2 111A R		    MOV     _CHAR_TO_SEND,AL ; STORE THE CHARACTER TO SEND ON THE NET
+     708				endif
+     709				
+     710 0289  B8 0001			    MOV     AX,1            ; THE NUMBER OF CHARACTERS TO DROP ONTO THE NET
+     711 028C  50			    PUSH    AX
+     712 028D  1E			    PUSH    DS              ; PUSH THE SEGMENT ADDRESS OF THE CHARACTER TO SEND
+     713 028E  B8 111A R		    MOV     AX,OFFSET _CHAR_TO_SEND ; PUSH THE ADDRESS OF THE CHARACTER TO SEND
+     714 0291  50			    PUSH    AX
+     715				ifdef Microsoft
+     716 0292  BE 100C R		    MOV     SI,OFFSET _PNUM ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+     717				endif
+     718 0295  03 F2			    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     719 0297  03 F2			    ADD     SI,DX           ; TWICE BECAUSE THESE ARE INTEGERS, NOT BYTES
+     720 0299  FF 34			    PUSH    [SI]            ; PUSH THE NETWORK PORT NUMBER
+     721				ifdef Microsoft
+     722 029B  9A 0000 ---- E		    CALL    _NETWRITE       ; CLOSE THE CONNECTION
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-14
+
+
+     723				endif
+     724 02A0  83 C4 08			    ADD     SP,8            ; RESTORE THE STACK FRAME
+     725				;   JMP     SEND_DONE       ; INDICATE A SUCCESSFUL DATA SEND
+     726				
+     727 02A3				SEND_DONE:                  ; INDICATE A SUCCESSFUL CHARACTER SEND
+     728				;    MOV     AH,060h         ; INDICATE A HAPPY CHARACTER SEND
+     729 02A3  32 E4			        xor     ah,ah
+     730 02A5				SEND_FINISHED:
+     731 02A5  EB 54			    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+     732				
+     733 02A7				NOT_SEND_CHARACTER:
+     734 02A7  80 FC 00			    CMP     AH,00           ; CHECK FOR PORT INITIALIZATION
+     735 02AA  75 2C			    JNE     SSKIP           ; A COMMUNICATIONS REQUEST WHICH WE DON'T HANDLE
+     736				
+     737				
+     738 02AC				INIT_COM_PORT:              ; INITIALIZE THE COMM. PORT
+     739				
+     740 02AC				PORT_ALREADY_INIT:          ; THE PORT HAS ALREADY BEEN INITIALIZED
+     741				ifdef Microsoft
+     742 02AC  84 1E 1014 R		    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER WE WERE CONNECTED
+     743				endif
+     744 02B0  74 19			    JE      RESET_INIT      ; IGNORE RE-INITIALIZATION IF NOT CONNECTED
+     745 02B2  F6 D3			    NOT     BL              ; INVERT AL IN PREPERATION FOR TURNING OFF THE FLAGS
+     746				ifdef Microsoft
+     747 02B4  20 1E 1014 R		    AND     _CONNECTED_FLAGS,BL  ; RESET THE CONNECTED FLAG FOR THIS PORT
+     748				endif
+     749				
+     750				ifdef Microsoft
+     751 02B8  BE 100C R		    MOV     SI,OFFSET _PNUM ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+     752				endif
+     753 02BB  03 F2			    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     754 02BD  03 F2			    ADD     SI,DX           ; TWICE BECAUSE THESE ARE INTEGERS, NOT BYTES
+     755 02BF  52			    PUSH    DX
+     756 02C0  FF 34			    PUSH    [SI]            ; PUSH THE NETWORK PORT NUMBER
+     757				ifdef Microsoft
+     758 02C2  9A 0000 ---- E		    CALL    _NETCLOSE       ; CLOSE THE CONNECTION
+     759				endif
+     760 02C7  83 C4 02			    ADD     SP,2            ; GET RID OF THE PARAMETER WE PASSED
+     761 02CA  5A			    POP     DX
+     762				
+     763 02CB				RESET_INIT:
+     764				ifdef Microsoft
+     765 02CB  BE 1116 R		    MOV     SI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+     766				endif
+     767 02CE  03 F2			    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+     768 02D0  C6 04 00			    MOV     BYTE PTR [SI],0     ; ZERO OUT THE BUFFER OFFSET FOR THE COMM. PORT
+     769				
+     770 02D3				INIT_FINISHED:
+     771 02D3  B8 61B0			    MOV     AX,61B0H        ; MOVE THE RS-232 CONNECTED FLAGS INTO THE RETURN VALUE
+     772 02D6  EB 23			    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+     773				
+     774 02D8				SSKIP:
+     775				;
+     776				;$$$ 01-05-1992 LJD +
+     777				;
+     778				;    XOR     BL,BL
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-15
+
+
+     779				;    MOV     CS:INTENTER,BL    ; REENTER FLAG, DONE NOW
+     780				
+     781				
+     782 02D8  FA				CLI			; disable interrupts
+     783 02D9  2E: FE 0E 005A R			dec	cs:intenter	; reset the flag (unlock for the timer interrupt)
+     784				;
+     785				;$$$ 01-03-1992 LJD -
+     786				;
+     787 02DE  8B 1E 0006 R		    MOV     BX,SER_OLDSS        ; restore the old stack
+     788 02E2  8E D3			    MOV     SS,BX
+     789 02E4  8B 26 0008 R		    MOV     SP,SER_OLDSP
+     790				ifndef Watcom
+     791 02E8  8B 1E 000A R		    mov     bx,SER_OLDSTKHQQ                ; restore end of stack
+     792 02EC  89 1E 0000 E		    mov     _STKHQQ,bx
+     793				endif
+     794 02F0  FB			    STI
+     795 02F1				SERIAL2:
+     796 02F1  5E			    POP     SI
+     797 02F2  5F				POP		DI
+     798 02F3  5A				POP		DX
+     799 02F4  59				POP		CX
+     800 02F5  5B				POP		BX
+     801 02F6  58				POP		AX
+     802 02F7  07				POP		ES
+     803 02F8  1F				POP		DS
+     804 02F9  EB 21			    JMP     SHORT LEAVE_SERIAL    ; JUMP TO THE END OF THE SERIAL ROUTINES
+     805				
+     806 02FB				SSKIP2:
+     807				;
+     808				;$$$ 01-05-1992 LJD +
+     809				;
+     810				;    XOR     BL,BL
+     811				;    MOV     CS:INTENTER,BL    ; REENTER FLAG, DONE NOW
+     812				
+     813 02FB  FA				CLI			; disable interrupts
+     814 02FC  2E: FE 0E 005A R			dec	cs:intenter
+     815				
+     816 0301  8B 1E 0006 R		    MOV     BX,SER_OLDSS        ; restore the old stack
+     817 0305  8E D3			    MOV     SS,BX
+     818 0307  8B 26 0008 R		    MOV     SP,SER_OLDSP
+     819				ifndef Watcom
+     820 030B  8B 1E 000A R		    mov     bx,SER_OLDSTKHQQ                ; restore end of stack
+     821 030F  89 1E 0000 E		    mov     _STKHQQ,bx
+     822				endif
+     823 0313  FB			    STI
+     824 0314				SERIAL3:
+     825 0314  5E			    POP     SI
+     826 0315  5F				POP		DI
+     827 0316  5A				POP		DX
+     828 0317  59				POP		CX
+     829 0318  5B				POP		BX
+     830 0319  07			    POP     ES              ; POP AX INTO ES TO PRESERVE THE RETURN VALUE IN AX
+     831 031A  07				POP		ES
+     832 031B  1F				POP		DS
+     833				;
+     834				;
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Page     1-16
+
+
+     835				;   forward to any other existing routines
+     836				;
+     837 031C				LEAVE_SERIAL:
+     838				else
+     839 031C  CF			    IRET
+     840				endif
+     841				ifdef Microsoft
+     842 031D				_INT14INST      ENDP
+     843				endif
+     844				
+     845				ifdef Microsoft
+     846				;_TEXT ends
+     847				endif
+     848					END
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Symbols-1
+
+
+Segments and Groups:
+
+                N a m e         	Length	 Align	Combine Class
+
+DGROUP . . . . . . . . . . . . .  	GROUP
+  _DATA  . . . . . . . . . . . .  	115D	WORD	PUBLIC	'DATA'
+INT14_TEXT . . . . . . . . . . .  	031D	WORD	PUBLIC	'CODE'
+
+Symbols:            
+
+                N a m e         	Type	 Value	 Attr
+
+BAD_NET_OPEN . . . . . . . . . .  	L NEAR	0281	INT14_TEXT
+
+CACHE_PORT_NAME  . . . . . . . .  	L NEAR	0214	INT14_TEXT
+CHARACTER_NOT_READY  . . . . . .  	L NEAR	019E	INT14_TEXT
+
+DONT_NET_SEND  . . . . . . . . .  	L NEAR	01FE	INT14_TEXT
+
+GET_PORT_CHARACTER . . . . . . .  	L NEAR	01B3	INT14_TEXT
+GET_PORT_STATUS  . . . . . . . .  	L NEAR	0184	INT14_TEXT
+
+INIT_COM_PORT  . . . . . . . . .  	L NEAR	02AC	INT14_TEXT
+INIT_FINISHED  . . . . . . . . .  	L NEAR	02D3	INT14_TEXT
+INTENTER . . . . . . . . . . . .  	L BYTE	005A	INT14_TEXT
+
+LEAVE_SERIAL . . . . . . . . . .  	L NEAR	031C	INT14_TEXT
+
+MICROSOFT  . . . . . . . . . . .  	TEXT  		
+
+NAME_TOO_LONG  . . . . . . . . .  	L NEAR	0237	INT14_TEXT
+NET14  . . . . . . . . . . . . .  	TEXT  		
+NET_OPEN . . . . . . . . . . . .  	L NEAR	0246	INT14_TEXT
+NET_SEND . . . . . . . . . . . .  	L NEAR	0286	INT14_TEXT
+NOT_RECEIVE_CHARACTER  . . . . .  	L NEAR	01ED	INT14_TEXT
+NOT_SEND_CHARACTER . . . . . . .  	L NEAR	02A7	INT14_TEXT
+NOT_STATUS_CHECK . . . . . . . .  	L NEAR	01A4	INT14_TEXT
+NOT_WRAPPED  . . . . . . . . . .  	L NEAR	01E8	INT14_TEXT
+NO_RE_ENTRY  . . . . . . . . . .  	L NEAR	013B	INT14_TEXT
+NUM_COMM_PORTS . . . . . . . . .  	NUMBER	0004	
+
+PORT . . . . . . . . . . . . . .  	NUMBER	0001	
+PORT_ALREADY_INIT  . . . . . . .  	L NEAR	02AC	INT14_TEXT
+
+READ_STATUS  . . . . . . . . . .  	L NEAR	0179	INT14_TEXT
+RECEIVE_CHARACTER  . . . . . . .  	L NEAR	01A9	INT14_TEXT
+RECEIVE_FINISHED . . . . . . . .  	L NEAR	01EA	INT14_TEXT
+RESET_INIT . . . . . . . . . . .  	L NEAR	02CB	INT14_TEXT
+
+SCS  . . . . . . . . . . . . . .  	L WORD	0121	INT14_TEXT
+SEND_CHARACTER . . . . . . . . .  	L NEAR	01F5	INT14_TEXT
+SEND_DONE  . . . . . . . . . . .  	L NEAR	02A3	INT14_TEXT
+SEND_FINISHED  . . . . . . . . .  	L NEAR	02A5	INT14_TEXT
+SERIAL2  . . . . . . . . . . . .  	L NEAR	02F1	INT14_TEXT
+SERIAL3  . . . . . . . . . . . .  	L NEAR	0314	INT14_TEXT
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Symbols-2
+
+
+SERIALINT  . . . . . . . . . . .  	NUMBER	0050	
+SER_NEWSTACK . . . . . . . . . .  	L WORD	000C	_DATA	Length = 0400
+SER_OLDSP  . . . . . . . . . . .  	L WORD	0008	_DATA
+SER_OLDSS  . . . . . . . . . . .  	L WORD	0006	_DATA
+SER_OLDSTKHQQ  . . . . . . . . .  	L WORD	000A	_DATA
+SER_STCK . . . . . . . . . . . .  	L WORD	080C	_DATA
+SHAND  . . . . . . . . . . . . .  	L NEAR	0123	INT14_TEXT
+SICNT  . . . . . . . . . . . . .  	L BYTE	011E	INT14_TEXT
+SIP  . . . . . . . . . . . . . .  	L WORD	011F	INT14_TEXT
+SSKIP  . . . . . . . . . . . . .  	L NEAR	02D8	INT14_TEXT
+SSKIP2 . . . . . . . . . . . . .  	L NEAR	02FB	INT14_TEXT
+START_PORT_NAME  . . . . . . . .  	L NEAR	020D	INT14_TEXT
+STATUS_FINISHED  . . . . . . . .  	L NEAR	01A1	INT14_TEXT
+
+TCS  . . . . . . . . . . . . . .  	L WORD	005D	INT14_TEXT
+THAND  . . . . . . . . . . . . .  	L NEAR	005F	INT14_TEXT
+TICNT  . . . . . . . . . . . . .  	L BYTE	0059	INT14_TEXT
+TIME2  . . . . . . . . . . . . .  	L NEAR	00D2	INT14_TEXT
+TIMEINT  . . . . . . . . . . . .  	NUMBER	0070	
+TIM_NEWSTACK . . . . . . . . . .  	L WORD	080C	_DATA	Length = 0400
+TIM_OLDSP  . . . . . . . . . . .  	L WORD	0002	_DATA
+TIM_OLDSS  . . . . . . . . . . .  	L WORD	0000	_DATA
+TIM_OLDSTKHQQ  . . . . . . . . .  	L WORD	0004	_DATA
+TIM_STCK . . . . . . . . . . . .  	L WORD	100C	_DATA
+TIP  . . . . . . . . . . . . . .  	L WORD	005B	INT14_TEXT
+TRYAGAIN . . . . . . . . . . . .  	L NEAR	012D	INT14_TEXT
+
+WAIT_FOR_CHARACTER . . . . . . .  	L NEAR	01C1	INT14_TEXT
+
+X  . . . . . . . . . . . . . . .  	NUMBER	0006	
+
+@CODE  . . . . . . . . . . . . .  	TEXT  int14_TEXT		
+@CODESIZE  . . . . . . . . . . .  	TEXT  1		
+@CPU . . . . . . . . . . . . . .  	TEXT  257		
+@DATASIZE  . . . . . . . . . . .  	TEXT  1		
+@FILENAME  . . . . . . . . . . .  	TEXT  int14		
+@VERSION . . . . . . . . . . . .  	TEXT  510		
+_BUFFER_OFFSET . . . . . . . . .  	L BYTE	1116	_DATA	Length = 0004
+_CHAR_TO_SEND  . . . . . . . . .  	L BYTE	111A	_DATA
+_CLOCK_TICK  . . . . . . . . . .  	L WORD	115B	_DATA
+_CONNECTED_FLAGS . . . . . . . .  	L BYTE	1014	_DATA	Global
+_DATA_BEGIN  . . . . . . . . . .  	L DWORD	111B	_DATA	Global	Length = 0004
+_DATA_END  . . . . . . . . . . .  	L DWORD	112B	_DATA	Global	Length = 0004
+_DATA_MAX  . . . . . . . . . . .  	L DWORD	113B	_DATA	Global	Length = 0004
+_DATA_START  . . . . . . . . . .  	L DWORD	114B	_DATA	Global	Length = 0004
+_GET_COMM_CHAR . . . . . . . . .  	L FAR 	0000		External
+_INT14DEINST . . . . . . . . . .  	F PROC	00D6	INT14_TEXT	Global	Length = 001C
+_INT14INST . . . . . . . . . . .  	F PROC	00F2	INT14_TEXT	Global	Length = 022B
+_INT14NETSLEEP . . . . . . . . .  	L FAR 	0000		External
+_INT14OPEN . . . . . . . . . . .  	L FAR 	0000		External
+_NETCLOSE  . . . . . . . . . . .  	L FAR 	0000		External
+_NETWRITE  . . . . . . . . . . .  	L FAR 	0000		External
+_OPENING_FLAGS . . . . . . . . .  	L BYTE	1015	_DATA
+_PNUM  . . . . . . . . . . . . .  	L WORD	100C	_DATA	Global	Length = 0004
+_PORT_BUFFER . . . . . . . . . .  	L BYTE	1016	_DATA	Global	Length = 0004
+_PRINT_INT . . . . . . . . . . .  	L FAR 	0000		External
+Microsoft (R) Macro Assembler Version 5.10                  11/5/94 15:59:32
+                                                             Symbols-3
+
+
+_PRINT_INT2  . . . . . . . . . .  	L FAR 	0000		External
+_SMYDS . . . . . . . . . . . . .  	L WORD	011C	INT14_TEXT
+_SPEEDUP . . . . . . . . . . . .  	V WORD	0000	_DATA	External
+_STKHQQ  . . . . . . . . . . . .  	V WORD	0000	_DATA	External
+_TIMEDEINST  . . . . . . . . . .  	F PROC	0000	INT14_TEXT	Global	Length = 0026
+_TIMEINST  . . . . . . . . . . .  	F PROC	0026	INT14_TEXT	Global	Length = 00B0
+_TMYDS . . . . . . . . . . . . .  	L WORD	0057	INT14_TEXT
+
+
+   1043 Source  Lines
+   1043 Total   Lines
+    102 Symbols
+
+  46606 + 335100 Bytes symbol space free
+
+      1 Warning Errors
+      0 Severe  Errors

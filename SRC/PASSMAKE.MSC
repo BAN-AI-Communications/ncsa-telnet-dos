@@ -1,0 +1,33 @@
+#
+#   Microsoft 6.0 makefile for NCSA Telpass
+#
+
+I       = ..\include
+CC     = CL /c /AL /DMSC /I$(I) /Od /W3  # for making more portable versions
+#CC     = CL /c /EM /AL /DMSC /I$(I) /G2 /Ox /W3 # for making versions which only need to run on 80286s
+MM      = masm /W2 /P /DMicrosoft /I..\..\include  # for assembly code files
+LINKER  = link                              # Microsoft's linker
+LINKLINE= telpass+ncsaio; 
+#LINK   = /ST:4096 /CO /DOSSEG              # for debugging
+#LINK   = /ST:4096 /DOSSEG              # for debugging
+LINK    = /ST:4096 /E /F /DOSSEG       # for final versions
+
+telpass\telpass.obj : telpass\telpass.c
+	cd telpass
+	$(CC) telpass.c
+	copy telpass.obj ..\lib
+	cd ..
+
+engine\ncsaio.obj : engine\ncsaio.asm
+	cd engine
+	$(MM) ncsaio.asm ;
+	copy ncsaio.obj ..\lib
+	cd ..
+
+#Use the folowing lines for Microsoft Linker
+telpass.exe : lib\telpass.obj lib\ncsaio.obj
+    cd lib
+    $(LINKER) $(LINK) $(LINKLINE)
+    copy telpass.exe ..
+    del telpass.exe
+    cd ..

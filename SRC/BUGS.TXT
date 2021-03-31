@@ -1,0 +1,44 @@
+This file is a little terse because it is mainly an internal document for
+corrdinating or debuggin.  When reporting a bug, send information necessary
+to repeat the bug, hardware used, drivers used, and systems connecting to.
+Do not send a bug report without mentioning the version of Telnet you are
+using.  Bug reports should be sent to pctelnet@ncsa.uiuc.edu
+
+
+=-=-=-=-=-=-=-=-=
+
+Known bugs in NCSA Telnet 2.3.08
+
+  Shells to DOS occasionally fail.
+  Linemode negotiation.
+  Outputmap=yes is linked to binary option (was feature).
+  Possible bug in TCP window sizes.
+  Disk errors are handled badly.
+  Wide screen modes don't work right.
+  DOS 6 Vsafe will not run with Telnet.
+  VT100 emulation imperfect.
+  Tek emulation imperfect.
+  Monocrome VGA graphics aren't detected.
+  DECNET and AppleTalk support busted.
+  Capture file doesn't echo on some hosts.
+  FTP crawls on some SLIP lines.
+
+=-=-=
+
+
+Plans for future NCSA Telnet versions.  (Wish List)
+
+	Currently, no NCSA programmers are working on PC Telnet.
+         NCSA is not planning future development at this time.
+
+TCP stream reassembly.  Include smaller more specific executables.  Implement
+scripting.  Allow alternative screen modes and window sizes.  More FTP control,
+FTP logging.  Add 8bit support.  Vastly improve keyboard remappings.  Rewrite
+documentation.  Clean up Telnet negotiations.  More VTxxx emulations.  Rewrite
+for sockets.  Multiple FTP connections.  Add Ping and more utilities.  FTP out
+from Telbin.  Do Kerberos.
+
+
+NCSA Telnet is Public Domain software.  Full source is available, and
+code donations are welcome.  The source code is not supported.
+All NCSA software is available via FTP at ftp.ncsa.uiuc.edu

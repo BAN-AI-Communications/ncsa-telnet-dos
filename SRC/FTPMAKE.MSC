@@ -1,0 +1,308 @@
+#
+#   Microsoft 6.0 makefile for ftp
+#
+
+I       = ..\include
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /I$(I) /W3        # for making more portable versions
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /I$(I) /Ot /Gs /W3 # for making more portable versions, with the best optimization
+
+CC      = CL /Gs /c /AL /DFTPBIN /DMSC /DFTP /I$(I) /Od /W3 # release
+#CC      = CL /Gs /c /AL /DAUX /DFTPBIN /DMSC /DFTP /I$(I) /Od /Zi /W3 # debug
+#CC      = CL /Gs /c /AL /DAUX /DFTPBIN /DMSC /DFTP /I$(I) /Od /W3 # debug
+
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /DMAL_DEBUG /I$(I) /Ox /W3 # for making more portable versions, with the best optimization
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /I$(I) /Ox /W3    # for making more portable versions, with the best optimization
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /I$(I) /G2 /Ox /W3    # for making versions which only need to run on 80286s
+#CC     = CL /c /EM /AL /FPi87 /DFTPBIN /DMSC /DFTP /I$(I) /G2 /Ox /W3 # for making versions which only need to run on 80286s with 80287 math coprocessors
+#CC     = CL /c /EM /AL /DFTPBIN /DMSC /DFTP /I$(I) /Zg   # for getting function declarations
+
+##LINK   = /ST:4096 /CO /DOSSEG               # debug
+LINK    = /ST:4096 /E /F /PACKC /DOSSEG        # final
+
+MM      = masm /W2 /P /DFTPBIN /DMicrosoft /I..\..\include  # assembly
+##MM      = masm /W2 /P /DFTPBIN /DMicrosoft /Zi /I..\..\include  # assembly debug
+
+#
+# First compile ftpbin
+#
+ftp\ftpbin.obj : ftp\ftpbin.c
+	cd ftp
+	$(CC) ftpbin.c
+	copy ftpbin.obj ..\lib
+	cd ..
+
+#
+# This next set is a repeat of tmake.msc
+# We want to make sure the tcp/ip kernal is up to date
+#
+
+net\enet\net.obj : net\enet\net.c include\protocol.h include\data.h
+	cd net\enet
+	$(CC) /I..\..\include net.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\net ;
+
+net\enet\ltalk.obj : net\enet\ltalk.c include\kip.h 
+	cd net\enet
+	$(CC) /I..\..\include ltalk.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\ltalk ;
+
+engine\ip.obj : engine\ip.c include\protocol.h include\data.h
+	cd engine
+	$(CC) ip.c
+	cd ..
+	lib lib\tcp.lib -+engine\ip ;
+
+engine\bootp.obj : engine\bootp.c include\protocol.h include\data.h include\bootp.h include\windat.h include\hostform.h
+	cd engine
+	$(CC) bootp.c
+	cd ..
+	lib lib\sess.lib -+engine\bootp ;
+
+engine\user.obj : engine\user.c include\protocol.h include\data.h
+	cd engine
+	$(CC) user.c
+	cd ..
+	lib lib\tcp.lib -+engine\user ;
+
+#engine\rspc.obj : engine\rspc.c include\windat.h include\vskeys.h include\whatami.h
+#    cd engine
+#    $(CC) rspc.c
+#    copy rspc.obj ..\lib
+#    cd ..
+
+engine\tools.obj : engine\tools.c include\protocol.h include\data.h
+	cd engine
+	$(CC) tools.c
+	cd ..
+	lib lib\tcp.lib -+engine\tools ;
+
+engine\udp.obj : engine\udp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) udp.c
+	cd ..
+	lib lib\tcp.lib -+engine\udp ;
+
+engine\arp.obj : engine\arp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) arp.c
+	cd ..
+	lib lib\tcp.lib -+engine\arp;
+
+engine\domain.obj : engine\domain.c include\protocol.h include\data.h
+	cd engine
+	$(CC) domain.c
+	cd ..
+	lib lib\tcp.lib -+engine\domain ;
+
+engine\bkgr.obj : engine\bkgr.c include\hostform.h include\whatami.h
+        cd engine
+        $(CC) bkgr.c
+        cd  ..
+        lib lib\sess.lib -+engine\bkgr ;
+
+engine\util.obj : engine\util.c include\whatami.h include\hostform.h
+	cd engine
+	$(CC) util.c
+	cd ..
+	lib lib\sess.lib -+engine\util ;
+
+engine\tcp.obj : engine\tcp.c include\protocol.h include\data.h
+	cd engine
+	$(CC) tcp.c
+	cd ..
+	lib lib\tcp.lib -+engine\tcp ;
+
+engine\pcutil.obj : engine\pcutil.c include\whatami.h
+	cd engine
+	$(CC) pcutil.c
+	cd ..
+	lib lib\sess.lib -+engine\pcutil ;
+
+engine\protinit.obj : engine\protinit.c include\protocol.h include\data.h
+	cd engine
+	$(CC) protinit.c
+	cd ..
+	lib lib\tcp.lib -+engine\protinit ;
+
+engine\look.obj : engine\look.c include\windat.h include\whatami.h include\nkeys.h include\hostform.h
+	cd engine
+ 	$(CC) look.c 
+	copy look.obj ..\lib
+	cd ..
+
+engine\menu.obj : engine\menu.c include\windat.h include\whatami.h include\nkeys.h include\hostform.h
+	cd engine
+	$(CC) menu.c
+	copy menu.obj ..\lib
+	cd ..
+
+engine\new_con.obj : engine\new_con.c include\whatami.h include\hostform.h include\confile.h
+        cd engine
+    $(CC) new_con.c
+        cd ..
+    lib lib\common.lib -+engine\new_con ;
+
+engine\fakeout.obj: engine\fakeout.c include\hostform.h
+	cd engine
+	$(CC) fakeout.c
+	cd ..
+	lib lib\common.lib -+engine\fakeout ;
+
+net\enet\netbicc.obj : net\enet\netbicc.c include\protocol.h include\data.h
+	cd net\enet
+	$(CC) /I..\..\include netbicc.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\netbicc ;
+
+net\enet\netbicc2.obj : net\enet\netbicc2.asm
+	cd net\enet
+    $(MM) netbicc2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netbicc2 ;
+
+net\enet\packet.obj : net\enet\packet.c include\windat.h include\whatami.h
+	cd net\enet
+	$(CC) /I..\..\include packet.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\packet ;
+
+net\enet\packet2.obj : net\enet\packet2.asm
+	cd net\enet
+    $(MM) packet2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\packet2 ;
+
+net\enet\dndll.obj : net\enet\dndll.c include\protocol.h include\decnet.h
+	cd net\enet
+	$(CC) /I..\..\include dndll.c
+	cd ..\.. 
+	lib lib\enet.lib -+net\enet\dndll ;
+
+net\enet\dndll2.obj : net\enet\dndll2.asm
+	cd net\enet
+	$(MM) dndll2.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\dndll2 ;
+
+net\enet\netatt10.obj : net\enet\netatt10.asm
+	cd net\enet
+    $(MM) netatt10.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netatt10 ;
+
+net\enet\net3com.obj : net\enet\net3com.asm
+	cd net\enet
+    $(MM) net3com.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net3com ;
+
+net\enet\net501.obj : net\enet\net501.asm
+	cd net\enet
+    $(MM) net501.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net501 ;
+
+net\enet\nov3com.obj : net\enet\nov3com.asm
+	cd net\enet
+    $(MM) nov3com.asm ;
+	cd ..\..
+#	lib lib\enet.lib -+net\enet\nov3com ;
+
+net\enet\net503.obj : net\enet\net503.asm
+	cd net\enet
+    $(MM) net503.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net503 ;
+
+net\enet\net505.obj : net\enet\net505.asm
+	cd net\enet
+    $(MM) net505.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net505 ;
+
+net\enet\net9210.obj : net\enet\net9210.asm
+	cd net\enet
+    $(MM) net9210.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net9210 ;
+
+net\enet\ltlisten.obj : net\enet\ltlisten.asm
+	cd net\enet
+    $(MM) ltlisten.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\ltlisten ;
+
+net\enet\net523.obj : net\enet\net523.asm
+	cd net\enet
+    $(MM) net523.asm ;
+	cd..\..
+	lib lib\enet.lib -+net\enet\net523 ;
+
+net\enet\netub.obj : net\enet\netub.asm
+	cd net\enet
+    $(MM) netub.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netub ;
+	
+net\enet\net5210.obj : net\enet\net5210.asm
+	cd net\enet
+    $(MM) net5210.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net5210 ;
+
+net\enet\net8003.obj : net\enet\net8003.asm
+	cd net\enet
+    $(MM) net8003.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net8003 ;
+
+net\enet\net8003a.obj : net\enet\net8003a.asm
+	cd net\enet
+    $(MM) net8003a.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\net8003a ;
+
+net\enet\netzyp.obj : net\enet\netzyp.asm
+	cd net\enet
+    $(MM) netzyp.asm ;
+	cd ..\..
+	lib lib\enet.lib -+net\enet\netzyp ;
+
+engine\ipasm.obj : engine\ipasm.asm
+	cd engine
+    $(MM) ipasm.asm ;
+	cd ..
+	lib lib\tcp.lib -+engine\ipasm ;
+
+engine\ncsaio.obj : engine\ncsaio.asm
+	cd engine
+    $(MM) ncsaio ;
+	copy ncsaio.obj ..\lib
+	cd ..
+
+engine\ncsabrk.obj : engine\ncsabrk.asm
+	cd engine
+    $(MM) ncsabrk ;
+    copy ncsabrk.obj ..\lib
+	cd ..
+
+debug\memdebug.obj : debug\memdebug.c include\memdebug.h
+	cd debug
+	$(CC) /I..\include memdebug.c
+	copy memdebug.obj ..\lib
+	cd ..
+
+
+#
+#	Put it all together
+#
+
+ftpbin.exe : ftp\ftpbin.obj debug\memdebug.obj engine\ncsaio.obj engine\ncsabrk.obj lib\sess.lib lib\tcp.lib lib\enet.lib lib\common.lib
+    cd lib
+##    link $(LINK) ftpbin+ncsaio+ncsabrk,ftpbin,nul,tcp+sess+enet+common+debug;
+    link $(LINK) ftpbin+ncsaio+ncsabrk,ftpbin,nul,tcp+sess+enet+common;
+    copy ftpbin.exe ..
+    del ftpbin.exe
+    cd ..

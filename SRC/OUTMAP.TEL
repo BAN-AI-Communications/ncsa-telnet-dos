@@ -1,0 +1,7 @@
+;
+;       Example output mapping file for NCSA Telnet 2.3
+;
+
+set key a b 		; map the 'a' character to the 'b' character when displayed
+set key c \234		; map the 'c' character to the graphics omega character
+

@@ -1,0 +1,1051 @@
+    PC Telnet is compiled with Microsoft C/C++ 7.0 and MASM 5.1
+
+BUGS FIXED FOR NCSA Telnet 2.3.08                                   RMG 941114
+1)  Help screen keys limited to avoid paramater menu.
+2)  Fixed redraw for console when no open connections.
+3)  Command line usage display added newlines.
+4)  BOOTP repaired to not crash packet drivers.
+5)  GIN repair patch added.
+6)  Improper fragmentation identification fixed (Solaris users will notice).
+7)  Net14 uses port=xx option in config.tel
+8)  Ftpbin cursor repositions after shell out.
+9)  More GIN tuning
+10) Ftpbin control messages all shown.
+11) ^Zs removed from ASCII transfers
+12) Ftpbin internal more fixed.
+13) UDP portlist structure minimized.
+14) FTP mget response fixed.
+15) Alt-T reloads keymap.
+
+BUGS FIXED FOR NCSA Telnet 2.3.07
+1)  Alt-E shells no longer crash.  The /Gs compiler option had to be added.
+2)  0 Byte transfers fixed.  For the most part.  Blank files are still created
+      in some circumstances, but it no longer crashes.
+3)  Hierarchical FTP permissions implemented.  See ftpnew.txt
+      (**Password file format changed**)
+4)  Setclock revised for MSC 7.0
+5)  Local printing control amended.  ^[[4i? and ^[[5i parsed.
+6)  Config.tel seconds/ticks resolved.  Everything is in seconds now.
+      (**Config.tel file format changed**)
+7)  Outgoing CR mapping changed.  Options for CR, or LF or CRNUL.
+8)  Net14.not (note) corrected.  And example Net14 session added.
+9)  Net14 repaired.
+10) UDP support enhanced.  A small change that won't affect anything.
+11) Window resize response makes sense.  Resize will now work.
+12) Colors fixed.  Colors are stable.  This means FTP will be visable, and
+      color info will return when switching among sessions.
+13) FTP mget * will not try to get parent dir.  Removed . and .. from NLST.
+14) TCP reset port code corrected.  Code donation by Hsiao-yang Cheng.
+15) IP fragments now supported.  Code donation by Matthew Kaufman.
+16) Ftpbin output redirection improved.  Ftpbin now uses ncsaio.asm routines.
+17) Keyboard file read from specified location.  Keyboard file was read in
+      from the directory Telnet was started from regardless of config.tel
+      settings.
+18) Scrollback past first screen fixed.  Cut n Paste now work from any point
+      in scrollback.
+19) Scrollback text copied after second spacebar.  It is no longer necessary
+      to hit Alt-C, although this still works.
+20) Help & DOS-shell work from status screen.  You no longer need to have a
+      connection open to get help or shell out to DOS.
+21) Couple other small things, somewhere, probably.
+
+BUGS FIXED FOR NCSA Telnet 2.3.06
+1)  When FTP'ing to a PC running this Telnet, directories now show up in the
+    'ls' (NLST) command.
+2)  Alt-I no longer gives you the time of day.
+3)  Fixed retransmission bug which caused flooding of network with duplicate
+    packets.  There's another similar bug still reported out there.
+4)  Vsinterf.c changed to facilitate some ASCII graphics.
+
+BUGS FIXED FOR NCSA Telnet 2.3.05
+1)  The Telnet Linemode option support has been fixed and enhanced, and
+    should not cause further problems.  (This should fix the IAC SUSP
+    problems that various people have reported)
+2)  RARP bugs tracked down and fixed.
+3)  Telnet is much more consistant about restoring the video modes when
+    entering, exiting and shelling out to a DOS shell.  It will always
+    try to restore the previous video mode it had been in.
+4)  Several hidden bugs were fixed in the TCP/IP kernel, which caused
+    a variety of mysterious crashes and error conditions (including the
+    'TCP in unknown state' error while FTP'ing files).
+5)  NET14 program had a timing bug fixed so that it shouldn't corrupt the
+    TCP/IP stack and crash.
+6)  When output mapping is engaged, Telnet attempts to negotiate binary
+    mode for that connection.  (This may still cause some problems with
+    the implementations of binary mode on various hosts...).  Also,
+    corrected screen updating when switching between sessions with
+    output mapping enabled.
+7)  Fixed a bug in the rexec/rsh utilities which weren't shutting down the
+    network correctly and causing further accesses with packet drivers
+    to fail.
+8)  Stopped TCP/IP messages from being displayed in printouts using the
+    VT100 local printer escapes.
+9)  Plugged more memory leaks.
+10) Fixed several obscure Kermit key mapping problems (mostly with \d
+    mapping).
+11) Stopped flushing the ARP cache in certain situations which were 
+    flooding the network with packets.
+12) Corrected several vt100/vt220 keyboard mappings in the telnet.key
+    file.
+13) Fixed problem with Telnet refusing to connect to hosts on a Class A
+    network with host ID of zero.  (If you don't know what I'm talking
+    about, it wasn't affecting you :-)
+14) Stopped the vt100 terminal emulation from "eating" ESC chars when they
+    didn't begin a vt100 command, they are now printed.
+15) Added a new machine specific option to the config.tel, called 
+    consoledebug=[0|1|2].  This option controls how much debugging 
+    information about a connection is displayed in the telnet console
+    window.  If consoledebug=0 for a machine, no connection information
+    is displayed about connections to that machine (this has the least
+    impact on the speed of Telnet).  If consoledebug=1 for a machine,
+    Telnet Option Negotiation for that machine is displayed on the
+    console screen (this has only a very mild impact on the speed of
+    Telnet).  If consoledebug=2, the Telnet Option Negotiation and
+    all data received on a connection is displayed on the console
+    screen in Telnet (this level of debugging has a significant impact
+    on the performance of Telnet and should be avoided unless actually
+    tracking down a problem).
+16) Added a new machine specific option to the config.tel file called
+    outputmap=[yes|no].  This option determines whether Telnet tries
+    to initially use binary mode in connections to a machine and also
+    enables output mappping for displaying text from that machine.
+
+Known Bugs: (If these are affecting you, please respond to me personally,
+    I would like to have some people who can give me some hard data.  I 
+    will not (repeat _not_) reply to other bug reports, they should go
+    to pctelbug@ncsa.uiuc.edu)
+1)  For some particular cases the Tektronix emulation is not clearing the
+    screen.  (I especially would like somebody to give me a tektronix
+    file which could reproduce this reliably)
+2)  LPR/LPQ/LPRM may not work reliably with a packet driver. (which
+    packet driver(s) would help me a lot)
+3)  Telnet does not connect to a SCO UNIX system, it drops the connection
+    somehow.  (Need people with Sniffers for the network to let me
+    know where the problem is)
+
+BUGS FIXED FOR NCSA Telnet 2.3.03
+1)  Screen modes should be restores more reliably
+2)  Dos shells now use the telnet screen mode
+3)  -n command line option disables screen restore
+*** NOTE - there is a problem with some video modes on some systems.  Telnet
+    will crash before actually entering the program in this case - I don't
+    know what is causing it, but if this happens, use an older version.
+
+BUGS FIXED FOR NCSA Telnet 2.3.02:
+1)  The problem with screen dumps and the problem with ALT-F with VAXs has
+    been fixed - Telnet was using <LF><CR> instead of <CR><LF>
+2)  Bootp problems have been fixed
+3)  AppleTalk should work again
+4)  Telnet should pay attention to Source Quench messages
+5)  Shelling to dos from ftp (or from ftp'ing back to your machine
+    withing telnet) should not cause problems any more
+6)  FTP messages have been made more informative - both to the user and
+    on the console screen  (internal ftp server)
+7)  environment variables NCSA01 - NCSA99 now override options in the config.tel
+    file - user ~ instead of = (set NCSA01="video~vga50;ftp~no")
+8)  -e option has been added to telbin.exe to override both config.tel and
+    environment variables (-e "option=something")
+
+BUGS FIXED FOR NCSA Telnet 2.3.01:
+1)	The problem with packet drivers not working at all is gone.  The problem
+	was with MSC 6.00 and optimizations.  MSC was "optimizing" packet driver
+	support out of telnet
+2)	A minor bug with linemode was fixed.  The case of an option that NCSA
+	telnet supported and the remote host did not was not handled correctly.
+
+BUGS FIXED FOR NCSA Telnet 2.3-final:
+1)  Linemode works correctly (for the most part).  Some strangeness occurs
+	with recurring subnegotiation with NeXTs, but this appears to be the
+	NeXTs doing.
+2)	Telnet now uses a UNIX style services file (services= in config.tel)
+	to determine the destination of a packet received on an invalid port.
+	It will always tell the port number and source ip address, and if an
+	entry for the tcp port exists in the services file - the destination
+	application according to services, otherwise unknown.
+3)	A new beep=(yes/no) entry in config.tel has been added. This is useful
+	when multiple sessions are open and one of them beeps.  The beeping
+	session gets a pair of musical notes (ASCII 14) in its status 
+	indicator on the status bar.
+4)	Telnet now attempts to restore the screen on exit.
+
+BUGS FIXES FOR NCSA Telnet 2.3b15:
+1)  The mouse driver for cut & paste and scrollback operations is now 
+    functional- The left and right mouse buttons are mapped as below (in
+    the b14 fixes), but when in scrollback mode, pressing and holding the left
+    mouse button, then pressing the right button will do an "Alt-C" to capture
+    a highlighted area of text, and then in non-scrollback mode, pressing and
+    holding the right button and then pressing the left will do the equivalent
+    of an "Alt-V" paste operation-  This allows you to do cut&paste operations
+    without touching the keyboard.  Nifty, huh! :^)
+
+2)  Turbo C make has been improved (NOTE: I did _NOT_ say it has been fixed-
+    I don't have Turbo C on my machine, so I haven't tested it.  However, I
+    have fixed a lot of bugs/discrepancies that impeded TC compiling.)
+
+3)  Background FTP tasks in Telnet no longer change your current directory.
+
+4)  FTP help has been re-alphabetized.
+
+5)  DEC VT100 Local Printer Escape sequences are now supported- ESC [5i now
+    sends output to the screen AND the local printer (LPT1:) if attached, and
+    ESC [4i switches the output back to screen only.
+
+6)  A "TELNET.PIF" file is now included for using NCSA Telnet within Microsoft
+    Windows (tm) ver 3.0.  This is not guaranteed to work, but it works for me.
+
+
+BUGS FIXES FOR NCSA Telnet 2.3b14:
+1)	Configurable ftp-back-to-PC string.  This should normally be set to "-n"
+	to avoid the "Username:" prompt.
+
+2)	Fixed some linemode negotiation bugs.
+
+3)	Fixed Telnet options printing on screen.
+
+4)	'More' command fixed in FTP. 
+
+5)	rsh utility added.
+
+6)	FTP color bug fixed.
+
+7)	8-bit output mapping now allowed.
+
+8)	Mouse support added for editing. Currently, the movements are mapped to the
+	arrow keys, the left button is mapped to '\n', and the right button is
+	mapped to 'ScrlLck'.
+
+9)  Disable/enable mouse support (8).  The mouse is disabled by default-
+	pressing "Alt-M" or clicking the right mouse button enables it.  Pressing
+	"Alt-M" or the right mouse button again disables it, etc.  Note that
+	clicking the right mouse button to enable/disable the mouse also 
+	enables/disables scrollback mode.  This means you can do a scrollback
+	without touching the keyboard.
+
+10)	THE MESSAGES SCREEN IS NOW ALT-Z, _NOT_ ALT-M!!
+
+11)	MGET in ftp now checks filenames for dos compatability TO SOME EXTENT.
+
+12)	SITE command support added to ftpbin.
+
+13)	DEPCA driver should be fixed now.
+
+14)	MGET and MPUT now ask (Yes/No/All/Quit) for each file.  All gets all the
+	remaining files without interactive prompting, Quit terminates the
+	current batch.
+
+
+BUGS FIXES FOR NCSA Telnet 2.3b13:
+1)	3c505 driver added to release.  Use in the standard manner for hardware
+	boards.
+
+2)	BICC driver added to release.  Use in the standard manner for hardware
+	boards.
+
+3)	Bugs with the ftp server in telnet & the standalone ftp client/server
+	should be fixed.  This should prevent them from locking up at random
+	times.
+
+4)	'More' command added to the standalone ftp client/server, to toggle the
+	state of it, type "more" at the command line.  This should help with
+	the lines scrolling off of the top of the screen.
+
+5)	Standalone ftp client/server now uses the colors set in the config.tel
+	file.
+
+Known Bugs: 	Please see the BUGS file in this directory.
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	A VGA monochrome screen driver.
+
+3)	Overlaying the code so that Telnet will take up less memory.
+
+4)	Maybe update the telpass interface.
+
+5)	Enhance the vt110 emulator to support double width & double height
+	characters, and the printer toggle switches.
+
+Please keep the bug reports coming in.
+pctelbug@ncsa.uiuc.edu
+
+
+BUG FIXES FOR NCSA Telnet 2.3b12:
+1)	The problem with the backspace acting like a carriage return in ftpbin
+	has been resolved.
+
+2)	FTP now handles disk full errors correctly, and also intelligently
+	strips off the ^Z character on the end of text files which have it.
+
+3)	The Appletalk driver is now working.  You need to specify the interupt
+	that the appletalk card is using in the config.tel file, i.e.:
+	hardware=atalk
+	interrupt=60
+
+4)	Output mapping has been added to allow foreign character sets to display
+	better.  The format is very similar to the keyboard mapping, i.e.:
+	"set key a b" in the output mapping file would map all the 'a' characters
+	displayed onto the screen to 'b' characters when the are displayed.
+	This output mapping is specific to each session and may be turned on
+	and off from the parameter menu (Alt-P).  The entry to the config.tel
+	file is as follows:
+	outputfile=<filename>
+
+5)	Sometimes characters from teh extended keyboard are getting eaten.
+	These include the '5' key on the numeric keypad, and the f11 & f12 keys.
+	This can be solved by turning off the clock display.  A menu option
+	has been added to the parameter menu (Alt-P) to facilitate this.
+
+6)	The BOOTP method of receiving an ethernet address has been fixed and
+	is now fully functional.  Please note that some of the utilities
+	we provide may not work correctly with this option, for example,
+	all the hosts which can print on a UNIX host are usually indexed by
+	their IP number, which in the case of BOOTP is dynamically assigned.
+	This will mean that you will probably not be allowed to print on the
+	UNIX machine.
+
+7)	Removed the check for the '-h' being the first parameter for LPR to
+	specify the config.tel file, as it was causing more problems than
+	it was solving.
+
+8)	Cleaned up some problems with the graphics menu (Alt-G) hanging the machine
+	when tektronix mode was not initialized.
+
+9)	Included the object files for the assembly files for those people without
+	assemblers.
+
+10) Included makefiles for Microsoft C 6.0 and Turbo C. (makefile.msc &
+	makefile.tcc respectively)
+
+Known Bugs: 	Please see the BUGS file in this directory.
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	A VGA monochrome screen driver.
+
+3)	Overlaying the code so that Telnet will take up less memory.
+
+4)	Maybe update the telpass interface.
+
+5)	Enhance the vt110 emulator to support double width & double height
+	characters, and the printer toggle switches.
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+
+BUG FIXES FOR NCSA Telnet 2.3b11:
+
+1)	Added support in config.tel for braodcast IP address to be set, this
+	allows for better compatibility with out-of-date networks which use
+	different broadcast IP numbers.  To use this option, include the line:
+	broadcast=xx.xx.xx.xx	# where xx.xx.xx.xx is the broadcast IP number
+	for the network you are on.
+
+2)	Fixed the parsing of the keyboard mapping file to accept mixed case
+	strings, and octal & hex strings.
+
+3)	Changed the Abort Telnet Key to Ctrl-Shift-F3.
+
+4)	Fixed the memory overwrite problems when changing the session name
+	and the capture file name.
+
+5)	Fixed the problem with the backspace in ftpbin not working correctly.
+
+6)	Fixed problem with Ctrl-Home & Home crashing the machine when
+	tek=no was in the config.tel file.
+
+7)	Added support for thr DECnet DEPCA ethernet boards, this hardware option
+	is:
+	hardware=decnet		# DECnet DEPCA boards
+
+8)	Fixed assorted memory bugs associated with the ftp server in telnet.
+
+9)	Added the ability to shell to DOS while in server mode, with the ALT-E
+	option.
+
+10)	Added the option to capture the screen to a file, with the ALT-D command.
+
+11)	Added the following network utilities:
+	finger	- same as the UNIX command finger
+	rexec	- same as the UNIX command rexec, except it doesn't allow for
+				interactive input from the user on the PC.
+	setclock - set the PC clock from a UNIX machine.
+
+12)	Fixed the mouse driver begin backwards in scroll back mode.
+
+13)	Added more characters for the password in ftpbin to be transmitted.
+
+14)	Added support for the ACCT command in ftpbin.
+
+15)	Added an option to ftpbin, -e <filename>, which accepts scripting input
+	from the file: <filename>, but is un-scripted for the user name and
+	the password.
+
+16)	Fixed ascii transfer in ftpbin, to not drop the last character, or
+	append ctrl-m ctrl-[, in certain cases.
+
+17)	The appletalk driver should be working, give it a try.
+
+18)	Please note the bug report address is changed from telbug@ncsa.uiuc.edu
+	to pctelbug@ncsa.uiuc.edu.
+
+19)	Somebody e-mail me, if they actually get a NULL pointer overwritten
+	error when exitting from telnet, it may be fixed.
+
+NOTE:	For Microsoft Windows users out there, don't run Telnet in the
+	background, packets get dropped or written to other applications causing
+	crashes.  Run Telnet in exclusive mode, and turn on bios screen usage
+	(bios=yes).  We have also had conflicting reports of Telnet working well
+	with Windows, so at least try to take care.
+
+
+Known Bugs:
+
+1)	Tektronix GIN mode is not fixed yet.
+
+2)	FTPBIN is slow, and doesn't handle disk full problems well yet,
+	and also has problems with small (~5kb) ascii files.
+
+3)	Pasting from the copy buffer into a session is not printed when in 
+	line mode.
+
+4)	The keyboard drops f11, f12, and the keypad 5 key occasionally.
+
+5)	BOOTP is broken, to be fixed again in the next beta release.
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	A VGA monochrome screen driver.
+
+3)	Overlaying the code so that Telnet will take up less memory.
+
+4)	Maybe update the telpass interface.
+
+5)	Enhance the vt110 emulator to support double width & double height
+	characters, and the printer toggle switches.
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+
+BUG FIXES FOR NCSA Telnet 2.3b10:
+
+1)	Fixed LPR not to send a null length file when the file doesn't exist.
+
+2)	Grabbed another couple of interrupts to get the ctrl-c trapping better.
+	This should finally take care of the problem.
+
+3)	LPR now reads files from other drives correctly.
+
+4)	LPQ & LPRM now look for CONFIG.TEL environment variable, instead of
+	CONFIGTEL environment variable in order to be compatible with the
+	rest of the applications.
+
+5)	The packet driver interface now passes RARP packets.  I am not totally
+	certain if it will pass a BOOTP packet or not.
+
+6)	A BRAND SPANKING NEW keyboard mapping interface.  This facility should
+	be totally compatible with MS-Kermit keyboard mapping files.  The only
+	thing we don't support are some of the kermit verbs to map to keys.
+	Please read the keymap.txt file for detailed information.
+
+7)	Moved a bunch of #includes around in the source to make porting to other
+	compilers easier.
+
+8)	Added a sane memory error trapping function.  If telnet suddenly spits
+	a message at you about a memory problem and says that it has written
+	a telnet.err file, _PLEASE_ mail it back to us so we can fix the bug
+	which caused it.  (For those of you who are interested in nice memory
+	debugging code, take a look at the memdebug.c file, it contains some
+	really slick replacements for dynamic memory allocation which I scarfed
+	from a recent Dr. Dobbs article and enhanced.)
+
+9)	Added the Alt+W command to send your password when ftp'ing back to your
+	own machine while in telnet.  Just press Alt+W at the Password: prompt
+	and hit enter, your password from the telnet password file will be
+	sent back to your machine.
+
+10)	Patched the existing code some to enable the BOOTP support.  To use this
+	method of recieving your IP number, just include the myip=BOOTP setting in
+	your config.tel file.
+
+11)	LPR was patched to print the burst page.
+
+12)	The color support has been enhanced to allow high intensity foreground
+	text and blinking backgrounds.  To use this, just set whatever color,
+	nfcolor for example, to a color in capitals.  For example, nfcolor=CYAN
+	would set the normal text's foreground color to bright cyan.
+
+13)	Because of the new keyboard mapping interface, the shifted function key
+	macros and the keyboard= entries in the config.tel were removed.  Just 
+	use the new keyboard mapping interface, its a lot better.
+
+NOTE:	For Microsoft Windows users out there, don't run Telnet in the
+	background, packets get dropped or written to other applications causing
+	crashes.  Run Telnet in exclusive mode, and turn on bios screen usage
+	(bios=yes).  We have also had conflicting reports of Telnet working well
+	with Windows, so at least try to take care.
+
+
+Known Bugs:
+
+1)	Tektronix GIN mode is not fixed yet. (Sorry, but it will be one of the
+	first things I work on, I promise!)
+
+2)	FTPBIN is slow, and doesn't handle disk full problems well yet.
+
+3)	The dreaded NULL pointer error on exitting Telnet is still around.  This
+	may not get fixed until we get the new version of Codeview, because Telnet
+	is too large to debug normally.
+
+4)	Pasting from the copy buffer into a session is not printed when in 
+	line mode.
+
+5)	Mouse may move backwards in the scrollback for certain mice.
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	Appletalk driver will get fixed.
+
+3)	Various people have asked for more screen drivers, so perhaps if a lot of
+	people ask for different screen drivers for tektronix plots, we will
+	add another screen driver or two.
+
+4)	Overlaying the code so that Telnet will take up less memory.
+
+5)	Maybe update the telpass interface.
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+
+BUG FIXES FOR NCSA Telnet 2.3b9:
+
+1)	A patch was made to make the NIC PS/2 card work correctly.
+
+2)	The problems with the LPR utilities not having enough stack space has
+	been fixed.
+
+3)	The problem with domain name serving which was introduced in b8 has
+	been fixed.
+
+4)	Added an option to the config.tel file to determine whether the clock
+	should be on or off.  The default is on
+	ex. - clock=off
+
+5)	Fixed several problems introduced in b8 having to do with the vt100
+	emulation.  This caused various problems using EDT on Vaxes.
+
+6)	Fixed bug which did not reset the line wrapping mode when Alt-R was
+	pressed to reset vt100 emulation.
+
+NOTE:	For Microsoft Windows users out there, don't run Telnet in the
+	background, packets get dropped or written to other applications causing
+	crashes.  Run Telnet in exclusive mode, and remember to turn off keyboard
+	re-mapping in your config.tel (keyboard=off), and turn on bios screen usage
+	(bios=yes).  We have also had conflicting reports of Telnet working well
+	with Windows, so at least try to take care.
+
+
+Known Bugs:
+
+1)	Tektronix GIN mode is not fixed yet.
+
+2)	The keyboard mapper still has a cruddy file interface, this will get
+	improved in the next couple of weeks.
+
+3)	The keyboard gets reset to a US keyboard from the users keyboard type.
+
+4)	FTPBIN is slow, and doesn't handle disk full problems well yet.
+
+5)	The dreaded NULL pointer error on exitting Telnet is still around.  This
+	may not get fixed until we get the new version of Codeview, because Telnet
+	is too large to debug normally.
+
+6)	Macros and pasting the copy buffer are not printed when in line mode.
+
+7)	LPR sends a null length entry when a file doesn't exist.
+
+8)	Mouse may move backwards in the scrollback for certain mice.
+
+9)	LPR does not find files on other drives.
+
+10)	LPR may not be reading the command line for the -h option correctly.
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	Definiteley re-write the keybaord mapping to handle arbitrary length 
+	strings	for any key on the keyboard.
+
+3)	Appletalk driver will get fixed.
+
+4)	Various people have asked for more screen drivers, so perhaps if a lot of
+	people ask for different screen drivers for tektronix plots, we will
+	add another screen driver or two.
+
+5)	Overlaying the code so that Telnet will take up less memory.
+
+6)	Maybe update the telpass interface.
+
+
+This week, one of the developers for Telnet, Heeren Pathak, graduated from the
+university and left NCSA to work at Mitre.  I would like to thank Heeren for
+all his effort and time he has devoted to this piece of software, and for
+everyone to wish him well in his new endeavours.
+
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+BUG FIXES FOR NCSA Telnet 2.3b8:
+
+1)	No change in the internal ethernet drivers.  The Appletalk is still under
+	some work, but the ni9210 may be put on indefinite hold.
+
+2)	The previously reported 'bug' about Telnet corrupting the environment
+	when you are shelled out is a bug in the Microsoft compiler.  There is
+	presently nothing we can do to fix this problem.  Possibly when we get
+	our copy of Microsoft C 6.0 the problem will go away, but don't hold your
+	breath.
+
+3)	The scrollback has been speeded up and now also restores the screen
+	correctly when exitting.  The cursor is now replaced correctly when you
+	exit.  There are several new things about the scrollback buffer which
+	are documented here.  The key sequence "home-home" will place the cursor
+	at the upper left corner of the present screen, and the key sequence
+	"end-end" will place the cursor at the lower right corner of the current
+	screen.  Pressing "home" or "end" will take you to the beginning or end
+	of the current line respectively.  "Pgup" and "Pgdn" move you an entire
+	screen up or down in the buffer, but don't move the cursor position.
+	The behavior of the scrollback buffer when the cursor is on the top or
+	bottom line and the up or down arrow (respectively) is pressed is now
+	determined by the "autoscroll=[no|yes]" configuration variable.  If
+	autoscroll is yes (the default state), then the screen will continue to 
+	scroll in a direction until the opposite key is pressed (i.e. the down
+	arrow, when scrolling up).  If autoscrolling is off, then the buffer
+	will only scroll one line up further into the buffer.
+
+4)	Telnet now reports back negotiation information to the console window
+	about the option negotiation which is being processed with the telnet
+	server you are connected to.  This allows you to see exactly what telnet
+	options are enabled and what the server would like Telnet to support.
+
+5)	The alt-B key now moves you a session back in the list of sessions you
+	have open.  ( A source of great relief to me at least...)
+
+6)	A small vt100 bug was cleaned up which dealt with the "^[c" sequence 
+	eating the next vt100 sequence which followed.
+
+7)	F11 & F12 are available as macro keys again (due to overwhelming response).
+
+8)	The keyboard mapping was eating the Print Screen key, but now it passes it
+	correctly, and prints out the text on the screen.
+
+9)	A new configuration option was added to allow sessions which are closed to 
+	disappear without needing an additional keypress was added.  This option
+	is "windowgoaway=[no|yes]" in the configuration file.  The default state
+	is set to not make windows go away.
+
+10)	The following list of ftp commands was added to Telnet's ftp server:
+		CDUP - allows the ftp connection to change to the parent directory
+		MKD  - allows the ftp connection to create a directory on the machine
+				running Telnet
+		RMD  - allows the ftp connection to remove a directory on the machine
+				running Telnet
+		DELE - allows the ftp connection to delete a file on the machine
+				running Telnet
+
+	These last two commands violate the security of the machine running Telnet,
+	so we highly recommend that you create a password file for Telnet and use
+	it all the time.  Without a password file, anyone can ftp to your machine
+	and wipe you out!
+
+11)	Linemode and Negotiate About Window Size (NAWS) options are added to 
+	the telnet options that Telnet supports.
+
+12)	The ctrl-C is fixed for certain now!  I patched the ctrl-C interupt
+	directly.  The previous problems were caused by the Microsoft C compiler
+	doing odd things with the interupt signal.
+
+13)	Support for more function keys was added to the vt100 key support.  This
+	is a non-standard addition, but several people asked for it.  The function
+	keys F5 thru F10 now extended the F1-F4 vt100 sequences:
+		F1 - ESC[P
+		F2 - ESC[Q
+		F3 - ESC[R
+		F4 - ESC[S
+		F5 - ESC[T
+		F6 - ESC[U
+		F7 - ESC[V
+		F8 - ESC[W
+		F9 - ESC[X
+		F10- ESC[Y
+
+14)	Two additional options were added to the configuration file:
+		cursorstart=[0-9]
+		cursorend=[0-9]
+	These two options allow you to choose what line the cursor starts on 
+	and ends on.  These two options take a number, which is the number of 
+	lines from the top of the character block to begin and end.  The default
+	is to have an underline cursor in 24 line mode, and a block cursor in 
+	43 & 50 line mode.
+
+15)	Support for the AT&T Starlan 10 ethernet board was added as an internal
+	driver.  Thanks for Larry Hicks at Bradley University for the effort
+	in writing it.  There is an example of the use in the config.tel 
+	supplied with this package.
+
+NOTE:	For Microsoft Windows users out there, don't run Telnet in the
+	background, packets get dropped or written to other applications causing
+	crashes.  Run Telnet in exclusive mode, and remember to turn off keyboard
+	re-mapping in your config.tel (keyboard=off), and turn on bios screen usage
+	(bios=yes).  We have also had conflicting reports of Telnet working well
+	with Windows, so at least try to take care.
+
+
+Known Bugs:
+
+1)	Tektronix GIN mode is not fixed yet.
+
+2)	The keyboard mapper still has a cruddy file interface, this will get
+	improved in the next couple of weeks.
+
+3)	The keyboard gets reset to a US keyboard from the users keyboard type.
+
+4)	LPR is crashing with a variety of errors.
+
+5)	FTPBIN is slow, and doesn't handle disk full problems well yet.
+
+6)	Domain look ups for long machine names have some problems.
+	(How long you say?, I don't know, I am still trying to get a grip on it).
+
+7)	The dreaded NULL pointer error on exitting Telnet is still around.  This
+	may not get fixed until we get the new version of Codeview, because Telnet
+	is too large to debug normally.
+
+
+Things Which Still Need To Be Crammed In:
+
+1)	All the bugs above.
+
+2)	Appletalk driver will get fixed.
+
+3)	Various people have asked for more screen drivers, so perhaps if a lot of
+	people ask for different screen drivers for tektronix plots, we will
+	add another screen driver or two.
+
+4)	Overlaying the code so that Telnet will take up less memory.
+
+5)	Maybe update the telpass interface.
+
+
+This week, one of the developers for Telnet, Heeren Pathak, graduated from the
+university and left NCSA to work at Mitre.  I would like to thank Heeren for
+all his effort and time he has devoted to this piece of software, and for
+everyone to wish him well in his new endeavours.
+
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+BUG FIXES FOR NCSA Telnet 2.3b7:
+
+1)	No change in the internal ethernet drivers.  The Appletalk is still under
+	some work, but the ni9210 may be put on indefinite hold.
+
+2)	The cursor changing from an underscore into a larger underscore on 
+	monochrome monitors is rectified.
+
+3)	Ctrl-C will no longer break out of Telnet.
+
+4)	Added -r command line switch to turn output redirection off in ftpbin.exe.
+
+5)	Fixed various problems making "mget *" in ftpbin.exe do bad things to
+	memory and crash.
+
+6)	When shelling to DOS from Telnet, the COMSPEC= environment variable is
+	now checked to see what shell to spawn.
+
+7)	Undefined macro keys (shift f1-f10) no longer print wierd strings.
+
+8)	Hercules graphics mode fixed, now supports Tektronix mode again.
+
+9)	Patched ftpbin.exe so that the last character in a file (ctrl-Z) is not
+	omitted during binary file transfers.
+
+10)	Added function prototypes and #ifdef's to avoid header file re-inclusion
+	to source.
+
+11)	A couple of vt100 emulation bugs which only manifested themselves when
+	connected to a VMS machine have been patched, please check these out and
+	let us know if they are correct.
+
+12)	A bunch of bugs were found in various sections of the code which we believe
+	have eliminated the 'assignment to null pointer' run-time error when
+	exitting Telnet.  If you experience this error please make certain to
+	report a bug and let us know about it.
+
+13)	SOURCE RELEASE!!!  This is still a beta set of source.  It has been cleaned
+	up well enough that it only generates a couple of "formal parameter not
+	used" warnings, but there is still some work which needs to get done.
+
+NOTE:	For Microsoft Windows users out there, don't run Telnet in the
+	background, packets get dropped or written to other applications causing
+	crashes.  Run Telnet in exclusive mode, and remember to turn off keyboard
+	re-mapping in your config.tel (keyboard=off), and turn on bios screen usage
+	(bios=yes).
+
+Known Bugs:
+
+1)	Tektronix GIN mode is not fixed yet.
+
+2)	The keyboard mapper still has a cruddy file interface, this will get
+	improved in the next couple of weeks.
+
+3)	The keyboard gets reset to a US keyboard from the users keyboard type.
+
+4)	When shelled out to DOS from Telnet, the environment is corrupted somehow,
+	but this is at the trailing end of the environment and doesn't cause
+	crashes (I think).
+
+Things Which Still Need To Be Crammed In:
+
+1)	Telnet line mode support.
+
+2)	A few configuration options to allow users to change the cursor they use
+	in Telnet.
+
+Please keep the bug reports coming in!
+pctelbug@ncsa.uiuc.edu
+
+NCSA Telnet 2.3b6
+
+1) Drivers update
+
+The following is an update on the status of the internal Telnet drivers.
+
+For the PC Bus,
+Name		Board				Works??
+-------------------------------------------------------------
+atalk		*Apple Talk			No
+packet		*Packet Driver 			Yes
+3c501		3COM 3C501			Yes
+3c503		*3COM 3C503			Yes
+pcnic		Ungermann-Bass PC-NIC		Yes
+wd8003e		Western Digital WD8003E		Yes
+wd8003eb	Western Digital WD8003EB	Yes	
+ni5210		MICOM NI5210			Yes
+
+
+For PS/2 MCA bus,
+
+Name		Board				Works??
+-------------------------------------------------------------
+nicps/2		Ungermann-Bass NICps/2		Yes
+3c523		3COM 3C523			Yes
+wd8003a		Western Digital WD8003EA	Yes	
+ni9210		*MICOM NI9210			No
+
+The ??? indicate boards that are buggy.  Please test them out and report
+back to us.
+
+2)	ftp shell escape fixed
+
+3)	ftp -h parameter correctly reconized
+
+4)	EGA tek emulator fixed
+
+5)	VGA tek support added
+
+BIG FIXES FOR NCSA Telnet 2.3b5
+
+1) 3c523 Driver fixed.
+
+2) Additional keystrokes added to Scroll Lock mode
+	Home -> Beginning of Line
+	End  -> End of Line
+	Cntl+PGUP -> Top of Scrollback buffer
+	Cntl+PGCN -> Bottom of Scrollback buffer
+
+3) External TCP/IP Utilities
+	
+	The following utilities now work with the new drivers and 
+	keyboard mapper.  If NCSA Telnet works these should also 
+	work.
+
+	ftpbin.exe -> ftp client & server
+	minitel.exe -> a very simple telnet program
+
+	Network Printing Utilites contributed by Paul Hilchey.
+	lpr.exe, lpq.exe, lprm.exe. 
+
+4) 3c503 driver fixed.
+	The 3c503 board does not allow the software to determine whether
+	thin or thick Ethernet is being used.  Therefore, telnet needs
+	to be told what type of wire is being used.  A new config.tel
+	keyword "wire" has been added.  Its usage is shown below.
+	
+	wire=thin	; this is the default.  Telnet will use thin Ether	
+	wire=thick	; Telnet will use thick Ether 
+	
+
+5) Keyboard Mapper bug fixes.
+
+	CAPS LOCK no longer blocks control and ALT characters.
+	NUM LOCK now maps the keypad correctly.	
+
+6) Keyboard Mapper addition.  The keyboard mapper now addresses all the keys
+	on the 101 key (extended) keyboard.  There is an extra map which has been
+	added to the already existing five keyboard maps (NORMAL, LEFT SHIFT, RIGHT
+	SHIFT, ALT, and CONTROL).  The extra map is for the extended keys, these
+	keys are only generated by the extended keyboard.  The extra map consists
+	of 89 pairs of integers (one for each key), and is in the same order as
+	the other maps (see the README file for details).  The order of the maps
+	is now :  NORMAL, LEFT SHIFT, RIGHT SHIFT, ALT, CONTROL, and  EXTENDED.
+
+7) ftp excepts full pathnames for changing directories.  It requires that
+	you type a double backslash for each single backslash in the path name
+	however, i.e. "c:\\dos" for "c:\dos".  You may use a forward slash '/'
+	for the backslashes in MS-DOS path names also, i.e. "c:/dos" for
+	"c:\dos".
+
+8) Ungerman Bass PC/NIC driver is fixed.
+
+9) Western Digital 8003A Microchannel Card fixed.
+	
+10) Drivers update
+
+The following is an update on the status of the internal Telnet drivers.
+
+For the PC Bus,
+Name		Board				Works??
+-------------------------------------------------------------
+atalk		*Apple Talk			???
+packet		*Packet Driver 			Yes
+3c501		3COM 3C501			Yes
+3c503		*3COM 3C503			Yes
+pcnic		Ungermann-Bass PC-NIC		Yes
+wd8003e		Western Digital WD8003E		Yes
+wd8003eb	Western Digital WD8003EB	Yes	
+ni5210		MICOM NI5210			Yes
+
+
+For PS/2 MCA bus,
+
+Name		Board				Works??
+-------------------------------------------------------------
+nicps/2		Ungermann-Bass NICps/2		Yes
+3c523		3COM 3C523			Yes
+wd8003a		Western Digital WD8003EA	Yes	
+ni9210		*MICOM NI9210			No
+
+The ??? indicate boards that are buggy.  Please test them out and report
+back to us.
+
+BUG FIXES FOR NCSA Telnet 2.3b4:
+
+1) Drivers update
+
+The following is an update on the status of the internal Telnet drivers.
+
+For the PC Bus,
+Name		Board				Works??
+-------------------------------------------------------------
+atalk		*Apple Talk			???
+packet		*Packet Driver 			Yes
+3c501		3COM 3C501			Yes
+3c503		*3COM 3C503			???
+pcnic		Ungermann-Bass PC-NIC		No
+wd8003e		Western Digital WD8003E		Yes
+wd8003eb	Western Digital WD8003EB	Yes	
+ni5210		MICOM NI5210			Yes
+
+
+For PS/2 MCA bus,
+
+Name		Board				Works??
+-------------------------------------------------------------
+nicps/2		Ungermann-Bass NICps/2		Yes
+3c523		3COM 3C523			???
+wd8003a		Western Digital WD8003EA	No	
+ni9210		*MICOM NI9210			No
+
+The ??? indicate boards that are buggy.  Please test them out and report
+back to us.
+
+
+2) Terminal type negotiation.
+
+Telnet can now send its terminal type a host.  The default terminal
+type is "dec-vt100."  It can be changed with the termtype option in the
+config.tel file, e.g.
+
+termtype="vt100"
+
+will cause telnet to send the string "vt100" instead of "dec-vt100" to a host.
+
+
+3) Telnet to "other port" works with Domain lookup
+
+Previously, attempting to connect to a port on a machine requiring a
+domain lookup resulted in a connection to the Telnet port and not the 
+specified port.
+
+Now the sucessful lookup will result in the connection to the specified port.
+
+BUG FIXES FOR NCSA Telnet 2.3b3:
+
+1) Alt-E escape to DOS no longer results in stack overflow.
+
+2) Addition of macros for shift-function key combination 
+	(Shift-f1 through Shift-f12)
+
+	The shift-function key combinations can now be mapped to user-defined
+	strings.  Twelve new keywords have been added to config.tel, one for 
+	each function key (f1,f2,f3,....,f12).
+
+	To assign a macro string to a function key:
+
+		<key>=<string>
+
+	where <key> is one of the new keywords and <string> contains your 
+	macro.
+
+	The following key sequences are used to generate special characters
+	in your macro.  They follow the same style as the C programming
+	language and may seem strange if you are not familiar with C.
+
+	Desired Character				Definition
+	-----------------				----------
+	Backslash (\)					\\
+	TAB						\t
+	CR LF						\n or \r
+	Space						\032
+	Number of text rows				\#
+	Internet number of PC				\i
+	
+	The \xxx string, where xxx is a number between 0-255, will send that 
+	character to the the host, e.g. the Space key above.
+	If your macro string contains spaces, then the string either 
+	has to be encased in quotes or the space should be coded as 
+	a special character.
+
+	e.g.  f1="ftp \i\n" and  f1=ftp\032\i\n are functionally identical.
+
+BUG FIXES FOR NCSA Telnet 2.3b2:
+
+1)	Appletalk driver better (may not be quite right yet, but it is now
+ 	at least compiled into the executable correctly).
+
+2)	Client mode fixed from Microsoft C 5.1 port.  Now works correctly 
+	in binary mode.

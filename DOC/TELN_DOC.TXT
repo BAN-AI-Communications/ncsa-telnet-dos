@@ -1,0 +1,5667 @@
+1.1	NCSA Telnet
+
+
+Starting and Quitting NCSA Telnet	1.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+
+1.1	NCSA Telnet
+
+Starting and Quitting NCSA Telnet	1.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 1	Starting and Quitting NCSA Telnet
+
+
+
+Chapter Overview
+Starting the Program
+Using the Help Screen
+Quitting NCSA Telnet
+
+Chapter Overview
+
+This chapter introduces and describes the basic steps involved in 
+using NCSA Telnet for the IBM PC:
+
+•	starting the program
+•	setting the terminal type
+•	opening and closing a telnet connection
+
+The chapter assumes that your system or network administrator 
+has installed NCSA Telnet on your system, assigned an IP 
+address to your IBM PC, and given you a login name and password 
+for the computer to which you want to connect. For information 
+regarding installation and customization procedures, refer to 
+Chapter 7, "Installation and Configuration."
+
+If you require additional information regarding the IBM interface 
+or command line structure, please refer to your IBM PC user's 
+guide.
+
+
+Starting the Program 
+
+To run NCSA Telnet from the PC command line, from any 
+subdirectory, enter:
+
+C:\ > telnet machinename 
+
+This command initiates a connection to the remote computer with 
+the name given as the machinename parameter. Normally the 
+host machine immediately prompts you for a login name and 
+password to begin the session.
+
+NCSA Telnet emulates a VT100 terminal. When you log in to a 
+host, the host operating system does not know what type of terminal 
+you are using. Consult the operating system manual for how to set 
+terminal type and try setting it to VT100 or VT102. For systems that 
+do not support VT100 (such as many UNIX systems), use VT100, 
+which is compatible with VT102 emulators. These examples show 
+how to set the terminal type for two popular operating systems, 
+UNIX (using the C shell) and VAX/VMS.
+
+newton% set term=vt100;tset	For UNIX hosts.
+
+B$ SET TERM/INQ			For VAX/VMS hosts.
+
+Using the Help Screen
+
+For a command summary, press ALT-H. A one-screen summary 
+of command keys appears, as shown in Figure 1.1. The online help 
+summary serves as your quick reference to the command keys.
+Figure 1.1. NCSA Telnet Help 
+Screen
+
+Keyboard usage for NCSA telnet:
+
+Alt-A	add a session	Alt-Y	Interrupt Process
+Alt-N	next session	Alt-B	Previous Session
+Alt-D	Dump Screen to Capture file	Alt-O	Abort Output
+Alt-Z	message screen	Alt-Q	Are you there?
+Alt-E	escape to DOS shell	Alt-U	Erase line
+Alt-G	graphics menu	Alt-K	Erase Kharacter
+Alt-C	toggle capture on/off	Alt-V	Paste Capture to Session
+Alt-R	reset VT100 screen	HOME	exit graphics mode
+Alt-H	this help screen	Ctrl-HOME	clear/enter graphics mode
+
+ScrLock	pause/restart screen (DO NOT
+	use Ctrl-NumLock)
+
+ScrLock	enter/exit scroll-back mode
+
+Alt-F	start file transfer as if typed:
+	ftp [internet address]
+
+Alt-I	send my internet address to host
+	as if typed
+
+Alt-S	skip scrolling, jump ahead
+
+Alt-P	change a parameter, one of:
+	color, capture file name, backspace,
+	session name, screen mode
+
+Alt-X	close connection
+
+CTRL-Shift-F3	abort program completely.
+	STRONGLY discouraged
+
+
+Press ESC for information page, space bar to return to session:
+
+
+NOTE:  See Chapter 4, "Utility Programs," for information on 
+other network utilities, such as the following:  finger, ftp, lpq, lpr, 
+lprm, rexec, and set clock.
+
+
+Quitting NCSA Telnet
+
+To exit the program, log out of the host machine using the 
+appropriate logout procedure for that machine. If you have 
+concurrent sessions with more than one machine, you must log out 
+of each machine. Then NCSA Telnet exits and the DOS prompt is 
+displayed.
+
+If one of the hosts crashes, or a session is otherwise hung up, press 
+ALT-X. NCSA Telnet first prompts you for confirmation and then 
+attempts to close the session while preserving your other live 
+sessions. 
+
+When all else fails, and it appears that all of the connections are 
+completely jammed, press CTRL-Shift-F3 to abort the program. 
+Only use CTRL-Shift-F3 as a last resort.
+
+Pressing CTRL-C or CTRL-BREAK sends a CTRL-C to the host. 
+You can neither use these commands to break out of NCSA Telnet, 
+nor end your session.
+2.1	NCSA Telnet
+
+
+Introduction to Managing Sessions	2.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+
+2.1	NCSA Telnet
+
+Introduction to Managing Sessions	2.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+
+6/30/91
+
+
+
+
+Chapter 2	Introduction to Managing Sessions
+
+
+
+Chapter Overview
+Keyboard Usage
+Multiple Sessions
+Opening Multiple Initial Sessions
+Using the Status Line
+Opening Additional Sessions
+Indicating the Host
+Estimating Host Response Time
+Using Scrollback Mode
+Using the Cut and Paste Functions
+Switching Between Sessions (ALT-N)
+Displaying Console Messages (ALT-M)
+Exiting the Present Connection (ALT-X)
+Capture File Operations
+Designating a Capture File
+Using PRN
+Using One Capture at a Time
+
+Chapter Overview
+
+This chapter introduces NCSA Telnet's capability for multiple 
+connections with one or more hosts. The chapter describes 
+standard VT100 key emulation, keys for some common EDT 
+operations, how to work with multiple sessions, and operations 
+with the capture file.
+
+
+Keyboard Usage
+
+When NCSA Telnet is running, the PC appears to the host as a 
+VT100 terminal. For keys that the PC keyboard and the VT100 
+keyboard have in common, NCSA Telnet transmits the keystrokes 
+unmodified. However, the VT100 keyboard has some keys that the 
+PC keyboard does not have, and also treats other PC board keys 
+differently. Furthermore, many VT100 keys have special 
+meanings when they are transferred to the host. To provide full 
+VT100 functionality, telnet programmers have designated some 
+PC keys to emulate the operation of VT100 keys. 
+
+Table 2.1 lists the PC keys to use for VT100 terminal emulation. 
+
+Table 2.1	Keys Used for 
+VT100 Terminal 
+Emulation
+To Send the VT100 Code	Press PC Key(s)
+
+RETURN	ENTER
+
+DELETE*	BACKSPACE*
+
+BACKSPACE*	CTRL-
+	BACKSPACE*
+
+LINE FEED	CTRL-ENTER
+
+Keypad ENTER 	Keypad ENTER 
+(not identical to RETURN)
+
+Keypad . (decimal point)	Keypad .
+
+Keypad - (hyphen)	Keypad -
+
+Keypad , (comma)	Keypad ,
+
+Keypad 0 to 9	Keypad 0 to 9
+
+≠, Ø, ¨, Æ	CTRL-Keypad ≠, Ø, ¨, Æ
+
+PF1 to PF4	F1 to F4
+
+NOTE:  "Keypad" refers to the numbers and characters on the 
+right-hand side of your keyboard.
+
+
+For Extended Keyboards:
+≠, Ø, ¨, Æ	Grey ≠, Ø, ¨, Æ
+
+*See Chapter 3, "More About Managing Sessions," and Chapter 7, 
+"Installation and Configuration," for information on how to 
+switch the designations of these keys.
+
+
+Multiple Sessions
+
+Opening Multiple Initial 
+Sessions
+When you first run NCSA Telnet, you can start up multiple 
+sessions with a single command.
+
+C:\> telnet machinename [machinename ...]
+
+where machinename is the name of the machine you want to 
+connect to. For example, if you enter telnet yoyodyne you would 
+be connecting to the machine named yoyodyne.
+
+To start up multiple sessions, enter the additional machinenames 
+on the same line. Even if you do not choose multiple sessions when 
+you first run NCSA Telnet, you can add sessions later. 
+
+
+Using the Status Line
+Because only 24 lines are needed for VT100 terminal emulation, 
+line 25 on your PC screen is used to indicate the connection status 
+of your terminal sessions. For each host you are connected to, a 
+session name appears in reverse video. The name in the lower-left 
+corner of the screen is the current session. Beside each name is a 
+status box that indicates various attributes of a session:
+
+gray	Connection is established, waiting
+small box	Active connection, always in lower left corner
+*	Connection pending, trying to connect to host
+/ or \	Text has been written to this invisible session
+
+Flags appear in the lower-right corner if you are either in the 
+Scrollback mode or have a capture file open. If you are 
+transferring files, the FTP status appears in the lower-right corner 
+as well.  Finally, a clock appears in the lower-right corner if you 
+enable the clock mode.
+
+
+Opening Additional 
+Sessions
+When you've initially opened a connection to a single host, you 
+can open a second connection, to that host or a different one, by 
+pressing ALT-A (A for add). NCSA Telnet responds by prompting 
+you for the name of a computer to which it should attempt a 
+connection.
+
+Indicating the Host
+NCSA Telnet can only communicate with host computers that have 
+IP addresses. You or the NCSA Telnet program can look up IP 
+addresses in several different ways.
+
+1.	Use any name that is in the configuration file. (Your system 
+administrator can tell you the names listed there.)
+2.	Your system administrator can configure NCSA Telnet to use 
+the domain-based nameserver to look up host names. Any name 
+that can be resolved by the domain nameserver can be used. An 
+example is sri-nic.arpa.
+
+3.	Use the full IP number of the machine, in decimal, separated by 
+periods, such as 192.17.22.20.If the machine is on the same 
+Ethernet,
+
+4.	 If the machine is on the same Ethernet, enter a pound sign (#), 
+followed by the host number it uses on your Ethernet. The host 
+number the machine determined by the class of addressing and 
+the subnet mask (which your system administrator can 
+determine for you). For example, if your PC is host 
+192.17.22.20, you can access host 192.17.22.30 by entering 
+#30 for the host address.
+
+NCSA Telnet allows you to specify which port number (on the host) 
+you are connecting to. When you enter the host number, enter a # 
+symbol right after the IP number, then enter the port number you 
+wish to connect to. For example, if you enter 141.142.221.17#2000, 
+this command connects you to the machine 141.142.221.17, port 
+number 2000.
+
+
+Estimating the Host 
+Response Time
+NCSA Telnet attempts to make a login connection with the named 
+host. Usually the connection is instanta-neous, and the host 
+machine prompts you for a login name immediately. However, the 
+connection attempt may take several seconds. Even after NCSA 
+Telnet completes the connection, it may take additional time (up to 
+two minutes) to prompt you for a login name if a remote host is 
+heavily loaded. 
+
+When the connection is established, the asterisk (*) in the status 
+box for the connection disappears or changes to a small box. If 
+NCSA Telnet makes the connection, but the remote host does not let 
+you log in, you may want to press ALT-X to end the connection.
+
+
+Using Scrollback Mode
+The SCROLL LOCK key performs two functions. It prevents the 
+screen from scrolling when new text arrives, and also puts you 
+into scrollback mode. In scrollback mode, both the up and down 
+arrow keys and PG UP and PG DN keys scroll the screen 
+backwards and forwards. When you press the SCROLL LOCK key 
+again, it ends scrollback mode and resets the working area of the 
+screen. 
+
+The number of lines the program saves is limited by the amount of 
+memory in your machine and its setting in the configuration file. 
+If your PC runs out of memory, or the specified number of lines 
+have already been stored, NCSA Telnet starts dropping the lines at 
+the top of the scrollback as you add new lines to the bottom.
+
+NOTE:  No other commands work while you are using scrollback 
+mode.
+
+
+Using the Cut and Paste 
+Functions
+The cut and paste functions allow you to copy blocks of text from 
+one session to another, or within the same session. To use these 
+functions, follow these steps:
+
+1.	Enter Scrollback mode via Scrl_Lock or the right mouse button.
+
+2.	Move the cursor to the beginning position of the text you wish to 
+copy, and press the space bar.
+
+3.	Move the cursor to the end of the text and press the space bar 
+again. This action selects the area to copy. 
+
+4.	Press ALT-C while still in scrollback mode. This action copies 
+the text into a buffer.
+
+5.	Exit Scrollback mode, and switch sessions by pressing ALT-N 
+or ALT-B, if you desire. 
+
+6.	Position the cursor where you wish to insert the text, and press 
+ALT-V. This action inserts the text at the current position as if 
+you had typed it in.
+
+You can use the copy and paste functions without touching the 
+keyboard if you have a Microsoft-compatible mouse attached and 
+driver loaded. 
+
+1.	Press the right mouse button to enter Scrollback mode. 
+
+2.	Scroll to the beginning of the text you wish to copy, and press the 
+left mouse button. 
+
+3.	Move the cursor to the end of the text, and press the left mouse 
+button again. 
+
+4.	Press and hold the left mouse button, press the right mouse 
+button, then release both buttons. This action copies the text into 
+the buffer. 
+
+5.	Exit Scrollback mode by pressing the right mouse button. 
+
+To paste the buffer to the screen, press and hold the right mouse 
+button, then press the left mouse button, then release them both. The 
+text should appear as if you typed it in.
+
+
+Switching Between 
+Sessions (ALT-N)
+The status line at the bottom of the screen indicates the active telnet 
+sessions. To rotate to the next session, press ALT-N (for next). 
+This action makes the next session the current one and moves its 
+name to the lower left corner of the screen. Any characters you now 
+type on the keyboard are sent to this, the current session.
+
+To move back one session, press ALT-B (for back).
+
+
+Displaying Console 
+Messages (ALT-Z)
+In the process of connecting and communicating with other hosts 
+via TCP/IP, NCSA Telnet provides you with information on the 
+console (message) screen. To see this screen, press ALT-Z. Your 
+sessions are still running; however, you cannot see them. When 
+you have viewed the messages, press any key to return to your 
+session. The information on the console screen can tell you about 
+errors, warnings, FTP access to your PC, and network conditions 
+that may be of concern to network administrators.
+
+
+Exiting the Present 
+Connection (ALT-X)
+To close the current session, press ALT-X. A dialog box appears 
+prompting you to confirm that the connection should be closed. 
+Once confirmed, the connection shuts down.  The close may take 
+several seconds to complete.  
+
+NOTE:  You can press ALT-X to log out of a host as well as 
+terminate a given session, but the command bypasses normal 
+conventions and may cause problems for the host. The correct way 
+to close a connection with a host is to log out of the host using the 
+normal logout procedure for that host. 
+
+
+Capture File Operations 
+
+Text that appears on the screen can be captured and sent to a file or 
+the local printer. When you press ALT-C, capture is turned on. 
+Pressing ALT-C again toggles capture off. Any text that appears on 
+the screen is captured and appended to the capture file. NCSA 
+Telnet never erases the capture file, only appends text to it. The 
+default capture file is named capfile, but you can change that, as 
+discussed in the next session.
+
+
+Designating a Capture File
+You can designate a different capture file by using the Parameter 
+menu. When you press ALT-P the Parameter menu appears. (Most 
+of the Parameter menu choices are discussed in Chapter 3, "More 
+About Managing Sessions.") Use the arrow keys to select the 
+Parameter menu entry for the capture filename. Press RETURN 
+to clear the current entry and then enter your new filename. After 
+you've changed the name of the capture file, all subsequent ALT-C 
+commands will use the new capture file. You can also change the 
+name of the capture file "permanently" in the configuration file 
+(see Chapter 6, "Installation and Configuration.").
+
+
+Using PRN
+If you want to send all captured text directly to a local printer, 
+follow the directions above for naming new filenames. Enter prn 
+as the new filename. This name is the default filename for 
+printing in the NCSA Telnet program. PC-DOS reserves this 
+filename for the printer.
+
+A common problem can occur while you are capturing files to the 
+printer that can cause NCSA Telnet to abort. If the printer is off-
+line or out of paper when a capture begins, the message:
+
+Error, A(bort) R(etry) or I(gnore)? 
+
+appears on the screen. For the former problem, turn the printer on 
+and off and then press R for retry. Do not press A at this point 
+because it will abort NCSA Telnet and cut off all of your network 
+connections.
+
+
+Using One Capture at a 
+Time
+You can capture text to a file or the printer in any session, but not 
+for more than one session at a time. When a capture is active for a 
+session in the background, you cannot invoke capture on the 
+current session. If you attempt to do so, you will not get the 
+confirmation message on line 25 and NCSA Telnet reminds you of 
+the error. The capture procedure will continue to capture all text for 
+the background session while you interact with the current 
+session.
+
+If you press ALT-D, NCSA Telnet dumps the contents of the current 
+session screen into the capture file if one is not already open. If a 
+capture file is open, nothing happens when you press ALT-D.
+
+NOTE:  If you press ALT-D, NCSA Telnet dumps only the contents 
+of the current session screen into the capture file. If you press ALT-
+C, however, NCSA dumps everything from your current session 
+into the capture file.
+3.1	NCSA Telnet
+
+
+More About Managing Sessions	3.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+3.1	NCSA Telnet
+
+More About Managing Sessions	3.1
+
+National Center for Supercomputing Applications	
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 3	More About Managing Sessions
+
+
+
+Chapter Overview
+Keyboard Commands
+Using the Skip Command (ALT-S)
+Resetting the VT100 Screen (ALT-R)
+Aborting the Program (CTRL-SHIFT-F3)
+Escaping to DOS Shell (ALT-E)
+Parameter Menu
+Using Screen Text Colors
+Using Remote Echo and Local Echo
+Using the Backspace Key
+Changing the Session Name
+Changing the Terminal Type 
+Using Line Wrapping
+Using Output Mapping
+Changing the Capture Filename
+Using Screen Mode 
+Using File Transfer Mode
+Using Clock Mode
+
+Chapter Overview
+
+This chapter continues the discussion of multiple sessions and 
+describes more advanced aspects of the NCSA Telnet working 
+environment. The chapter explains how to reset the VT100 screen, 
+how to abort NCSA Telnet, the DOS shell feature, and the 
+Parameters menu options.
+
+
+Keyboard Commands
+
+Using the Skip Command 
+(ALT-S)
+The skip command causes the screen to "skip ahead" over 
+scrolling text. The text is placed into the scrollback region, but the 
+screen update advances to the end of the local network buffer 
+instead of printing every line on the screen. This feature is useful 
+for quickly bypassing seemingly endless lines of output from 
+certain commands. To use the command, press ALT-S and the 
+screen will pause, then redraw at the end of the local buffer. ALT-S 
+won't solve all of the network buffering problems for interactive 
+use, but it should help. Capture to disk and scrollback commands 
+are not affected by the skip command.
+
+
+Resetting the VT100 Screen 
+(ALT-R)
+ALT-R clears and resets all modes associated with the current 
+virtual VT100 screen. Some host programs can accidentally set 
+graphics mode on or fail to leave graphics mode. By pressing 
+ALT-R, NCSA Telnet will override all VT100 mode settings 
+including the following:  turning off wrap mode, resetting 
+graphics mode, setting the keypad mode back to the default, and 
+resetting tabs to every eight spaces. After using ALT-R, you may 
+wish to set your terminal type again to allow the host to reset 
+whatever VT100 modes it needs.
+
+
+Aborting the Program 
+(CTRL-SHIFT-F3)
+If for some reason none of the current connections respond, 
+SCROLL LOCK is not on, and ALT-R and ALT-X do not appear to 
+have any effect, CTRL-SHIFT-F3 is a general abort command that 
+exits NCSA Telnet and returns you to DOS. If you do abort NCSA 
+Telnet with CTRL-SHIFT-F3, NCSA Telnet cannot notify the 
+host(s) that your session(s) are terminated. Your sessions are left 
+in an undetermined state. This situation can cause a variety of 
+problems for the host, because it cannot immediately determine 
+that the session has ended. For example, the programs may 
+continue to run on the host, even though you exited NCSA Telnet 
+with CTRL-SHIFT-F3.
+
+
+Escaping to DOS Shell 
+(ALT-E)
+Pressing ALT-E to escape to DOS preserves your connections while 
+you use the DOS command shell. You may use most DOS 
+commands and programs, including those which look at 
+directories, edit source files, or even compile programs. To return 
+to NCSA Telnet, you must enter the command exit at the DOS 
+prompt.
+During the escape to DOS, NCSA Telnet monitors the Ethernet for 
+incoming packets every one-half second. If you run other 
+programs which affect the Ethernet or the timer which NCSA 
+Telnet uses, your connections may be lost—or worse—your 
+computer may crash. The following programs are examples of 
+those which terminate the network handling of NCSA Telnet, 
+causing connections to be lost or DOS to crash:
+
+•	SideKick (it turns off timer processes, so it can cause lost 
+connections)
+
+•	All network programs (they reset the Ethernet board)
+
+•	NCSA Telnet (it is a network program)
+
+•	User FTP (it, too, is a network program)
+
+•	format, the DOS format utility for floppy disks
+
+•	FileCommand II
+
+NOTE: Watch memory usage to prevent crashing. Also, 
+remember to exit DOS when you have finished your DOS activities.
+
+Parameter Menu
+
+Press ALT-P to display the Parameter menu options, which appear 
+on the screen as shown in Figure 3.1. These options control the 
+settings for text color, echo mode, backspace key, session name, 
+terminal type, capture file name, screen mode and file transfer 
+mode. You can change the fields that are shown in bold to different 
+values.
+
+Figure 3.1	Parameter Menu
+
+ALT-P                         Parameter menu
+   <      Select parameters, F1 to accept, F10 to leave unchanged      >
+
+   --------------- Color setup and session parameters -----------------
+ Text:         normal    reverse   underline
+	Normal Foreground (nfcolor)	-	green
+	Normal Background (nbcolor)	-	black
+	Reverse Foreground (rfcolor)	-	black
+	Reverse Background (rbcolor)	-	white
+	Underline Foreground (ufcolor)	-	blue
+	Underline Background (ubcolor)	-	black
+	Use remote echo or local echo	-	Remote echo
+	Backspace key sends	-	Delete
+	Session name	*>	ahostname
+	Terminal type	-	VT102 and Tek4014
+	Line Wrapping	-	Wrapping On
+	Output Mapping	-	Mapping Off
+   -------------- Parameters which apply to all sessions --------------
+	Capture file name	*>	capfile
+  Screen mode (for BIOS compatibility)	Direct to screen
+	File transfer is	-	Enabled
+	Remote Copying is	-	Enabled
+	Clock is 	Enabled
+
+
+Use arrow keys to select, Enter clears changeable field (*>)
+
+
+The up arrow, down arrow, HOME, and END keys allow you to 
+move the cursor from option to option. The left and right arrow 
+keys rotate through the allowed settings for each option. For each 
+field that you wish to change, move the cursor to that field and press 
+the left or right arrow until the desired value appears. After 
+changing all of the fields that you wish to change, press the F1 key 
+to return to your session with the changes in effect. If you make a 
+mistake, or decide that no changes are necessary, press ESC to 
+return to your session without any changes taking place.
+
+There are two special fields, marked with the symbol *>, to 
+indicate that the present value may be changed by typing another. 
+To change one of these, place the cursor on top of the changeable 
+field and then press RETURN. The program blanks the field and 
+allows you to enter a new value. Press RETURN when you are 
+finished entering the new value. After you enter a new value, but 
+before you press F1, the old value still remains in memory and you 
+may use the left or right arrow keys to regain the old value.
+
+Following are descriptions of the parameters you can set.
+
+
+Using Screen Text Colors
+Host programs expect to be able to control the attributes of 
+characters on the VT100 screen. Command codes are sent to your 
+PC to display characters in normal, reverse, underlined, 
+blinking, and bold attributes, or combinations of these. When 
+normal, reverse, and underline text are required, you have control 
+over which colors are used. When blink or bold attributes are 
+required, NCSA Telnet adds them to your selected colors.
+
+For normal, reverse, and underlined characters, NCSA Telnet 
+gives you your choice of foreground and background colors, a total 
+of six settings. The color choices for a PC color video display are 
+black, blue, green, cyan, red, magenta, yellow, and white. The 
+foreground color command allows bright versions of these colors, 
+while the background color command allows users to set blinking 
+as an attribute. For each of the text modes, normal, reverse, and 
+underlined, use the Parameter menu to select the foreground and 
+background colors. As you change the selections, the sample text 
+on the fourth line of the screen provides an example of how the text 
+will appear in the VT100 emulation.
+
+On monochrome screens, when you display a character in the color 
+blue, the PC produces a visible underline on the screen instead of 
+blue coloring.
+
+Color screens do not have the visible underline capability and use 
+a visible blue color instead of underlining.
+
+Bold and blinking attributes from the VT100 screen appear as bold 
+and blinking characters on the PC screen.
+
+
+Using Remote Echo and 
+Local Echo
+When the response time of the network is long (such as with 
+satellite transmission), you may want to buffer your keyboard 
+input locally, only sending characters to the host when you press 
+RETURN. This action is often referred to as a line mode or local 
+echo mode. The alternative to line mode is called character mode 
+or remote echo mode, where the local program immediately sends, 
+and remote host echoes, every character over the network.
+
+In local echo mode, NCSA Telnet  buffers most characters typed at 
+the keyboard until you press RETURN, which sends the characters 
+to the host all in one packet. There are some exceptions to this rule.
+
+•	CTRL-U erases the local buffer.
+
+•	Backspace (CTRL-H) erases the most recent character added to 
+the local buffer.
+
+•	Tab (CTRL-I) forces NCSA Telnet to send the local buffer (with 
+the tab).
+
+•	All other control characters echo with a caret (e.g., ^A) and 
+force NCSA Telnet to send the local buffer with the control 
+character included.
+•	Arrow keys and all other unprintable ASCII characters, the 
+escape character for example, force NCSA Telnet to send the 
+local buffer, with the character included.
+
+•	You cannot send a CTRL-U or Backspace to the host in line 
+mode.
+
+•	ALT keys and other local command keys are not affected by 
+local echo mode.
+
+NOTE: For full screen editing, character mode (remote echo) is 
+necessary, so most hosts use this mode. When full screen editing 
+is not required, line mode may be more efficient.
+
+
+Using the Backspace Key
+NCSA Telnet automatically translates BACKSPACE keypresses 
+into DELETE codes, for compatibility with systems that prefer the 
+use of DELETE to BACKSPACE. If you find that your backspaces 
+are not being accepted, the host you are connected to may prefer the 
+reverse setting. To test this possibility, use the Parameter menu to 
+change the default translation so the BACKSPACE key functions 
+as backspace. If the result is that your backspaces are accepted, 
+then the host does prefer the BACKSPACE to DELETE. If you 
+require the reverse setting frequently, you or your system 
+administrator may want to permanently reset the backspace 
+function using the configuration file, as described in Chapter 7, 
+"Installation and Configuration."
+
+
+Changing the Session 
+Name
+The status line shows a 13-character session name for each active 
+session in the lower right-hand corner. For each session, the 
+machine name that you typed to initiate the first session displays 
+as the default name for successive sessions. The Parameter menu 
+allows you to change the status line name for the current session. 
+Press RETURN to clear the current entry and type in a new name. 
+Only the first 13 characters are used.
+
+
+Changing the Terminal 
+Type
+Generally, the default terminal type of VT100 with Tektronix 4014 
+is acceptable. Because specific cases may exist where you need to 
+force some restrictions on the way the terminal acts, you may want 
+to limit the amount of emulation that NCSA Telnet does. The three 
+choices of terminal types are: 
+
+•	VT100 terminal with Tektronix 4014 graphics
+
+•	VT100 only—graphics commands ignored, but VT100 
+commands accepted
+
+•	Dumb terminal—no VT100 codes or Tektronix codes 
+interpreted
+
+
+Using Line Wrapping
+If you enable the line wrapping feature, the text wraps when it 
+reaches the end of a line. Otherwise, the text piles up at the end of 
+the line.
+
+
+Using Output Mapping
+The output mapping function allows you to translate characters 
+from the host machine as the screen displays them. This function 
+is similar to keyboard mapping, except that keyboard mapping 
+works in reverse.
+
+
+Changing the Capture 
+Filename
+You can change the name of the current capture file in the 
+Parameter menu. Press RETURN to clear the current entry and 
+then enter your new filename. After changing the name of the 
+capture file, all subsequent ALT-C commands use the new capture 
+file. You can also change the name of the capture file 
+"permanently" in the configuration file (see Chapter 7, 
+"Installation and Configuration."). See Chapter 2, "Introduction 
+to Managing Sessions," for a description of capture file operations.
+
+
+Using Screen Mode (BIOS 
+Compatibility for 
+Windowing Packages)
+In the normal fast mode, writes are made directly to the screen for 
+increased speed; however, this mode is incompatible with 
+windowing packages like Topview or Microsoft Windows and 
+may cause snow on some screens. To avoid small problems, 
+developers have created a compatibility mode within NCSA Telnet 
+where IBM's BIOS calls are used for all access to the screen.
+
+Usually, the windowing compatibility mode is set up in the 
+configuration file with the bios option. However, if a change is 
+needed once you are in the program, the Parameter menu option is 
+available.
+
+
+Using File Transfer Mode
+NCSA Telnet separates the file transfer mode into an option for 
+File Transfer Protocol (FTP) and an option for rcp. The 
+Parameter menu allows you to disable or enable file transfers. 
+When you select Disabled, neither FTP nor rcp is allowed. When 
+you select Enabled, the FTP and rcp servers are restarted. Chapter 
+5, "File Transfer," contains more information on the file transfer 
+methods for NCSA Telnet. You or your system administrator can 
+set the default file transfer modes for FTP and rcp in the 
+configuration file (see Chapter 7, "Installation and 
+Configuration.").
+
+
+Using Clock Mode
+When you enable the clock mode option, NCSA Telnet displays a 
+digital clock in the corner of the screen.
+	
+
+
+	
+
+
+
+
+
+
+
+                                                                
+
+
+
+
+
+4.1	NCSA Telnet
+
+Utility Programs	4.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+Chapter 4	Utility Programs
+
+
+
+Chapter Overview
+finger
+Name
+Command Line 
+Description
+Options
+ftp
+Name
+Command Line
+Description
+Options 
+Commands
+Aborting a File Transfer
+File Naming Conventions
+File Transfer Parameters
+lpq
+Name 
+Command Line
+Description
+Options
+Files
+See Also
+Diagnostics
+Bugs
+lpr
+Name 
+Command Line
+Description
+Options
+Diagnostics
+lprm
+Name 
+Command Line
+Description
+Options
+Diagnostics
+net14
+Name
+Command Line
+Description
+Usage
+Options
+rsh
+Name
+Command Line
+Description
+Options
+setclock
+Name 
+Command Line
+Description
+Options
+
+
+Overview
+
+This appendix outlines in detail some helpful command 
+programs. Almost all the documentation for each of the commands 
+was taken from their online version written by Sun Microsystems 
+Inc. You can access this same online information by entering man 
+filename when you connect to a UNIX machine. For instance, to 
+access information about the finger command, you would enter:  
+man finger.
+
+
+finger
+
+Name
+The finger command lists information about users.
+
+
+Command Line
+finger [ options ] name...
+
+
+Description
+By default, finger lists information about logged-in users, 
+including their: login name, full name, terminal name 
+(prepended with a `*' if write-permission is denied), idle time, 
+login time, and location (comment field in /etc/ttytab for users 
+logged in locally, hostname for users logged in remotely) if 
+known.
+
+Idle time is minutes if it is a single integer, hours and minutes if a 
+':' is present, or days and hours if a 'd' is present.
+
+When one or more name arguments are given, more detailed 
+information is given for each name specified, whether they are 
+logged in or not. A name may be a first or last name, or an account 
+name. Information is presented in a multi-line format, and 
+includes, in addition to the information mentioned above:
+
+the user's home directory and login shell; the time 
+they logged in; if they are currently logged in, or the 
+time they last logged in if they are not; the terminal 
+or host from which they logged in; and, if a terminal, 
+the comment field in /etc/ttytab for that terminal; the 
+last time they received mail; the last time they read 
+their mail; any plan contained in the file .plan in 
+the user's home directory; and any project on which 
+they are working, described in the file .project (also 
+in that directory)
+
+If a name argument contains an at-sign, `@', then a connection is 
+attempted to the machine named after the at-sign, and the remote 
+finger daemon is queried. The data returned by that daemon is 
+printed. If a long format printout is to be produced, the /W option is 
+passed to the remote finger daemon.
+
+
+Options
+-m
+Matches arguments only on user name (not first or last name).
+
+
+-l
+Forces long output format.
+
+
+-s
+Forces short output format.
+
+
+-q
+Forces quick output format, which is similar to short format except 
+that only the login name, terminal, and login time are printed.
+
+
+-i
+Forces ``idle'' output format, which is similar to short format 
+except that only the login name, terminal, login time, and idle 
+time are printed.
+
+
+-b
+Suppresses printing the user's home directory and shell in a long 
+format printout.
+
+
+-f
+Suppresses printing the header that is normally printed in a non-
+long format printout.
+
+
+-w
+Suppresses printing the full name in a short format printout.
+
+
+-h
+Suppresses printing of the .project file in a long format printout.
+
+
+-p
+Suppresses printing of the .plan file in a long format printout.
+
+
+ftp
+
+Name
+ftp - file transfer program
+
+
+Command Line
+ftp [ -dginvrsmhfe ] [ hostname ]
+
+
+Description
+ftp is the user interface to the ARPANET standard File Transfer 
+Protocol (FTP). ftp transfers files to and from a remote network 
+site.
+
+The client host with which ftp is to communicate may be specified 
+on the command line. If this is done, ftp immediately attempts to 
+establish a connection to an FTP server on that host; otherwise, ftp 
+enters its command interpreter and awaits instructions from the 
+user. When ftp is awaiting commands from the user, it displays 
+the prompt `ftp>'.
+
+
+Options
+You may specify the options at the command line or to the 
+command interpreter.
+
+
+-d
+Enables debugging.
+
+
+-e <filename>
+Same as -f except prompts you for login name and password.
+
+
+-f <filename>
+Non-interactive FTP session. Executes commands in 
+<filename>.
+
+
+-g
+Disables filename globbing.
+
+
+-h <filename>
+Gives location of the config.tel file.
+
+
+-i
+Turns off interactive prompting during multiple file transfers.
+
+
+-m
+Uses built-in "more" command.
+
+-n
+Does not attempt auto-login upon initial connection. If autologin is 
+enabled, ftp checks the .netrc file in the user's home directory for 
+an entry describing an account on the remote machine. If no entry 
+exists, ftp will prompt for the login name of the account on the 
+remote machine (the default is the login name on the local 
+machine), and, if necessary, prompts for a password and an 
+account with which to login.
+
+
+-r
+Disables output redirection.
+
+
+-s
+Disables slash flipping.
+
+
+-v
+Shows all responses from the remote server, as well as reports on 
+data transfer statistics. This is turned on by default if ftp is 
+running interactively with its input coming from the user's 
+terminal.
+
+
+Commands
+! [ command ]
+Runs command as a shell command on the local machine. If no 
+command is given, invoke an interactive shell.
+
+
+account [ passwd ]
+Supplies a supplemental password required by a remote system for 
+access to resources once a login has been successfully completed. If 
+no argument is included, the user will be prompted for an account 
+password in a non-echoing input mode.
+
+
+ascii
+Sets the representation type to network ASCII. This is the default 
+type.
+
+
+bell
+Sounds a bell after each file transfer command is completed.
+
+
+binary
+Sets the representation type to image.
+
+
+bye
+Terminates the FTP session with the remote server and exits ftp. 
+An EOF will also terminate the session and exit.
+
+
+cd remote-directory
+Changes the working directory on the remote machine to remote-
+directory.
+
+
+close
+Terminates the FTP session with the remote server, and returns to 
+the command interpreter. Any defined macros are erased.
+
+
+delete remote-file
+Deletes the file remote-file on the remote machine.
+
+
+debug [ debug-value ]
+Toggles debugging mode. If an optional debug-value is specified it 
+is used to set the debugging level. When debugging is on, ftp prints 
+each command sent to the remote machine, preceded by the string `-
+->'.
+
+
+dir [ remote-directory ] [ local-file ]
+Prints a listing of the directory contents in the directory, remote-
+directory, and, optionally, places the output in local-file. If no 
+directory is specified, the current working directory on the remote 
+machine is used. If no local file is specified, or local-file is
+ `-', output is sent to the terminal.
+
+
+get remote-file [ local-file ]
+Retrieves the remote-file and stores it on the local machine. If the 
+local file name is not specified, it is given the same name it has on 
+the remote machine, subject to alteration by the current case, 
+ntrans, and nmap settings. The current settings for representation 
+type, file structure, and transfer mode are used while transferring 
+the file.
+
+
+glob
+Toggles filename expansion, or globbing, for mdelete, mget and 
+mput. If globbing is turned off, filenames are taken literally.
+
+Globbing for mput is done as in csh(1). For mdelete and mget, each 
+remote file name is expanded separately on the remote machine, 
+and the lists are not merged.
+
+Expansion of a directory name is likely to be radically different 
+from expansion of the name of an ordinary file: the exact result 
+depends on the remote operating system and FTP server, and can 
+be previewed by doing `mls remote-files -'.
+
+mget and mput are not meant to transfer entire directory subtrees 
+of files. You can do this by transferring a tar(1) archive of the 
+subtree (using a representation type of image as set by the binary 
+command).
+
+
+hash
+Toggles hash-sign (#) printing for each data block transferred. 
+The size of a data block is 1024 bytes.
+
+
+help [ command ]
+Prints an informative message about the meaning of the 
+command. If no argument is given, ftp prints a list of the known 
+commands.
+
+
+lcd [ directory ]
+Changes the working directory on the local machine. If no 
+directory is specified, the user's home directory is used.
+
+
+ls [ remote-directory ] [ local-file ]
+Prints an abbreviated listing of the contents of a directory on the 
+remote machine. If remote-directory is left unspecified, the 
+current working directory is used. If no local file is specified, or if 
+local-file is `-', the output is sent to the terminal.
+
+
+lls
+Works the same as the ls command except the local machine is 
+used.
+
+
+mdir remote-files local-file
+Like dir, except multiple remote files may be specified. If 
+interactive prompting is on, ftp will prompt the user to verify that 
+the last argument is indeed the target local file for receiving mdir 
+output.
+
+
+mget remote-files
+Expands the remote-files on the remote machine and does a get for 
+each file name thus produced. See glob for details on the filename 
+expansion. Resulting file names will then be processed according 
+to case, ntrans, and nmap settings. Files are transferred into the 
+local working directory, which can be changed with `lcd 
+directory'; new local directories can be created with `! mkdir 
+directory'.
+
+
+mkdir directory-name
+Makes a directory on the remote machine.
+
+
+mls remote-files local-file
+Like ls(1V), except multiple remote files may be specified. If 
+interactive prompting is on, ftp will prompt the user to verify that 
+the last argument is indeed the target local file for receiving mls 
+output.
+
+
+mode [ mode-name ]
+Sets the transfer mode to mode-name. The only valid mode-name 
+is stream, which corresponds to the default stream mode.
+
+
+more 
+Toggles the more mode status. When more mode is on, this 
+command breaks long directories into pages and prompts between 
+displaying them.
+
+
+open host [ port ]
+Establishes a connection to the specified host FTP server. An 
+optional port number may be supplied, in which case, ftp will 
+attempt to contact an FTP server at that port. If the auto-login option 
+is on (default), ftp will also attempt to automatically log the user in 
+to the FTP server (see below).
+
+
+prompt
+Toggles interactive prompting. Interactive prompting occurs 
+during multiple file transfers to allow the user to selectively 
+retrieve or store files. By default, prompting is turned on. If 
+prompting is turned off, any mget or mput will transfer all files, 
+and any mdelete will delete all files.
+
+
+put local-file [ remote-file]
+Stores a local file on the remote machine. If remote-file is left 
+unspecified, the local file name is used after processing according 
+to any ntrans or nmap settings in naming the remote file. File 
+transfer uses the current settings for representation type, file 
+structure, and transfer mode.
+
+
+pwd
+Prints the name of the current working directory on the remote 
+machine.
+
+
+quit
+Performs the same function as bye.
+
+
+quote arg1 arg2 ...
+Sends the arguments specified, verbatim, to the remote FTP 
+server. A single FTP reply code is expected in return.
+
+
+recv remote-file [ local-file]
+Performs the same function as get.
+
+
+remotehelp [ command-name ]
+Requests help from the remote FTP server. If a command-name is 
+specified it is supplied to the server as well.
+
+
+rename from to
+Renames the file "from" on the remote machine to "to."
+
+
+rmdir directory-name
+Deletes a directory on the remote machine.
+
+
+send local-file [ remote-file ]
+Performs the same function as put.
+
+
+sendport
+Toggles the use of PORT commands. By default, ftp will attempt to 
+use a PORT command when establishing a connection for each 
+data transfer. The use of PORT commands can prevent delays 
+when performing multiple file transfers. If the PORT command 
+fails, ftp will use the default data port. When the use of PORT 
+commands is disabled, no attempt will be made to use PORT 
+commands for each data transfer. This is useful when connected 
+to certain FTP implementations that ignore PORT commands but 
+incorrectly indicate they have been accepted.
+
+
+slashflip
+Toggles slashflipping command.
+
+
+status
+Shows the current status of ftp.
+
+
+struct [ struct-name ]
+Sets the file structure to struct-name. The only valid struct-name 
+is file, which corresponds to the default file structure.
+
+
+type [ type-name ]
+Sets the representation type to type-name. The valid type-names 
+are ascii for network ASCII, binary or image for image, and tenex 
+for local byte size with a byte size of 8 (used to talk to TENEX 
+machines). If no type is specified, the current type is printed. The 
+default type is network ASCII.
+
+
+user user-name [ password ] [ account ] 
+Identifies yourself to the remote FTP server. If the password is not 
+specified and the server requires it, ftp will prompt the user for it 
+(after disabling local echo). If an account field is not specified, 
+and the FTP server requires it, the user will be prompted for it. If 
+an account field is specified, an account command will be relayed 
+to the remote server after the login sequence is completed if the 
+remote server did not require it for logging in. Unless ftp is 
+invoked with auto-login disabled, this process is done 
+automatically on initial connection to the FTP server.
+
+
+verbose
+Toggles verbose mode. In verbose mode, all responses from the 
+FTP server are displayed to the user. In addition, if verbose mode 
+is on, when a file transfer completes, statistics regarding the 
+efficiency of the transfer are reported. By default, verbose mode is 
+on if ftp's commands are coming from a terminal, and off 
+otherwise.
+
+
+? [ command ]
+Performs the same function as help.
+
+Command arguments which have embedded spaces may be quoted 
+with quote (") marks.
+
+If any command argument which is not indicated as being 
+optional is not specified, ftp will prompt for that argument.
+
+
+Aborting a File Transfer
+To abort a file transfer, use the terminal interrupt key (usually 
+CTRL-C). Sending transfers will be immediately halted. 
+Receiving transfers will be halted by sending a ftp protocol ABOR 
+command to the remote server, and discarding any further data 
+received. The speed at which this is accomplished depends upon the 
+remote server's support for ABOR processing. If the remote server 
+does not support the ABOR command, an ftp> prompt will not 
+appear until the remote server has completed sending the requested 
+file.
+
+The terminal interrupt key sequence will be ignored when ftp has 
+completed any local processing and is awaiting a reply from the 
+remote server. A long delay in this mode may result from the 
+ABOR processing described above, or from unexpected behavior by 
+the remote server, including violations of the ftp protocol. If the 
+delay results from unexpected remote server behavior, the local ftp 
+program must be killed by hand.
+
+
+File Naming Conventions
+Local files specified as arguments to ftp commands are processed 
+according to the following rules.
+
+1.	If globbing is enabled, local file names are expanded according 
+to the rules used in the csh(1); see the glob command. If the ftp 
+command expects a single local file (for example, put), only the 
+first filename generated by the globbing operation is used.
+
+2.	For mget commands and get commands with unspecified local 
+file names, the local filename is the remote filename, which 
+may be altered by a case, ntrans, or nmap setting. The resulting 
+filename may then be altered if runique is on.
+
+3.	For mput commands and put commands with unspecified 
+remote file names, the remote filename is the local filename, 
+which may be altered by a ntrans or nmap setting. The 
+resulting filename may then be altered by the remote server if 
+sunique is on.
+
+
+File Transfer Parameters
+The FTP specification specifies many parameters which may 
+affect a file transfer.
+
+The representation type may be one of network ASCII, EBCDIC, 
+image, or local byte size with a specified byte size (for PDP-10's 
+and PDP-20's mostly). The network ASCII and EBCDIC(rq types 
+have a further subtype which specifies whether vertical format 
+control (NEWLINE characters, form feeds, etc.) are to be passed 
+through (non-print), provided in TELNET format (TELNET 
+format controls), or provided in ASA (FORTRAN) (carriage 
+control (ASA)) format. ftp supports the network ASCII (subtype 
+non-print only) and image types, plus local byte size with a byte 
+size of 8 for communicating with TENEX machines.
+
+The file structure may be one of file (no record structure), record, 
+or page. ftp supports only the default value, which is file.
+
+The transfer mode may be one of stream, block, or compressed. ftp 
+supports only the default value, which is stream.
+
+
+lpq
+
+Name
+lpq - display the queue of printer jobs.
+
+
+Command Line
+lpq [ -Pprinter ] [ -l ] [ + [ interval ] ] [ job# ... ] [ username ... ]
+
+
+Description
+lpq displays the contents of a printer queue. It reports the status of 
+jobs specified by job#, or all jobs owned by the user specified by 
+username. lpq reports on all jobs in the default printer queue when 
+invoked with no arguments.
+
+For each print job in the queue, lpq reports the user's name, current 
+position, the names of input files comprising the job, the job 
+number (by which it is referred to when using lprm(1)) and the 
+total size in bytes. Normally, only as much information as will fit 
+on one line is displayed. Jobs are normally queued on a first-in-
+first-out basis. Filenames comprising a job may be unavailable, 
+such as when lpr is used at the end of a pipeline; in such cases the 
+filename field indicates ``(standard input)''.
+
+If lpq warns that there is no daemon present (that is, due to some 
+malfunction), the lpc(8) command can be used to restart a printer 
+daemon.
+
+
+Options
+-P printer
+Displays information about the queue for the specified printer. In 
+the absence of the -P option, the queue to the printer specified by the 
+PRINTER variable in the environment is used. If the PRINTER 
+variable isn't set, the queue for the default printer is used.
+
+
+-l
+Displays queue information in long format; includes the name of 
+the host from which the job originated.
+
+
++[interval]
+Displays the spool queue periodically until it empties. This option 
+clears the terminal screen before reporting on the queue. If an 
+interval is supplied, lpq sleeps that number of seconds in between 
+reports.
+
+
+Diagnostics
+Printer Is Ready and Printing
+The lpq program checks to see if there is a printer daemon. If the 
+daemon is hung, the super-user can abort the current daemon and 
+start a new one using lpc(8). Under some circumstances, lpq 
+reports that a printer is ready and printing when the daemon is, in
+ fact, hung.
+
+
+Waiting for Printer to Become Ready (offline ?)
+The daemon could not open the printer device. The printer may be 
+turned off-line. This message can also occur if a printer is out of 
+paper, the paper is jammed, and so on. Another possible cause is 
+that a process, such as an output filter, has exclusive use of the 
+device. The only recourse in this case is to kill the offending 
+process and restart the printer with lpc.
+
+
+Waiting for Host to Come Up
+A daemon is trying to connect to the remote machine named host, 
+in order to send the files in the local queue. If the remote machine 
+is up, lpd on the remote machine is probably dead or hung and 
+should be restarted using lpc.
+
+
+Sending to Host
+The files are being transferred to the remote host, or else the local 
+daemon has hung while trying to transfer the files.
+
+
+Warning:  Printer Is Down
+The printer has been marked as being unavailable with lpc.
+
+
+Warning: No Daemon Present
+The lpq process overseeing the spooling queue, as indicated in the 
+``lock'' file in that directory, does not exist. This normally occurs 
+only when the daemon has unexpectedly died. Check the printer's 
+error log for a diagnostic from the deceased process; you can 
+restart the printer daemon with lpc.
+
+
+lpr
+
+Name
+lpr - send a job to the printer
+
+
+Command Line
+lpr [ -Pprinter ] [ -#copies ] [ -Cclass ] [ -Jjob ] [ -Ttitle ] [ -i 
+[ indent ] ] [ -1234font ] [ -wcols ] [ -B ] [ -r ] [ -m ] [ -h ] [ -s ] 
+[ -filter-option ] [ filename ... ]
+
+
+Description
+lpr forwards printer jobs to a spooling area for subsequent printing 
+as facilities become available. Each printer job consists of copies of 
+(or, with -s , symbolic links to) each filename you specify. The 
+spool area is managed by the line printer daemon, lpd(8). lpr reads 
+from the standard input if no files are specified.
+
+
+Options
+-Pprinter
+Sends output to the named printer. Otherwise send output to the 
+printer named in the PRINTER environment variable, or to the 
+default printer, lp.
+
+
+-#copies
+Produces the number of copies indicated for each named file. For 
+example:
+
+	example% lpr -#3 index.c lookup.c
+
+produces three copies of index.c, followed by three copies of 
+lookup.c. On the other hand,
+
+	example% cat index.c lookup.c | lpr
+
+generates three copies of the concatenation of the files.
+
+
+-Cclass
+Prints class as the job classification on the burst page. For 
+example,
+
+	example% lpr -C Operations new.index.c
+
+replaces the system name (the name returned by hostname) with 
+``Operations'' on the burst page, and prints the file new.index.c.
+
+
+-Jjob
+Prints job as the job name on the burst page. Normally, lpr uses the 
+first file's name.
+
+
+-T title
+Uses title instead of the file name for the title used by pr(1V).
+
+
+-i[indent]
+Indents output indent spaces. Eight spaces is the default.
+
+	-1 font
+	-2 font
+	-3 font
+	-4 font
+
+	Mounts the specified font on font position 1, 2, 3 or 4. The 
+daemon will construct a .railmag file in the spool directory that 
+indicates the mount by referencing /usr/lib/vfont/font.
+
+
+-wcols
+Uses cols as the page width for pr.
+
+
+-r
+Removes the file upon completion of spooling, or upon completion 
+of printing with the -s option.
+
+
+-m
+Sends mail upon completion.
+
+
+-h
+Suppresses printing the burst page.
+
+
+-s
+Creates a symbolic link from the spool area to the data files rather 
+than trying to copy them (so large files can be printed). This 
+means the data files should not be modified or removed until they 
+have been printed. In the absence of this option, files larger than 1 
+Megabyte in length are truncated. Note: the -s option only works on 
+the local host (files sent to remote printer hosts are copied anyway), 
+and only with named data files - it doesn't work if lpr is at the end 
+of a pipeline.
+
+
+filter-option
+The following single letter options notify the line printer spooler 
+that the files are not standard text files. The spooling daemon will 
+use the appropriate filters to print the data accordingly.
+
+
+-p 
+Uses pr to format the files (lpr-p is very much like pr | lpr).
+
+
+-l 
+Prints control characters and suppresses page breaks.
+
+
+-t 
+The files contain troff(1) (cat phototypesetter) binary data.
+
+
+-n 
+The files contain data from ditroff (device independent troff).
+
+
+-d
+The files contain data from tex (DVI format from Stanford).
+
+
+-g
+The files contain standard plot data as produced by the plot(3X) 
+routines (see also plot(1G) for the filters used by the printer 
+spooler).
+
+
+-v
+The files contain a raster image, see rasterfile (5).
+
+
+-c
+The files contain data produced by cifplot.
+
+
+-f
+Interprets the first character of each line as a standard FORTRAN 
+carriage control character. If no filter-option is given (and the 
+printer can interpret PostScript), the string `%!' as the first two 
+characters of a file indicates that it contains PostScript 
+commands.
+
+
+Diagnostics
+lpr: copy file is too large
+A file is determined to be too ``large'' to print by copying into the 
+spool area. Use the -s option as defined above to make a symbolic 
+link to the file instead of copying it. A too-large file is 
+approximately 1 Megabyte. lpr truncates the file, and prints as 
+much of it as it can.
+
+
+lpr: printer: unknown printer
+The printer was not found in the printcap database. Usually this is 
+a typing mistake; however, it may indicate a missing or incorrect 
+entry in the /etc/printcap file.
+
+
+lpr: printer: jobs queued, but cannot start daemon.
+The connection to lpd on the local machine failed. This usually 
+means the printer server started at boot time has died or is hung. 
+Check the local socket /dev/printer to be sure it still exists (if it does 
+not exist, there is no lpd process running).
+
+
+lpr: printer: printer queue is disabled
+This means the queue was turned off with
+
+	example% /usr/etc/lpc disable printer
+
+to prevent lpr from putting files in the queue. This is normally 
+done by the system manager when a printer is going to be down for 
+a long time. The printer can be turned back on by a super-user with 
+lpc.
+
+If a connection to lpd on the local machine cannot be made lpr will 
+say that the daemon cannot be started. Diagnostics may be printed 
+in the daemon's log file regarding missing spool files by lpd
+
+
+lprm
+
+Name
+lprm - remove jobs from the printer queue
+
+
+Command Line
+lprm [ -Pprinter ] [ - ] [ job # ... ] [ username ... ]
+
+
+Description
+lprm removes a job or jobs from a printer's spooling queue. Since 
+the spool directory is protected from users, using lprm is normally 
+the only method by which a user can remove a job.
+
+Without any arguments, lprm deletes the job that is currently 
+active, provided that the user who invoked lprm owns that job.
+
+You can remove a specific job by supplying its job number as an 
+argument, which you can obtain using lpq(1). For example:
+
+example% lpq -Phost
+host is ready and printing
+Rank Owner Job Files Total Size
+active wendy 385 standard input 35501 bytes
+example% lprm -Phost 385
+
+lprm reports the names of any files it removes, and is silent if 
+there are no applicable jobs to remove.
+
+lprm kills the active printer daemon, if necessary, before 
+removing spooled jobs; it restarts the daemon when through.
+
+
+Options
+-Pprinter
+Specifies the queue associated with a specific printer. Otherwise the 
+value of the PRINTER variable in the environment is used. If this 
+variable is unset, the queue for the default printer is used.
+
+Removes all jobs owned by you. If invoked by the super-user, all 
+jobs in the spool are removed. (Job ownership is determined by the 
+user's login name and host name on the machine where the lpr 
+command was invoked).
+
+
+Diagnostics
+lpr: printer: jobs queued, but cannot start daemon.
+The connection to lpd on the local machine failed. This usually 
+means the printer server started at boot time has died or is hung. If 
+it is hung, the master lpd(8) daemon may have to be killed and a 
+new one started.
+
+
+net14
+
+
+Name 
+net14 is a utility that redirects serial output onto a TCP/IP network.
+
+
+Command Line 
+net14 -h <filename> <program-name> [program options]
+
+
+Full Description
+net14 is a utility to allow programs which use interrupt 14h to output 
+serial information to output that information onto a TCP/IP 
+network. Thus, you could use this utility to re-direct the output from 
+MS-Kermit onto a TCP/IP network through an ethernet card, while 
+still retaining the MS-Kermit user interface.
+
+
+Usage
+The net14 program acts as a shell in which you can execute another 
+program. net14 first initializes the network and reads in the 
+config.tel file, then transfers control to the program specified on 
+the command line. For example, the following line starts net14, 
+specifies a location for the config.tel file, and fires up MS-Kermit:
+
+net14 -h c:\ncsa\config.tel kermit
+
+To pass parameters to the program which net14 transfers control to, 
+place them after the filename of the program.
+
+
+Options
+-h <filename>
+Specifies the location of the config.tel file to read in the network 
+options.
+
+
+<program-name> 
+The program which net14 executes after initializing the network. 
+net14 searches for the program in the path specified in the MS-DOS 
+PATH environment variable.
+
+
+[program options] 
+This program passes options to the program which net14 executes.
+
+
+rsh
+
+
+Name
+rsh - remote shell
+
+
+Command Line
+rsh [ -l username ] [ -n ] hostname command
+
+rsh hostname [ -l username ] [ -n ] command
+
+hostname [ -l username ] [ -n ] command
+
+
+Description
+rsh connects to the specified hostname and executes the specified 
+command. rsh copies its standard input to the remote command, 
+the standard output of the remote command to its  standard output, 
+and the standard error of the remote command to its standard 
+error. Interrupt, quit and terminate signals are propagated to the 
+remote command; rsh normally terminates when the remote 
+command does.
+
+If you omit the command, instead of executing a single command, 
+rsh logs you in on the remote host using rlogin(1C). Shell 
+metacharacters which are not quoted are interpreted on the local 
+machine, while quoted metacharacters are interpreted on the 
+remote machine.
+
+Hostnames are given in the hosts database, which may be 
+contained  in the /etc/hosts file, the Yellow Pages hosts database, 
+the Internet domain name database, or some combination of the 
+three. Each host has one official name (the first name in the 
+database entry) and optionally one or more nicknames. Official 
+hostnames or nicknames may be given as hostname.
+
+If the name of the file from which rsh is executed is anything other 
+than ``rsh,'' rsh takes this name as its hostname argument. This 
+allows you to create a symbolic link to rsh in the name of a host 
+which, when executed, will invoke a remote shell on that host. The 
+/usr/hosts directory is provided to be populated with symbolic links 
+in the names of commonly used hosts. By  including /usr/hosts in 
+your shell's search path, you can run rsh by typing hostname to 
+your shell.
+
+Each remote machine may have a file named /etc/hosts.equiv that 
+contains a list of trusted hostnames with which it shares 
+usernames. Anyone with identical usernames on the local and 
+remote machines may rsh from the machines listed in the remote 
+machine's /etc/hosts file. Each user can set up a similar private 
+equivalence list using the file .rhosts in their home directories. 
+Each line in this file contains (at least) a hostname, a separating 
+space, and a username. The entry permits the user named 
+username who is logged into hostname to use rsh to access the 
+remote machine as the remote user. If the name of the local host is 
+not found in the /etc/hosts.equiv file on the remote machine, and 
+the local username and hostname are not found in the remote 
+user's .rhosts file, then the access is denied. The hostnames listed 
+in the /etc/hosts.equiv and .rhosts files must be the official 
+hostnames listed in the hosts database. You cannot use nicknames 
+in either of these files. Unless the command argument is omitted, 
+rsh will not prompt you for a password if the remote machine 
+denies you access.
+
+
+Options
+-l  username
+Uses the username as the remote username instead of your local 
+username. Without this option, the remote username and your 
+local username are identical.
+
+
+-n
+Redirects the input of rsh to /dev/null. Occasionally, you must use 
+this option to avoid unfortunate interactions between rsh and the 
+shell which invokes it. For example, if you are running rsh and 
+invoke a rsh in the background without redirecting its input away 
+from the terminal, it will block even if the remote command 
+doesn't post any reads. The -n option prevents this situation.
+
+Your entry in the file /etc/passwd on the remote system determines 
+the type of remote shell (sh, rsh, or other) your local system will 
+use.
+
+
+setclock
+
+
+Name
+setclock sets the local clock to one on a network server.
+
+
+Command Line
+setclock -h <filename> hostname
+
+
+Description
+The utility, setclock, sets the PC's local clock from the network's 
+clock server.
+
+
+Options
+-h <filename>  
+Gives the location and the name of the config.tel file.
+
+
+hostname
+Gives the name of the host from which you'll get the time.
+5.1	NCSA Telnet
+
+
+File Transfer	5.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+
+                                                                
+
+
+
+
+
+5.1	NCSA Telnet
+
+File Transfer	5.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+
+	6/30/91
+
+
+
+
+Chapter 5	File Transfer
+
+
+
+Chapter Overview
+File Transfer Terminology
+File Transfer Guidelines
+Full Path Specification:  Conversion of Forward 
+Slashes
+Simultaneous Activity 
+Rules for Filenames Sent to the PC
+File Transfer Reports
+File Transfer Using FTP
+Setting Up FTP
+Using FTP
+Invoking FTP on the Host Computer
+Invoking FTP Using Alternate Methods
+Using FTP Commands
+File Transfer Using rcp
+Setting Up rcp
+Using rcp
+Avoiding Use of NCSA Telnet's rcp Server
+Using rcp Between the PC and UNIX
+Using Wildcards
+
+Chapter Overview
+
+This chapter describes procedures for transferring files between a 
+PC and a network host, using NCSA Telnet's two built-in file 
+transfer servers: FTP and rcp. Guidelines and information are 
+presented for file name conventions, path specification, and 
+background file transfer.
+
+
+File Transfer Terminology
+
+This chapter uses the following terms:
+
+
+ASCII file, text file
+Humans can read an ascii or text file, and can edit the files using 
+standard editors on the PC or host. When you transfer text files, 
+their end-of-line markers are changed.
+
+
+Binary, Graphics, or Image File
+Humans can't read a binary, graphics, or image file. 
+When transferred, binary files are not changed in any way 
+(unlike text files).
+
+
+Client/Server
+The client is the system that requests services while the server is 
+the system that provides or "serves" them. The client is not always 
+your PC, despite appearances. When you use NCSA Telnet to 
+connect to a host, your PC is the telnet client. When you request a 
+file transfer from your PC, the transfer is actually initiated on the 
+host, making the host the FTP client and your PC the FTP server. 
+Thus, the PC is a telnet client and an FTP server at the same time. 
+
+
+File Transfer
+In a file transfer, the contents of a file are copied, and the copy is 
+placed on another computer's disk drive.
+
+
+File Transfer Guidelines
+
+Full Path Specification: 
+Conversion of Forward 
+Slashes
+If you do not specify a full pathname for either FTP or rcp, NCSA 
+Telnet will transfer the files to the default directory. If you need to 
+specify a different directory, type the full pathname as documented 
+in the DOS manual. The full pathname may include the disk drive 
+name, with a colon. For example:
+
+D:\myfiles\graphics\image.dat
+
+or
+
+D:/myfiles/graphics/image.dat
+
+You may use forward slashes (/) rather than backslashes (\), 
+because NCSA Telnet automatically converts any forward slashes 
+in UNIX pathnames to backslashes for compatibility with PC-DOS. 
+Because backslashes are special characters in the UNIX shell and 
+a special format is required to enter them, forward slashes are 
+more convenient to use.
+
+NOTE:  rcp is a Berkeley UNIX feature. Refer to the section, 
+"Using rcp File Transfer," in this chapter for more information.
+
+
+Simultaneous Activity 
+With both FTP and rcp, file transfers are processed at the same 
+time as other telnet sessions. Therefore, while a file transfer is in 
+progress, you can perform other NCSA Telnet activities such as 
+interacting with a telnet session, switching sessions, adding new 
+sessions, or changing parameters. 
+
+However, do not initiate another file transfer while one is already 
+in progress. While an FTP request is being processed, a second 
+FTP request will be ignored. Furthermore, if you try to start an rcp 
+transfer while another transfer is already underway, both 
+transfers may fail.
+
+NOTE: Do not quit NCSA Telnet while a file transfer is in 
+progress, because the file transfer may fail.
+
+
+Rules for Filenames Sent to 
+the PC
+Whether you are using FTP or rcp to transfer files to or from a PC, 
+check these rules for PC filenames:
+
+•	A legal PC filename is eight characters or less, followed by an 
+optional period and an up to three-character extension.
+
+•	Upper and lower case are considered identical for filenames on 
+PC disks.
+
+•	Names of files which are transferred from the PC are given in 
+all lower case.
+
+•	A filename longer than eight characters is truncated.
+
+•	If a period occurs in a filename, the next three characters are 
+read as the extension, and any others are truncated. 
+
+•	A filename should not contain "special characters" or spaces. 
+If it does, the file may be lost or unreadable. Examples of special 
+characters are the asterisk (*), the dollar sign ($), the pound 
+sign (#), the hyphen (-), and control characters. 
+
+
+File Transfer Reports
+The FTP server produces several kinds of information for you to 
+help keep tabs on FTP access to the local hard disk. You can view 
+this information by pressing the ALT-Z keys (show console 
+messages), as documented in Chapter 2, "Introduction to 
+Managing Sessions." The following list describes the 
+information which FTP provides.
+
+•	Reports when a command connection is initiated, with the IP 
+address or host name of the remote machine which initiated the 
+connection
+
+•	Reports the name of the user who logs in, if you use the USER 
+command
+
+•	Reports the file names which were transferred to or from local 
+disk
+
+•	Reports when the command connection ends
+
+The rcp server also produces reports for the console screen.
+
+•	Reports when an rcp transfer begins
+•	Reports when the rcp transfer ends
+
+
+File Transfer Using FTP
+
+The FTP server in NCSA Telnet is the minimum standard FTP 
+server, similar to that in 4.2 BSD UNIX. NCSA's FTP supports the 
+following features:
+
+•	Stream transfer in text format (ASCII) or binary format 
+(IMAGE)
+
+•	Change, create, or delete a directory
+
+•	Print current directory
+
+•	List files in current directory (with wildcard specifications)
+
+•	Send and receive multiple files with one command, using 
+wildcards
+•	Delete file
+
+
+Setting Up FTP
+The host machine must support FTP file transfer. If you do not 
+know whether it does, see your system administrator.
+
+You must not have disabled the file transfer capability of NCSA 
+Telnet. That is done with the Parameter menu (see Chapter 3, 
+"More About Managing Sessions"), or in the configuration file 
+(see Chapter 7, "Installation and Configuration"). If the file 
+transfer capability has been switched off, when you attempt to start 
+up FTP, you will get a message from the host to the effect that the 
+computer is not responding. If you get such a message, check the 
+file transfer mode on the Parameter menu to make sure that it is 
+enabled.
+
+
+Using FTP
+Use FTP rather than rcp in either of the following situations.
+
+1.	You are not thoroughly familiar with the host operating system. 
+FTP is easier to use than rcp, and requires less familiarity with 
+the host commands and directory structure.
+
+2.	You are transferring PC text (ASCII) files to a host. FTP is a 
+better choice than rcp, because FTP automatically converts the 
+end-of-line characters in text files from CRLF, used by PC-DOS, 
+to LF, used by UNIX machines.
+
+
+Invoking FTP on the Host 
+Computer
+FTP is initiated by the host, so the FTP commands vary, 
+depending on the host system. For full documentation of FTP and 
+commands within FTP, you must refer to the manuals for the host 
+computer. With UNIX systems, you can see online documentation 
+by using the man ftp command. See Chapter 4, "Utility 
+Programs," for more information.
+
+
+The FTP Command
+On most systems, the FTP command is entered at the prompt, with 
+the name or IP address of the target machine. For example, if your 
+PC is named "mymachine" and your IP address is 192.17.20.22, 
+then you might enter:
+
+% ftp mymachine
+
+or
+
+% ftp 192.17.20.22
+
+which generates a response like this:
+
+Connected to 192.17.20.22.
+220 PC Resident FTP server, ready
+Name (192.17.20.22:timk):
+Most FTP clients will now prompt you for your username and 
+password. If NCSA Telnet is configured for passwords (see 
+Chapter 7, "Installation and Configuration"), then these are 
+required. Otherwise, just press RETURN to bypass the prompts. If 
+you are  not prompted for username and password, then assume 
+that you are logged in and continue with your FTP commands.
+
+
+Invoking FTP Using 
+Alternate Methods
+The most common procedure for starting FTP uses the shortcut 
+keystroke, ALT-F. When you press ALT-F, NCSA Telnet types the 
+FTP command described above, automatically including your 
+PC's IP address and the RETURN to initiate the command. For 
+convenience, you will probably prefer ALT-F to the other ways of 
+entering the command. You may want to think of this as a 
+keyboard macro that is pre-set with the FTP command and your IP 
+address.
+
+Another available macro is ALT-I which types your IP address for 
+you. When entering any networking command, FTP for example, 
+you can instantly produce your own network IP address with ALT-
+I. The following sequence is equivalent to pressing ALT-F.
+
+ftp
+(SPACEBAR)
+(ALT-I)
+(RETURN)
+
+Use whichever method of invoking FTP that works best for you. 
+Your host computer may or may not accept FTP commands as 
+described here, so you may have to try some variations to find the 
+easiest method for your site. Your system administrator may be 
+able to help.
+
+
+Using FTP Commands
+For most FTPs, after FTP has been invoked and passwords have 
+been checked, you are prompted for individual FTP commands. 
+These commands are also documented in the manuals for the host 
+computer. Most of the FTP implementations have similar 
+commands because they are modeled after the Berkeley UNIX 
+version of FTP. Table 5.1 lists FTP commands that are common to 
+most implementations.
+
+Table 5.1	Common FTP 
+Commands
+Command		Action
+
+ascii		Sets mode to ASCII transfer mode (default)
+
+binary		Sets mode to binary (image) transfer mode
+
+cd path		Sets a new default directory on PC
+
+dir			Shows filenames in PC's default directory
+
+get filename	Gets a file from PC and sends it to host
+
+help			Shows online list of FTP commands
+
+put filename	Sends a file from host to PC
+
+pwd			Shows current PC directory name
+
+quit			Exits FTP
+
+remotehelp	Shows list of supported commands on FTP 
+				server
+
+
+ASCII, Binary
+The default mode for FTP transfers is ASCII format. If you are 
+transferring graphics or binary data files, change to binary mode 
+before you use the put or get commands. Do this by entering the 
+command binary. To reset the ASCII format after sending a 
+binary file, enter the command ascii. Figure 5.1 shows an FTP 
+transaction with an ASCII file. Figure 5.2 shows an FTP 
+transaction with a binary file.
+
+
+Default Directory
+Unless you include a full pathname with the command, NCSA 
+Telnet transfers the file to the default directory. As Table 5.1 
+indicates, you can use FTP commands to identify the current 
+directory (pwd), or change the current directory (cd).
+
+The change directory command, which you type as cd, allows you 
+to change the default disk drive in addition to the default directory. 
+Just use PC standard disk notation, with forward slashes instead 
+of backslashes, for example:
+
+ftp> cd D:/files
+
+The pwd command also returns disk information. After the 
+previous example cd command, a pwd command returns:
+
+D:\FILES
+
+
+Transfer to the PC
+Even though you seem to be initiating the transfer from the PC, the 
+transaction operates from the host's side. The practical effect of 
+this could make the commands seem intuitively "backwards." To 
+transfer a file from the host to your PC, you use a put command. 
+The form this command takes is:
+
+put filename.ext
+
+Figure 5.1 shows an example of a put command used with an 
+actual file, named temp2. The boldface type represents user 
+entries.
+
+
+Figure 5.1	Put to the PC, ASCII 
+File
+newton_45% ftp -n 192.17.20.124
+Connected to 192.17.20.124.
+220 PC Resident FTP server, ready
+ftp> put temp2
+200 This space intentionally left blank <  >
+150 Opening connection
+226 Transfer complete
+262145 bytes sent in 32.61 seconds (7.8 Kbytes/s)
+ftp> quit
+221 Goodbye
+newton_46%
+
+
+
+Transfer to the Host
+A request to send a file from the PC to the host is called a get.
+
+get filename.ext
+
+Figure 5.2 shows a get operation, using a binary file named 
+bridge.pic. Note that the file was in the directory named ibmg, so 
+the cd command was used. Again, the boldface type represents user 
+entries. If a text file were to be sent after this, the ASCII mode would 
+have to be reset, using the FTP ascii command.
+
+Figure 5.2 	Get from the PC, 
+Binary File
+newton_41% ftp -n 192.17.20.124
+Connected to 192.17.20.124.
+220 PC Resident FTP server, ready
+ftp> bin
+200 Type set to I, binary transfer mode
+ftp> cd /ibmg
+250 Chdir okay
+ftp> get bridge.pic
+200 This space intentionally left blank <  >
+150 Opening connection
+226 Transfer complete
+262144 bytes received in 9.22 seconds (28 Kbytes/s)
+ftp>
+ftp> quit
+221 Goodbye
+newton_42%
+
+
+
+FTP Status Indicator
+After you have entered a put or get command, in the lower right 
+hand corner of your screen you will see the filename and an 
+indication of the number of bytes transferred (in the case of a put) 
+or left to be transferred (in the case of a get). These numbers are 
+updated every couple of seconds to help you keep track of the 
+progress of the file transfer. After the command has completed, the 
+filename goes away and the host usually prints a confirmation 
+message, as seen in Figures 5.1 and 5.2.
+
+
+mput, mget
+On many telnet hosts, you can transfer multiple files sequentially 
+with one command, either mput or mget, used with wildcard 
+characters. (PC wildcard characters are ? for a single character 
+and * for multiple characters.) For instance, to transfer the 
+multiple files, teln.2, and teln.3, you could enter mget (or mput)†*
+
+
+Bug with mget
+If you transfer multiple binary files using a UNIX host, note that 
+there is a bug in mget as implemented on some systems (especially 
+4.2 BSD UNIX). When used in binary mode, mget adds a carriage 
+return to the filenames as they are transferred. The files 
+themselves are not affected. Use a UNIX utility to remove the 
+carriage return from the filename. In ASCII mode, there is no 
+problem.
+
+
+File Transfer Using rcp
+
+rcp is a Berkeley UNIX feature found in Sun UNIX and other 4.2 
+BSD systems. The rcp program cannot do the end of line 
+translation required for text files, so it is typically used for binary 
+files only. UNIX rcp is designed for files copied UNIX-to-UNIX, 
+but NCSA Telnet's rcp server supports transfer between a UNIX 
+system and a PC.
+
+NOTE: NCSA Telnet's rcp server does not support the recursive 
+option (-r).
+
+
+Setting Up rcp
+To use rcp efficiently, you should be familiar with the UNIX host, 
+including:
+
+•	rcp command and options
+•	directory structures used with rcp
+•	the relationship between the UNIX shell and rcp wildcards
+
+Details on these concepts are in the manuals for UNIX.
+
+The internet (IP) number and machine name for each PC must be 
+in the UNIX /etc/hosts file for every machine that is 
+transferring files to and from your PC. If rcp does not recognize 
+your PC's name, have your system administrator check or add that 
+name in the UNIX machine's hosts file.
+
+
+Using rcp
+Use rcp for binary transfers to or from a UNIX system if you are 
+familiar with the UNIX hosts, as described earlier.
+
+There are two advantages of using rcp rather than FTP, on binary 
+file transfers to or from a UNIX machine.
+
+•	rcp handles wildcards more efficiently than FTP does.
+•	rcp handles directories more easily than FTP does.
+
+
+Avoiding Use of NCSA 
+Telnet's rcp Server
+Do not use the rcp server to transfer text files. Text files on the PC 
+contain extra RETURN characters that NCSA Telnet's rcp server 
+does not remove when transferring to UNIX.
+
+NOTE: Do not initiate an rcp while a file transfer is already in 
+process, or both transfers may fail.
+
+
+Using rcp Between the PC 
+and UNIX
+The rcp program is fully documented in the manuals for UNIX 
+hosts that support rcp transfers. Refer to those manuals to learn 
+about rcp. As a reminder, the general syntax of the rcp command is 
+given here. The target filename can be a directory name and 
+wildcards are allowed, as noted in the next section.
+
+% rcp mypc:filename unixfile		From PC to UNIX
+% rcp unixfile mypc:filename		From UNIX to PC
+
+
+Example: PC to UNIX
+Following is a sample command to transfer a file named image 
+from the PC named mypc to the current directory on the UNIX host 
+(indicated by a dot or period). Note that the only blank spaces are 
+after the command rcp, and between the filename and the target 
+directory name (in this case, the dot for the current directory).
+
+% rcp mypc:image .
+
+
+Example: UNIX to PC
+Following is a sample command to transfer a file named mygraf 
+in the directory graphs from the UNIX host and put it in the 
+directory grafs on the PC.
+
+% rcp /graphs/mygraf mypc:/grafs
+
+
+Using Wildcards
+You can use wildcard characters with the rcp command to transfer 
+multiple files between a PC client and a UNIX host. Wildcards that 
+refer to UNIX files should be in the UNIX regular expression 
+format. You must set wildcards that refer to PC files apart by using 
+backslashes or quotes. See the following examples.
+
+
+Example: Backslashes Used With Wildcards
+One way of using PC wildcards with the rcp server is to use the 
+backslash character (\) to keep the UNIX shell from interpreting 
+the special characters. Suppose you want to transfer all files that 
+have image at the beginning of the filename. Instead of the usual 
+PC format, image*.*, you must precede each asterisk with a 
+backslash. The full rcp command would look like this:
+
+% rcp mypc:image\*.\* .
+
+Without the backslashes, the UNIX shell would try to translate the 
+asterisk on the host rather than on the PC.
+
+
+Example: Quotes Used With Wildcards
+The second way of using PC wildcards with the rcp server is to 
+insert quotes around the entire argument. The command to 
+transfer the files beginning with image would look like this:
+
+% rcp "mypc:image*.*" .
+
+6.1	NCSA Telnet
+
+
+Tektronix 4014 Graphics	6.1
+
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+                                                                
+
+
+
+
+
+6.1	NCSA Telnet
+
+Tektronix 4014 Graphics	6.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+
+
+6/30/91
+
+
+
+
+Chapter 6	Tektronix 4014 Graphics
+
+
+
+Chapter Overview
+Emulating a Tektronix 4014 Graphics Terminal
+Initializing A Plotter
+Setting the Configuration File 
+Switching to and from Graphics Mode
+Graphics Mode
+Text Mode
+Using the Graphics Menu (ALT-G)
+Writing Graphics Files to Disk
+Renaming Graphics Output Files
+Setting the Viewing Region (Zoom Factor)
+Redrawing Last Image
+Plotting a Stored File
+
+Chapter Overview
+
+NCSA Telnet can emulate the Tektronix 4014 graphics terminal. 
+This emulation includes text modes, Tek 4014 text sizing, zoom, 
+pan, and multiple output devices. It supports CGA, EGA, Hercules, 
+and the Number Nine Revolution 512 x 8 video systems, with the 
+capability to write out images in PostScript, HPGL, or Tek 
+drawing commands. The use of Tektronix graphics with NCSA 
+Telnet depends upon host programs that can produce graphic 
+images. When these programs run and produce Tektronix 4014 
+graphics commands, NCSA Telnet automatically switches into 
+graphics mode and does the drawing. 
+
+This chapter describes steps in preparing to emulate the Tektronix 
+4014 and how to use the Graphics menu.
+
+
+Emulating a Tektronix 4014 Graphics Terminal
+
+Initializing a Plotter
+If you will be plotting directly to a plotter, the communications port 
+for the plotter must be initialized before you run NCSA Telnet. To 
+do so, use the DOS mode command. See the DOS manual and the 
+plotter manual for examples.
+
+
+Setting the Configuration 
+File 
+You'll use NCSA Telnet's configuration file to install the 
+hardware and software configuration for Tektronix graphics. 
+There are several settings you should insert in the configuration 
+file, detailed in Chapter 7, "Installation and Configuration," 
+before you use Tektronix emulation.
+
+1.	Include tek=yes in the configuration file to enable graphics 
+operation.
+
+2.	Specify the video type with the video parameter in the 
+configuration file. This is the only step required for selecting 
+the video display because all of the screen drivers are included 
+in NCSA Telnet.
+
+3.	Install specific filenames to be used when writing each of the 
+three different kinds of drawing commands. The hpfile 
+parameter selects the file to receive HPGL commands, the 
+psfile option selects the file to receive PostScript drawing 
+commands, and the tekfile option selects the file to receive 
+Tektronix drawing commands. If you do not make any settings 
+here, the default files are hp.out, ps.out, and tek.out.
+
+If you want HPGL output to go directly to a plotter that is connected 
+to COM1 rather than to a disk file:
+
+4.	Add hpfile=com1 to your configuration file. Note that you use 
+COM1 without a colon.
+
+
+Switching to and from Graphics Mode
+
+Graphics Mode
+When host programs produce Tektronix 4014 graphics commands,  
+NCSA Telnet automatically switches into graphics mode and does 
+the drawing.  The exact command sequence which causes the 
+switch to graphics mode is the Tektronix clear screen command, 
+ESC-FF, which is sometimes written as ESC-CTRL-L. A copy of 
+your text screen is saved while you are in graphics mode.
+
+The second way to enter graphics mode is to press CTRL-HOME. 
+This key switches from text mode to graphics mode and clears the 
+graphics screen. Host programs that produce Tektronix 4014 
+graphics commands cause the screen to automatically go to 
+graphics mode, so you will not usually need to use CTRL-HOME to 
+switch to graphics manually.
+
+The third method of starting graphics mode is to re-display the last 
+graphics image. The re-display option is from the Graphics menu, 
+described later in this chapter. At the completion of the re-display 
+command, the screen remains in graphics mode.
+
+
+Text Mode
+To return to text mode, press HOME. When you are in graphics 
+mode, HOME will set your display back to text mode and redraw 
+the text screen which was visible before the graphics mode began. 
+No host command exists which automatically returns to text mode. 
+When you are in text mode, HOME has a different function. 
+
+Using the Graphics Menu (ALT-G)
+
+You display the Graphics menu by pressing ALT-G. Figure 6.1 
+shows the Graphics menu, as it appears with the default filenames. 
+You can change the fields in bold.
+
+Figure 6.1	Graphics Menu
+ALT-G                           Graphics menu
+<            Press the appropriate function key or ESC to 
+resume        >
+
+   F1 - Write postscript to a file called: ps.out
+   F2 - Change postscript output file name
+
+   F3 - Write HPGL code to a file called: hp.out
+   F4 - Change HPGL output file name
+
+   F5 - Write Tektronix 4014 codes to a file called: tek.out
+   F6 - Change Tektronix output file name
+
+        View region is currently: 0,0,4095,3119
+   F7 - Set a new view region (Zoom, Pan)
+   RETURN - draw picture on screen in current zoom factor
+
+   Enter choice:
+
+
+From this menu, you press the appropriate function key, or 
+RETURN to redraw the most recently displayed graphics picture.
+
+
+Writing Graphics Files to 
+Disk
+To write out graphics images, use the Graphics menu. First, you 
+should display the image on the screen using host software that 
+generates Tektronix images. NCSA Telnet always keeps the last 
+graphic image in memory. Select one of the options which writes 
+this image to disk. The program writes images using the current 
+view region. 
+
+If you select Tektronix 4014 format, NCSA Telnet writes the image 
+directly to disk and then returns you to your current session. After 
+selecting the HPGL or the PostScript option from the Graphics 
+menu, you are returned to your session while the file is written to 
+disk in the background. After this image has been completely 
+copied from memory to disk, a message on the console screen tells 
+you that the process has completed.
+
+
+Renaming Graphics Output 
+Files
+If you did not set up alternate files to use in the configuration file 
+and you do not want to use the default filenames hp.out, ps.out, or 
+tek.out, you can change the names before or after writing the file. 
+Use the Graphics menu options to change one of the current file 
+names before writing the image to disk. If you want a name 
+changed after writing out the file, use ALT-E to escape to DOS, then 
+use the DOS rename command. Use exit to leave DOS and return 
+to NCSA Telnet.
+
+A special feature allows you to append the current image to an 
+existing disk file instead of overwriting. Enter any of the three file 
+names as you would normally, adding a plus (+) to the beginning 
+of the name.  NCSA Telnet takes the plus (+) to indicate that you 
+want to open that file for "append", adding another image to the 
+file. A filename which does not begin with a plus (+), causes NCSA 
+Telnet to overwrite the file when saving each image.
+
+
+Setting the Viewing Region 
+(Zoom Factor)
+Another Graphics menu choice lets you set the viewing region, or 
+zoom factor. Any portion of the image can be enlarged and made to 
+fill the screen. Tektronix drawing commands are resolved to a 
+4096 x 3120 pixel resolution. Values start with 0,0 in the lower left, 
+and go to 4095, 3119 in the upper right. 
+
+The default view region for NCSA Telnet is (0, 0, 4095, 3119), which 
+is the full image. Figure 6.1 has examples of possible viewing 
+regions that you can use.
+
+Figure 6.2	Sample Viewing 
+Regions
+                                              
+
+
+Redrawing Last Image
+Use the Graphics menu option, Redraw Last Image, is used when 
+you want to review the image that is currently in memory. This 
+option always zooms and enlarges the image according to the view 
+region that is visible. The selected view region always fills the 
+screen so you can see more detail.
+
+This command leaves you in graphics mode, so press HOME if you 
+want to return to text mode.
+
+
+Plotting a Stored File
+
+If you have used the Graphics menu to store a file of HPGL drawing 
+commands, the DOS copy command can send those commands to 
+an attached plotter (which is connected to COM1 in this example).
+
+C:> copy filename.out com1 
+
+	
+
+
+Installation and Configuration	7.1
+
+
+
+
+June 1991
+
+
+                                                                
+
+
+
+
+
+7.1	NCSA Telnet
+
+Installation and Configuration	7.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+		6/30/91
+
+
+
+
+Chapter 7	Installation and Configuration
+
+
+
+Chapter Overview
+Installing the Distribution Files
+Sample Configuration
+Required Configuration Information
+The TELNET.BAT File
+Command Line Options
+The Configuration File
+Overview
+Syntax for Entries
+PC Information Entries
+Host-Specific Parameters
+Convertion of UNIX /etc/hosts Files
+Hardware Options
+Combined Ethernet Drivers
+Performance Tuning
+RARP for Dynamic IP Address Assignment
+BOOTP for Dynamic IP Address Assignment
+Interrupts
+Domain Name Lookup
+FTP Password Protection
+Compatibility Notes
+Ping
+VT102
+FTP
+Terminate and Stay Resident (TSR) Programs
+NCSA Telnet
+Limitations
+
+Chapter Overview
+
+This chapter contains information for system administrators 
+(and other experienced users) to use in installing and customizing 
+a telnet system. It describes how to install NCSA Telnet, change 
+the configuration file, the domain name lookup, how to protect FTP 
+transfers with passwords, and discusses compatibility issues.
+
+
+Installing the Distribution Files
+
+Three files are required for the standard configuration of NCSA 
+Telnet. The combination of these with the use of the DOS path 
+command allows you to call up NCSA Telnet from any 
+subdirectory on your PC. 
+
+
+TELNET.BAT
+This batch file begins the execution of NCSA Telnet. It must be in a 
+directory that is in your DOS path. It contains the locations of the 
+TELBIN.EXE and CONFIG.TEL files. You must update this batch 
+file (with any standard editor) when you change the location of 
+TELBIN.EXE or CONFIG.TEL.
+
+
+TELBIN.EXE
+This file is the program itself. You can place it in any directory. 
+The TELNET.BAT file calls up this program when it runs.
+
+
+CONFIG.TEL
+Config.tel is the configuration file that contains your PC's IP 
+address, the kind of Ethernet hardware that you are using, and 
+other information about your network. Gateways, nameservers, 
+and setup information are stored here. The TELNET.BAT file 
+tells TELBIN.EXE where it can find this file on your disk.
+
+
+Sample Configuration
+Suppose you want to install NCSA Telnet in a directory called 
+\ncsa on your hard disk drive, drive C. Copy the TELBIN.EXE 
+and CONFIG.TEL files to C:\ncsa. Suppose also that you have a 
+particular directory C:\bat, which you use to store commonly 
+used batch files. Your DOS path (see DOS manual) contains an 
+entry for C:\bat already. Copy the TELNET.BAT file into 
+C:\bat. You must now edit the TELNET.BAT file to update the 
+locations of the TELBIN.EXE and CONFIG.TEL files. When 
+finished, it should look something like this:
+
+if .%1 == . goto defh
+c:\ncsa\telbin -h c:\ncsa\config.tel %1 %2 %3 %4 %5
+goto exith
+:defh
+c:\ncsa\telbin -h c:\ncsa\config.tel ncsab
+:exith
+
+
+This batch file calls up TELBIN.EXE at a known location and 
+passes it the -h parameter, indicating the location of the 
+CONFIG.TEL file. In addition to the file locations, the fifth line 
+indicates which machine NCSA Telnet should connect to by 
+default.
+
+
+Required Configuration 
+Information
+To set up a new configuration file, you will need a standard text 
+editor. The template provided with NCSA Telnet is set up to reflect 
+commonly used default values. It may be worth the time to go 
+through the list of configuration options in this chapter and fine-
+tune your configuration to match your local computing situation 
+more closely. In the meantime, you must install the following 
+fields in the configuration file for NCSA Telnet to operate.
+
+Field	Meaning
+
+myip=192.17.20.10	You must provide a unique IP address 
+	for each machine on your network. IP 
+	addresses must be installed in the 
+	configuration file of each computer.
+
+netmask=255.255.255.0	This field is the subnet mask, (in decimal),  
+	and is required if you are using subnets on 
+	your network. 
+
+hardware=3C501	NCSA Telnet can support several 
+	different brands of Ethernet adapters. 
+	Each brand has its own unique 
+	identifier which you must set for the 
+	hardware parameter. See the 
+	hardware section in this chapter for a 
+	complete list of settings. Most brands 
+	also require address and ioaddr to be 
+	set.
+
+video=ega	If you wish to use the Tektronix 
+	graphics options, you must provide the 
+	correct screen type. Incorrectly 
+	installed, this option can crash NCSA Telnet. 
+	The  alternative is to install the tek=no 
+	option.  Legal types are cga, ega, 
+	hercules, no9, mono, ega43, vga50.
+
+gateway=1	If you are going to be using gateways 
+	to reach other networks, at least one 
+	machine must be designated as a 
+	gateway, using this gateway option 
+	after the name field. The entry for each 
+	gateway must include a hostip  field, 
+	according to the configuration file 
+	directions in this chapter.
+
+
+The TELNET.BAT File
+The actual .exe file that the PC executes is not named telnet.exe. A 
+batch file called TELNET.BAT loads the software in several steps 
+that are normally transparent to you. Here is a typical entry in 
+TELNET.BAT: 
+
+C:>\apps\telbin -h c:\apps\config.tel %1 %2 %3 %4
+
+
+The TELNET.BAT file, which must be in the DOS path, specifies 
+completely where the program is and where the configuration file 
+is found. If you do not explicitly specify a machine name, the 
+system connects to a previously assigned default machine name.
+
+
+Command Line Options
+NCSA Telnet goes through two stages as you load it. The program 
+first finds the TELNET.BAT. (This file must be in the DOS path so 
+it can be found first.) Secondly, in the batch file, the location of the 
+TELBIN.EXE file and any command line defaults are used to call 
+up the program. We've included many command line arguments 
+for you in the batch file, TELNET.BAT; you can add others when 
+you run the telnet batch file. This following command gives a full 
+description of those options. The syntax for loading NCSA Telnet 
+with options is:
+
+C:\ > telnet [options] [machine1 machine2 ...]
+
+The options must precede the list of machine names on the 
+command line. You may order the options in any way, but you 
+must include the parameters for each option. Include one space 
+between the options and between each option and the parameter for 
+that option. The options are:
+
+Option		Function
+
+?	Shows command line options. This option causes 
+	NCSA Telnet to display a summary version 
+	of the command line options instead of 
+	initiating the program. 
+
+-c colorcode	Sets the default color for screens. The 
+	colorcode string is six digits long and follows the 
+	coding scheme documented later in this chapter.
+
+-h filename	Specifies where to find the configuration file. 
+	Normally, this option is included in TELNET.BAT, 
+	and you never have to use it explicitly. If you do 
+	not specify the configuration file there or on the 
+	command line, there must be a file named 
+	CONFIG.TEL in the default directory, or you must 
+	set an environment variable named CONFIG.TEL 
+	to your configuration file. If a suitable 
+	configuration file cannot be found according to 
+	these rules, NCSA Telnet terminates. 
+
+	For example, if you name your configuration file 
+	"TELNET.CFG", and the file resided in the 
+	directory C:APPS, you would put the following 
+	command in your AUTO.EXEC.BAT file:
+
+	"set CONFIG.TEL=C:\APPS\TELNET.CFG"
+
+	NOTE: filename should include a 
+	pathname. For example, 
+
+	C:\bat\config.tel
+
+	NCSA Telnet uses the filename specified for the -h 
+	parameter first. If that filename isn't available, it 
+	first looks in an environment variable, then the 
+	current directory, then all the directories specified 
+	by the "PATH" environment variable in order to 
+	find the filename.
+
+-s	Enters server mode. NCSA Telnet waits for 
+	external FTP and rcp requests. It allows you to 
+	leave your PC and access files there from a remote 
+	machine. 
+
+-t	Disables direct writes to the screen. Without 
+	the -t option, NCSA Telnet defaults to 
+	writing directly to screen memory. This option 
+	greatly enhances the screen speed, but makes 
+	NCSA Telnet incompatible with Topview, 
+	Microsoft Windows, and other windowing 
+	systems. To make NCSA Telnet completely 
+	compatible with BIOS-level programs, use the -t 
+	option. You can install this option permanently 
+	in the TELNET.BAT file or the CONFIG.TEL file 
+	(bios option).
+
+
+The Configuration File
+
+Overview
+The configuration file contains information on local operating 
+parameters (such as which type of graphics screen your PC has, 
+and your IP number), plus a list of commonly accessed hosts and 
+optional network tuning parameters for each of those hosts.
+
+The configuration file is accessed once when the program is 
+initiated and is not used again. The program reads all of the 
+machine names into memory, so it may save memory to limit the 
+number of computers you specify in the file. 
+
+The configuration file is typically named CONFIG.TEL. If this 
+file is in the default directory, it will be found automatically, but 
+the use of the -h flag in the TELNET.BAT file is recommended. 
+Syntax for Entries
+The configuration file is a list of keywords and values for those 
+keywords. The one overall requirement for the entries in the file is 
+that they alternate, keyword then value, keyword then value, and 
+so on. There are many different formats possible using any of the 
+allowable delimiters. The delimiters are the colon (:), semicolon 
+(;), equal sign (=), and any of the whitespace characters. To 
+include delimiters in a value field, enclose the field in double 
+quotes. Quotes cannot be a part of the actual data field. Wherever a 
+pound sign (#) is found, everything from there to the end of line is 
+a comment. Though you can use multiple formats in the same file, 
+you will probably want to find and keep a consistent format. For 
+example, each of the entries in Figure 7.1 specify the same 
+information. 
+
+Note that Figure 7.1.c is not a recommended format, but is 
+included to show how strange an entry may look.
+
+Figure 7.1.aDisplaying the 
+Same Information 
+in Different Entry 
+Formats
+	name=nic      # comment field to end of line ->
+	host=sri-nic.arpa
+	hostip=10.0.0.51
+	scrollback=300
+	contime=60
+
+
+Figure 7.1.b
+name=nic; host=sri-nic.arpa; hostip="10.0.0.51"; 
+scrollback=300; contime=60
+
+
+Figure 7.1.c
+name     
+nic
+host sri-nic.arpa : hostip=10.0.0.51; scrollback=300; 
+contime:60
+
+
+PC Information Entries
+The first entries in the configuration file are the PC environment 
+entries. They specify what types of hardware are to be used, the 
+names of graphics output files, and the network configuration 
+information. Following is a list of these entries:
+
+Entry	Meaning
+
+address=d000	entered as four hex digits, address=d000, 
+is the segment address of the Ethernet 
+board's shared memory. The address only 
+applies to boards that have jumpers or 
+registers which can be used to set the 
+shared memory address. After setting the 
+board's jumpers to a particular value, use 
+the address parameter to configure NCSA 
+Telnet with the same setting. d000 (hex) is 
+a common address to use and it rarely 
+conflicts with other boards.
+
+Entry	Meaning
+
+arptime=3	specifies how long to try to reach a host 
+on the local wire, in ticks, where 18.2 ticks 
+is equivalent to one second. A value of 20 
+works fine for the network at NCSA, but 
+larger values may be needed for hosts 
+that are slow to respond. Smaller values 
+are more convenient to use.
+
+autoscroll=yes	specifies whether the screen continues to 
+scroll in scrollback mode when the cursor 
+reaches the top of the screen or not. (It 
+will only scroll up one line if this option is 
+off.) Default is yes.
+
+beep=yes	specifies whether the musical note symbol 
+will appear in a session's indicator box 
+when NCSA Telnet receives a "beep" 
+character. This command is useful for 
+alert conditions.
+
+bios=no	indicates NCSA Telnet has two screen-
+writing modes. One is direct-to-screen 
+(bios=no) which is considerably faster on 
+most machines. The other uses BIOS 
+(bios=yes) and follows the IBM BIOS 
+conventions at all times. BIOS mode 
+makes NCSA Telnet compatible with 
+popular windowing systems and can 
+reduce the amount of flicker and snow on 
+the screens of IBM CGA-equipped 
+systems.
+
+broadcast=255.255.	specifies the network address to use 
+255.255	for broadcast messages.
+
+capfile=	specifies a name for the capture file. For 
+example,
+
+		capfile ="c:\temp\myfile"
+
+		When you capture to disk, all data is 
+appended to this file. If no name is 
+included in the configuration file, "capfile" 
+is used by default.
+
+capfile=prn	specifies that the printer device (PRN) 
+should be used for the capture file.
+
+clock=on	specifies that the clock should be 
+displayed on the status line.  Default is 
+clock=on.
+
+concolor=431070 	specifies the colors used in the console 
+window.
+
+Entry	Meaning
+
+cursorbottom=8	specifies the bottom of the cursor block 
+using a number from 0 to 15.
+
+cursortop=11	specifies the top of the cursor block using 
+a number from 0 to 15.
+
+domain="ncsa.uiuc.edu"	affects hostname lookups which are sent 
+to the domain nameserver. All names 
+which do not contain a period have the 
+default domain appended before the 
+nameserver request goes out. If the 
+hostname you type contains a period, 
+then the name is unmodified before NCSA 
+Telnet sends it to the nameserver. There is 
+no "ring-down" or multiple lookup feature 
+to try more than one form of the name.
+
+domainretry=4	specifies number of times to query 
+domain nameserver(s). Each time a retry 
+is sent, the timeout value (above) is 
+doubled. Each time a retry occurs, NCSA 
+Telnet tries the next nameserver, 
+wrapping around to the first nameserver 
+when there are no more.
+
+domaintime=20	specifies time in ticks to wait between the 
+first domain lookup and the second. If you 
+only have one nameserver, then this is the 
+same as a simple timeout. If you want to 
+rotate nameservers quickly because the 
+first one may be down, set this to a 
+smaller number. To force a larger number 
+of retries, set this to a smaller number. To 
+wait longer for a domain response, 
+increase this value.
+
+ftp=yes	enables FTP serving by default. Access to 
+your PC can be controlled by the FTP 
+password file. To disable FTP serving 
+completely, change this line to ftp=no.
+
+hardware=3C501	specifies that NCSA Telnet can support 
+several different brands of Ethernet 
+adapters. Each brand has its own unique 
+identifier which must be set for the 
+hardware parameter. See the hardware 
+section in this chapter for a complete list 
+of settings.
+
+hpfile=COM1	sends HPGL plotter codes directly to the 
+plotter, as long as a HP plotter hooked up 
+to your PC. Use the mode command to 
+preconfigure the serial port first.
+
+hpfile=hp.out	dumps Tektronix graphics to a file in 
+several formats from the Graphics menu. 
+When you write out HPGL (HP plotter) 
+codes, this file name is used. For example,
+
+		hpfile="c:\hpgrafs\hp.out"
+
+		The default is hp.out in the current 
+directory.
+
+interrupt=3	specifies several choices for interrupt 
+vector on the Ethernet board. NCSA 
+Telnet defaults to IRQ3, but can be set to 
+use different interrupts by indicating the 
+interrupt number here. Match this 
+number with the interrupt setting from 
+your Ethernet board.
+
+ioaddr=360	specifies the I/O base address of the 
+Ethernet board in hex. Some Ethernet 
+boards have selectable I/O addresses. 
+These generally range from 200 to 400 
+(hex) and must be entered as two, three, 
+or four digits.
+
+keyfile=filename	specifies an additional keyboard mapping 
+file to provide move key definitions. This 
+file over-rides the definitions in the 
+telnet.key file.
+
+myip=BOOTP	indicates that this entry is a special form 
+of the myip entry. Setting myip to 
+BOOTP will cause NCSA Telnet to query 
+a BOOTP server to get its IP address.
+
+
+myip=RARP	indicates that this entry is a special form 
+of the myip entry. Setting myip to RARP 
+will cause NCSA Telnet to query a RARP 
+server to get its IP address. See the section 
+on RARP in this chapter.
+
+myip=10.0.0.51	specifies the IP address to use for the PC. 
+This number must contain all four parts 
+of the IP address. This field is required.
+
+myname="hawkind.
+ncsa.uiuc.edu"	specifies the network name used to 
+identify the PC on the network.
+
+netmask=255.255.255.0	specifies the subnet mask for your local 
+network. It is optional for networks 
+without subnets.
+
+outputfile=filename	specifies that this entry is the same as 
+keyfile option, except it specifies the 
+output mapping file to over-ride the 
+default telnet.out mappings.
+
+Entry	Meaning
+
+passfile=	specifies the file in which FTP usernames 
+and passwords can be found. For 
+example,
+
+		passfile="c:\bat\ftppass"
+
+		No default name exists for this file. If the 
+file is specified, then FTP will require a 
+username and password for all attempted 
+FTP connections. If the file is not 
+specified, then there is no password 
+checking for FTP. Use the program 
+TELPASS.EXE to encrypt new 
+passwords. See the FTP Password 
+Protection section later in this chapter.
+
+psfile=ps.out	prints PostScript commands to several 
+types of available laser printers. NCSA 
+Telnet's PostScript output has been tested 
+on the Apple (Sun) LaserWriter, which is 
+connected to Sun workstations. The 
+default filename is ps.out in the current 
+directory.
+
+rcp=yes	specifies that rcp serving is enabled by 
+default. To disable rcp serving, change 
+this line to rcp=no.
+
+tek=yes	specifies there is no overhead to unused 
+Tektronix graphics emulation. However, 
+you may wish to disable graphics 
+support. tek=no will disable Tektronix 
+graphics emulation.
+
+tekfile=tek.out	specifies the filename to use when you 
+write Tektronix codes to disk. The default 
+name is tek.out.Tektronix 4014 graphics 
+commands are a very compact way to 
+store a Tektronix graphics image. 
+
+video=ega	specifies Tektronix 4014 graphics 
+emulation is included in NCSA Telnet for 
+a variety of video devices. Supported are: 
+hercules (Hercules monochrome 
+graphics), cga (IBM and compatibles 
+original Color Graphics Adapter), ega 
+(IBM Enhanced Graphics Adapter and 
+compatibles), ega 43 (ega 43 - line mode), 
+vga 50 (vga 50 - line mode) and no9 
+(Number Nine Computer's Revolution 
+512 x 8 board).
+
+windowgoaway=yes	specifies that a session doesn't wait for a 
+keypress after it has been closed. This 
+defaults to windowgoaway=no.
+
+Entry	Meaning
+
+wire=thin	specifies which type of ethernet cable to 
+use on the ethernet board. Options are 
+thin and thick. Use this command only for 
+3Com3C503 ethernet cards.
+
+
+Host-Specific Parameters
+Following the PC configuration options, you may specify zero or 
+more hosts, and host-specific information for each host. By 
+making the host entries in the configuration file, you can specify 
+color, backspace, scrollback, connection timeout, and several 
+tuning parameters for each host. You may want to have more than 
+one session name associated with a single computer, such as 
+purple cray and red cray with different screen colors to fit your 
+mood of the day.
+
+Typically, the first host listed will be name=default, which stores 
+the default values for the other hosts. Any keyword listed under 
+later hosts will override the default setting for that host session. 
+
+NOTE: The keyword name is special because it separates entries.
+
+The parameters following name up to the next keyword name are all 
+associated with the session name. The parameters are installed 
+whenever a connection is opened with that session name.
+
+Entry	Meaning
+
+copyfrom=nic	copies all unspecified parameters from a 
+previous session name. Note that the 
+session name which you want to 
+reference with copyfrom must appear 
+before the session name that uses a 
+copyfrom directive. Parameters that are 
+specified for a session name along with a 
+copyfrom directive override that 
+copyfrom directive.
+
+clearsave=yes	updates scrollback when the screen is 
+cleared. When clearing the screen, all of 
+the visible lines are saved into the 
+scrollback region. If you prefer not to 
+have the text saved when the screen 
+clears, set clearsave=no. In the case of 
+host programs which clear the screen one 
+line at a time, the lines are never saved 
+into the scrollback region.
+
+contime=10	gives the connection timeout in seconds. 
+When you are making a connection 
+attempt, after this amount of time has 
+elapsed NCSA Telnet gives up on opening 
+the connection and deletes the window. 
+For congested or slow networks, this 
+value should be made larger. 
+Entry	Meaning
+
+crmap=4.3BSDCRNUL	specifies a special compatibility option for 
+4.3 BSD UNIX. Now, a UNIX bug fix to 
+take care of the problem, but some hosts 
+may still want crnul to be used for end-of-
+line. The default is crmap=crlf, which 
+sends CRLF when you press RETURN. 
+In line mode, CRLF is always used.
+
+duplex=half	applies only to hosts that negotiate non-
+echoing mode and does not expect local 
+line editing. All character keys are sent 
+and echoed to the screen immediately. 
+This parameter has no effect in echo 
+mode.
+
+erase=delete	sets the backspace translation for this 
+host. Some hosts prefer the backspace key 
+to be DELETE and some prefer the 
+backspace key to be BACKSPACE. Set 
+this value erase=delete or 
+erase=backspace.
+
+gateway=1	specifies the gateway precedence for this 
+host. To reach hosts not connected to your 
+local network, you must have at least one 
+gateway entry. The hostip keyword must 
+be present for this host. Gateway 
+numbers must start at 1 and increase by 
+ones. Gateway 1 has the highest 
+precedence, but the first gateway to 
+respond to an ARP will be used. ICMP 
+redirects can affect how gateways are 
+used, but not permanently.
+
+host=sri-nic.arpa	specifies the hostname or alternate name. 
+If you want to associate both a session 
+name and a hostname with a particular 
+set of parameters, you may include both. 
+Note that the name parameter is required, 
+while the host parameter is optional. The 
+rule of thumb is: When you have only a 
+hostname, insert it as name=hostname. If 
+you have both a session name and a 
+hostname, enter both name=sessionname  
+and host=hostname. When you want to 
+open a new connection, either hostname 
+or sessionname works.
+
+hostip=10.0.0.51	gives the IP address of the host. If this is 
+not present, the domain nameserver must 
+be queried to get the IP number of the 
+host. For efficiency, include the IP 
+addresses of all commonly accessed hosts. 
+IP addresses of gateways and 
+nameservers must be in the configuration 
+file. 
+
+maxseg=512	gives a byte count (1-1024) of the largest 
+TCP segment that can be received. This 
+value can control the size of packets that 
+are sent over the connection. Reducing 
+this value can eliminate IP fragmentation 
+that we cannot reassemble. maxseg=512 
+should force the sending host to never 
+fragment.
+
+mtu=512	specifies a byte count (1-1024) of the 
+largest amount of data to put in the 
+packets that are sent. If you are sending to 
+the ARPANET you should use mtu=512. If 
+you are sending to local hosts, you should 
+use mtu=1024.
+
+name=nic	specifies the name that you want to 
+appear on the bottom line of the screen 
+when the connection opens. It is the 
+primary name associated with a list of 
+parameters. It is common to have more 
+than one session name for a host, each 
+with different parameters, perhaps with 
+different colors or different amounts of 
+scrollback. This parameter is required 
+because it separates entries.
+
+nameserver=1	specifies the nameserver precedence for 
+this host. NCSA Telnet uses UDP to query 
+domain nameservers for machinenames 
+that are not in the configuration file. Each 
+machine that is to be used as a 
+nameserver must have this keyword 
+listed. The hostip keyword must be 
+present for this host. Nameserver 1 has 
+the highest precedence. Nameserver 
+numbers must start at 1 and increase by 
+ones.
+
+nfcolor=white	specifies a normal, foreground
+
+nbcolor=black	specifies a normal, background
+
+rfcolor=black	specifies a reverse, foreground
+
+rbcolor=white	specifies a reverse, background
+
+ufcolor=blue	specifies a underline, foreground
+
+ubcolor=black	specifies a underline, background
+
+		You can use these new color options 
+instead of the more complicated color 
+code from previous versions. For each 
+value, specify a string from the following 
+list of colors available on IBM-PC class 
+machines with color displays:
+
+		Also for machines with EGA or better 
+graphics adapters, the following colors 
+are available:
+
+		BLACK
+		BLUE
+		GREEN
+		CYAN
+		RED
+		MAGENTA
+		YELLOW
+		WHITE
+
+		The colors are in all caps, and for the 
+foreground colors they are the 
+highlighted version of the lowercase 
+colors. For background colors, they make 
+the foreground blink.
+
+		The foreground and background colors 
+are combined to create the text 
+appearance on the screen. You may wish 
+to experiment with the Parameter menu 
+(Chapter 3), which interactively allows 
+you to select a color scheme. The previous 
+version's color= entries are still supported.
+
+retrans=7	gives the initial retransmit timeout in 
+18ths of a second. Increasing the value of 
+this parameter may help in reducing the 
+initial burst of retries that is typical of 
+connections with high round-trip times.
+
+rwin=512	gives a byte count (1-4096) of the largest 
+size of the TCP window to advertise to 
+other hosts. Unfortunately, some 
+hardware and networks, the 3COM 
+3C501 Etherlink for example, cannot 
+handle receiving back-to-back packets. 
+This situation requires us to limit the TCP 
+receive window that we advertise to other 
+hosts. For communicating to slower hosts, 
+or when using the other brands of 
+Ethernet boards, a larger window (4096) 
+may work better.
+
+scrollback=100	specifies the number of lines of scrollback 
+for this session. Be aware that scrollback 
+occupies at least 86 bytes per line saved. 
+There can be a different number of lines 
+of scrollback for each session. Plan your 
+use of scrollback wisely unless you have 
+memory to spare.
+
+
+Converting UNIX /etc/hosts 
+Files
+Included with the NCSA Telnet distribution is an awk script called 
+newh. Used with the following command under 4.X BSD UNIX, it 
+will convert the /etc/hosts file format into a format compatible 
+with NCSA Telnet's configuration file. Note that domain name 
+lookup should make this operation obsolete, or apply to only a small 
+subset of your /etc/hosts file.
+
+% awk  -f newh /etc/hosts >config.temp
+After creating this new file, prepend the PC-specific information 
+and download the file to the PC.
+
+
+Hardware Options
+
+Combined Ethernet Drivers
+Only one distribution program for NCSA Telnet Version 2.3 
+exists. All of the Ethernet and video device drivers are combined 
+into one executable program. You must use the hardware entry in 
+the configuration file to inform NCSA Telnet which Ethernet board 
+you have installed. Choose from the list of supported Ethernet 
+boards in Table 7.1; the value to use is case insensitive. The 
+requirements for interrupt, address, and ioaddr entries in the 
+configuration file are listed.
+
+
+Table 7.1	Ethernet Boards 
+Supported by NCSA 
+Telnet
+Value	Ethernet Board	Requires          
+For PC bus
+
+3C501	3COM 3C501 Etherlink	interrupt,ioaddr
+
+3c503	3COM3C503	interrupt, address, 
+			ioaddr, wire
+
+3c505	3COM 3C505	interrupt, address, 
+			ioaddr
+
+atalk	PCAppletalk Card	(software) 	
+			interrupt,
+			address, ioaddr
+
+bicc	BICC 411x Ethernet Cards	interrupt, address, 
+		ioaddr
+
+decnet	DEC Decnet Protocol	interrupt, address, 
+			ioaddr
+
+NI5210	MICOM NI5210 	interrupt, address, 
+		ioaddr
+
+packet	Any packet driver	interrupt
+**also for 
+ PS/2 MCA Bus
+
+PCNIC	Ungermann-Bass PC-NIC	address,ioaddr
+	or IBM Baseband adapter
+
+starlan	AT&T Starlan IO Card	address, oiaddr
+
+WD8003	Western Digital WD8003 	address,ioaddr
+
+Table 7.1	Ethernet Boards 
+Supported by NCSA 
+Telnet (continued)
+Value	Ethernet Board	Requires          
+WD8003e	Western Digital WD80033e	address,ioaddr
+
+For PS/2 MCA bus
+
+NICps2	Ungermann-Bass NICps/2 	address
+
+3C523	3COM 3C523 Etherlink/MC	address,ioaddr
+
+WD8003a	Western Digital WD8003a	address, ioaddr
+
+
+Performance Tuning
+The values of maxseg, mtu and rwin in the configuration file must 
+be set correctly to get maximum data transfer throughput between 
+machines. Some rules of thumb to use when setting these values 
+include the following:
+
+•	The maximum reasonable values for these parameters are:
+	rwin=4096
+	mtu=1024
+	maxseg=1024
+
+•	The best setting for local network use, with a high performance 
+Ethernet board is:
+	rwin=4096
+	mtu=1024
+	maxseg=1024
+
+•	The best setting for ARPANET use, or any situation with a lot of 
+unknown gateways, but with a high performance Ethernet board 
+is:
+	rwin=4096
+	mtu=512
+	maxseg=512
+
+•	The setting required for the 3COM 3C501, and any other 
+troublesome network situation, also the most conservative 
+setting, is:
+	rwin=512
+	mtu=512
+	maxseg=512
+
+rwin specifies what the other computer is allowed to send you at any 
+one time, so it depends mostly upon your local Ethernet board. If the 
+board can handle it, always set rwin=4096. maxseg is used to 
+avoid fragmentation. If you get fragmented packets, lower the 
+value of maxseg for that host until fragmentation stops occurring.
+
+
+RARP for Dynamic IP 
+Address Assignment
+When the following special form of the myip entry is used, 
+myip=RARP, NCSA Telnet looks up your local machine's IP address 
+with a broadcast request to the network. The "Reverse Address 
+Resolution Protocol" is used to attempt to translate the local 
+machine's assigned 48-bit Ethernet address to a corresponding IP 
+address. From our tests with the RARP server from Sun 
+Microsystems' SunOS 3.X, the RARP lookup takes about 3 seconds. 
+You must install the 48-bit Ethernet address from each PC in the 
+RARP hosts' tables before RARP will work. The value of arptime, 
+in seconds, multiplied by three, is used for a timeout value. 
+
+NOTE: Sun's RARP lookup will not work if you have a double-zero 
+in your Ethernet address. Other leading zeros can be dropped as 
+well. Use a single zero, i.e. 8:0:20:1:5a:90, instead of 
+08:00:20:01:5a:90.
+
+
+BOOTP for Dynamic IP 
+Address Assignment
+The Bootp process, myip=RARP, closely resembles the RARP process. 
+For instance, the former performs the same function as RARP by 
+getting an IP number from a Bootp server which has the PC's 
+Ethernet address registered in the Bootp Host table. Bootp and 
+RARP time-out procedures are also the same.
+
+
+Appletalk Hardware
+Using an Appletalk network involves some special 
+considerations. First, you must load the Appletalk driver into 
+memory. Version 1.0 of the "ATALK.EXE" driver was used in the 
+development of NCSA Telnet. 
+
+The second consideration involves the "interrupt=" line. The 
+"interrupt=" line in your CONFIG.TEL line refers to the 
+software interrupt the Appletalk driver is using, not the hardware 
+interrupt the card is set to. For example, if your Appletalk card is 
+set to IRG2, you would not set the "interrupt=" line to "2". 
+Instead, the value should be set to the software interrupt, usually 
+"interrupt=60" or "interrupt=5C".
+
+Static IP addressing does not work at the current time in NCSA 
+Telnet 2.3 using the Appletalk driver. Therefore, NCSA Telnet 
+ignores any IP address you set in your CONFIG.TEL file , and 
+assigns an IP address to your PC by the Appletalk gateway.
+
+There has been no success in getting the Appletalk packet driver to 
+work with NCSA Telnet. In addition, NCSA Telnet has not been 
+tested with Appletalk cards for MicroChannel machines, such as 
+IBM's PS/2 line.
+
+
+Interrupts
+When you configure the 3COM hardware, an important option is 
+the choice of interrupt request number (level). 3COM boards arrive 
+set for IRQ3, which corresponds to the PC-DOS definition of the 
+COM2 communications port. If you have a port configured as 
+COM2, you cannot set your Ethernet board to IRQ3. Another 
+common value to use is IRQ5, which is the same interrupt that DOS 
+uses for LPT2. Make sure that your PC hardware configuration 
+does not conflict in any way.
+
+
+Interrupt Conflicts
+The most common hardware problem is interrupt conflicts. PCs 
+have a limited number of interrupts, and you cannot have two 
+devices which expect to use the same interrupt. PC Ethernet boards 
+almost always consume an interrupt, even though we do not use 
+interrupts for all Ethernet boards. Interrupts are also used by COM 
+ports and LPT ports in your machine. You must check for 
+conflicts.
+
+
+Intermittant Interrupts
+Interrupt conflicts don't always show up right away. They are 
+software controlled. If you do not activate the interrupt on your 
+COM2 port, it may not conflict with a 3C501 board on IRQ3 until 
+next week when you try to use a modem terminal emulator and 
+then switch to NCSA Telnet. NCSA Telnet might work fine until 
+you try to FTP to your hard disk; then disaster strikes.
+
+
+Interrupts on Hard Disks
+Hard disks use interrupts too. We have traced two serious hard 
+disk problems to interrupt conflicts. IRQ2 is the default setting for 
+some Ethernet boards when they come out of the box. On a PC-AT, 
+this interrupt is used for the second drive controller, and a conflict 
+can shut off the whole second controller which includes the hard 
+disk. On the PC/XT and PC compatible computers, IRQ5 is 
+sometimes assigned to the hard disk rather than LPT2. Strange 
+hard disk problems like disk write errors may be caused by the 
+Ethernet conflicting with the hard disk.
+
+Moral:  Set your Ethernet board to an unused interrupt.
+
+
+Domain Name Lookup
+
+When NCSA Telnet cannot find a name in the configuration file, 
+it can still find the IP number if you are running a domain 
+nameserver. To use the domain system, at least one host must be 
+running the nameserver and the configuration file must have a 
+nameserver entry for that host. There may be more than one. If 
+one nameserver fails to respond, the one with the next higher 
+precedence is queried. As soon as a response is received, NCSA 
+Telnet will add its name to the status line and attempt to open a 
+telnet connection. 
+
+When you enter a name to open a connection, NCSA Telnet follows 
+specific search order:
+
+1.	It looks up the name as a session name from the configuration 
+file.
+
+2.	It looks up the name as a hostname from the configuration file.
+
+3.	It sends the name as a domain query to the first nameserver.
+
+4.	If the domain request times out, the program repeats the query, 
+but to another nameserver. NCSA Telnet repeats this process 
+until it reaches the maximum number of retries or receives a 
+response.
+
+With the domain nameserver, the number of hosts in the 
+configuration file can be kept to a minimum. Each host in the 
+configuration file will be a commonly used computer that may 
+have special screen color or scrollback requirements. The IP 
+addresses for rarely used hosts will be accessible if the domain 
+name retrieval system can resolve those hosts.
+
+
+FTP Password Protection
+
+The presence of the passfile keyword in the configuration file 
+enables FTP password protection. If you have a password file, FTP 
+will not allow any FTP connections to open without a correct 
+username and password. You can have several usernames and 
+individual passwords for each user. The password file can be 
+easily read by typing out the file. The passwords are encrypted, but 
+not with a secure encryption system. Only trusted users should be 
+allowed access to the password file. 
+
+NOTE:  Precautionary measures are especially important now 
+that the FTP server allows the person connected to the PC to create 
+and remove directories and files.
+
+To create or change passwords for users, run a separate program 
+called Telpass. This program reads in the password file so you 
+can add and change users and passwords. There are no special 
+installation instructions for Telpass as it is menu-driven. Start up 
+Telpass from DOS with the name of the password file that you wish 
+to edit.
+
+C:\ telpass pwfile
+
+Telpass automatically saves the list of names and passwords when 
+you exit. Just add a passfile option to your configuration file to 
+enable FTP passwords.
+Compatibility Notes
+
+Ping
+NCSA Telnet responds to ping (ICMP echo) requests. Other hosts 
+use this command by other hosts to determine whether your PC is 
+online.
+
+
+VT102
+The VT102 emulator is nearly complete. VT102 features not 
+emulated are double width and double height characters, VT52 
+mode, origin mode for cursor positioning, and 132 column mode. 
+Included in the emulator are variable spaced tabs, graphics 
+characters, keypad modes, and character attributes. 
+
+
+FTP
+The FTP server in NCSA Telnet is close to the DARPA 
+specification of the minimum implementation. Exceptions are the 
+following:
+
+•	The command connection does not perform telnet negotiation.
+•	The block mode of FTP is not supported.
+•	Some error conditions may display as command not 
+understood instead of returning more appropriate messages.
+
+FTP has not been thoroughly tested on low-bandwidth or low-
+reliability networks. It should be most successful on local 
+networks, with unknown throughput for long-haul or satellite 
+networks. 
+
+
+Terminate and Stay 
+Resident (TSR) Programs
+Programs such as SideKick from Borland International Inc. take 
+complete control of the PC when they are initiated with key 
+sequences. The use of these programs does not crash NCSA Telnet, 
+but it suspends the network communications capability while the 
+TSR program is active. When network communications are 
+suspended, whether from the ALT-E DOS escape feature or from 
+using TSR programs, it takes the host approximately one minute to 
+decide that your PC has crashed, and then it cuts you off. As long as 
+these programs are used for short (less than 30 seconds) intervals, 
+you should have no problem. 
+
+
+NCSA Telnet
+The standard telnet protocol has several potential options that can 
+be invoked if both parties of the telnet connection agree. NCSA 
+Telnet refuses most of these options, but accepts the following: 
+echo, option 1; suppress go ahead, option 3, termtype, option 24, 
+NAWS (Negotiate About Window Size), option 31; and Linemode, 
+option 34. Some obscure features of NCSA Telnet are not 
+implemented in this version:  out-of-band interrupts are not 
+available, go ahead signals do nothing, and telnet acknowledge 
+signals are not acknowledged. If there are any problems with the 
+limitations of NCSA Telnet, please submit a bug report.
+
+Limitations
+There is a 20-session limit for NCSA Telnet. This limit is 
+somewhat arbitrary and may be altered if there appears to be a need 
+for it. NCSA Telnet can run out of memory, often before the 20-
+session limit. You are notified on the screen if this happens.
+
+NCSA Telnet Version 2.3 source code and documentation are in the public 
+domain. Specifically, we give to the public domain all rights for future 
+licensing of the source code, all resale rights, and all publishing rights.
+
+We ask, but do not require, that the following message be included in all 
+derived works:   Portions developed at the National Center for 
+Supercomputing Applications at the University of Illinois at Urbana-
+Champaign.
+
+READ ME NOW
+If you want to see more software like NCSA Telnet, please send us a letter, 
+email or US mail, telling us what you are doing with NCSA Telnet. We need 
+to know:  (1) What science you are working on—an abstract of your work 
+would be fine; and (2) How NCSA Telnet has helped you, for example, by 
+increasing your productivity or allowing you to do things you could not do 
+before.
+
+We encourage you to cite the use of NCSA Telnet, and any other NCSA 
+software you have used, in your publications. A bibliography of your work 
+would be extremely helpful.
+
+NOTE:  This is a new kind of shareware. You share your science and 
+successes with us, and we can get more resources to share more software 
+like NCSA Telnet with you.
+
+NCSA Contacts
+Mail user feedback, bugs, and 
+software and manual suggestions to:
+
+Software Tools Group
+NCSA Telnet
+152 Computing Applications Bldg.
+605 E. Springfield Ave. 
+Champaign, IL 61820
+
+
+Send communications via electronic 
+mail to one of the following:
+
+Bug Reports
+pctelnet@ncsa.uiuc.edu
+pctelnet@ncsavmsa.bitnet
+
+Disclaimer
+THE UNIVERSITY OF ILLINOIS GIVES NO WARRANTY, EXPRESS OR 
+IMPLIED, FOR THE SOFTWARE AND/OR DOCUMENTATION 
+PROVIDED, INCLUDING, WITHOUT LIMITATION, WARRANTY OF 
+MERCHANTIBILITY AND WARRANTY OF FITNESS FOR A 
+PARTICULAR PURPOSE.
+
+Trademark 
+Acknowledgments
+AppleTalk is a registered trademark of Apple Computer, Inc.
+Enhanced Graphics Adapter, IBM PC, PC/AT, PC-DOS, Personal System/' 
+	and Topview are registered trademarks of International Business 
+	Machines 
+EtherCard PLUS is a trademark of Western Digital Corporation.
+Ethernet is a trademark of Xerox Corporation.
+Hercules is a trademark of Hercules Computer Technology.
+	Corporation.
+Microsoft Windows and MS-DOS are registered trademarks of Microsoft 
+	Corporation.
+NIC is a trademark of Ungermann-Bass.
+PostScript is a registered trademark of Adobe Systems Inc.
+Revolution 512 is a trademark of Number Nine Computer. 
+SideKick is a registered trademark of Borland International Inc.
+Tektronix 4010 and Tektronix 4014 are trademarks of Tektronix 
+	Corporation.
+Sun is a registered trademark and Sun Workstation and Sunview are trademarks of
+	Sun Microsystems Inc.
+3COM and Etherlink are trademarks of 3COM Corporation.
+UNIX is a registered trademark of AT&T.
+VAX, VMS, and VT102 are registered trademarks of Digital Equipment 
+	Corporation.
+
+A.1	NCSA Telnet 
+
+Error Conditions	A.1
+
+National Center for Supercomputing Applications
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+Appendix A	Error Conditions
+
+
+
+Most of the error conditions in NCSA Telnet are nonfatal. The 
+most important and common error messages are listed here with a 
+short summary of the symptoms and causes.
+
+The following messages may appear on your screen during the 
+operation of NCSA Telnet. Any other messages that appear are 
+protocol-specific messages that require additional diagnosis from 
+the system administrator. If a message that is not documented here 
+occurs repeatedly, please contact your system administrator first, 
+and if no solution is found, submit a bug report as included in the 
+Readme and Bugs pages of this manual.
+
+
+Error in config.tel file
+
+Cause:
+NCSA Telnet will not operate without a configuration file that 
+contains the PC's IP address. The program could not find this file.
+
+Solution: 
+You can place the configuration file either in the current directory 
+or specify it with the -h parameter on the command line. You 
+normally customize the file's placement in TELNET.BAT. Your 
+system administrator should check your installation and make 
+sure the configuration file is there.
+
+
+Host machine not in hosts file
+
+Cause: 
+You have entered a machine name that the program can't find in 
+the configuration file. 
+
+Solution: 
+Check that the name you entered was spelled correctly. If you want 
+this computer to be accessed by name, add its name and IP address 
+to your configuration file.
+
+
+ICMP:	Destination unreachable
+
+Cause: 
+Another machine––probably the gateway––has determined that 
+your message cannot reach its destination from your system.
+Solution: 
+Check the IP address in your configuration file. Notify your 
+system administrator that the gateway cannot connect you to the 
+destination you want to reach. A problem may exist with the 
+gateway.
+
+
+ICMP:	Echo requested (ping requested)
+
+Cause: 
+Someone has "pinged" your machine.
+
+Solution: 
+No action is required; you are just being notified that a program on 
+another computer has tried to determine if your machine is alive 
+and connected to the network. Your machine answered "yes".
+
+
+ICMP:	Redirect, another gateway is more efficient
+
+Cause: 
+NCSA Telnet is sending packets to a gateway that is reforwarding 
+them onto your local network. You will get one of these messages 
+for each packet until NCSA Telnet adjusts the local tables and 
+automatically switches to the correct gateway.
+
+Solution: 
+NCSA Telnet responds to these messages and automatically 
+switches to the correct gateway, so you don't have to take any 
+action. You may want to change the gateway assignments in your 
+configuration file to use a more appropriate gateway.  Some 
+situations will always produce redirects.
+
+
+Local HOST or gateway not responding
+
+Cause: 
+Possible reasons this error occurs are: a network problem, a 
+configuration file problem, the computer you want to connect to is 
+down, or the gateway that you need is down.
+
+Solution: 
+If the computer is on your local network, check to see that the 
+network is up and running. If the computer is not on your local 
+network, check to see if the gateway is up and running. Ask the 
+system administrator to check the specification of the gateway 
+(gateway=) in your configuration file. Check the IP number of the 
+computer that you are trying to connect to. Check to make sure that 
+your computer is attached to the network. Check the integrity of the 
+network cable.
+
+
+Memory allocation error, cannot open port
+
+Cause: 
+Your system ran out of memory. This reason is the most common 
+barrier to opening more sessions.
+
+Solution: 
+Log off of some of your sessions or provide more memory in which 
+NCSA Telnet can run. Providing more memory may mean 
+buying more or rearranging your windowing system to allow 
+more memory. NCSA Telnet Version 2.3 requires about 300K of 
+memory plus 15K per session. In addition, scrollback requires 86 
+bytes per line.
+
+
+Network jammed, probable break in wire
+
+Cause: 
+The PC's Ethernet board could not transmit a packet due to a low-
+level hardware error.
+
+Solution: 
+The system administrator should ensure that the Ethernet T 
+connector or transceiver is correctly connected to the back of your 
+PC, then check the integrity of the Ethernet wire according to 
+Ethernet specifications. There could be a short circuit in the wire, 
+but the usual cause is that the wire has been disconnected 
+somewhere.
+
+
+No internal TCP ports available
+
+Cause: 
+You are trying to do too many activities at the same time, or some 
+combination of your activities has not closed the TCP sessions 
+correctly. This error will happen if you open too many sessions to 
+other computers.
+
+Solution: 
+Close some of your existing sessions. If necessary, exit the 
+program by logging off of all of the other computers, then restart 
+NCSA Telnet.
+
+
+Packet received for invalid port -- reset sent
+
+Cause: 
+Some other computer is sending you packets that NCSA Telnet does 
+not expect or understand. This error often happens when you press 
+CTRL-SHIFT-F3 to exit NCSA Telnet and then try to start it back 
+up again. It can happen under a variety of network breakdown 
+conditions.
+
+Solution: 
+Do not press CTRL-SHIFT-F3 to exit NCSA Telnet. If you already 
+have, or some other network breakdown caused the problem, the 
+other computer will eventually time out and stop sending you the 
+extra packets. If you continue to receive them, notify your system 
+administrator.
+
+
+Reset received: syn sent
+
+Cause: 
+The machine to which you are attempting to connect is refusing 
+your telnet connection.
+
+Solution: 
+Check to see why that machine is not up and running. If it is, check 
+your configuration file to see if you are using the correct IP 
+number.
+
+
+Domain Look-up failed for: <machine>
+
+Cause:
+The nameservers you've specified in the hosts file are not aware of 
+the machine. Also, you may have misspelled a machinename.
+
+Solution:
+Check the spelling of the name you've entered. If you've entered 
+the name correctly, add that machine to your host configuration 
+file. Alternatively, you may want to add another machine as a 
+nameserver in your host file.
+B.1	NCSA Telnet 
+
+NCSA Telnet Command Reference	B.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+Appendix B	NCSA Telnet Command Reference
+
+
+
+This appendix describes what happens when you enter different 
+keyboard commands during a NCSA Telnet session.
+
+Key(s)	Action
+
+ALT-A	adds a session.
+
+ALT-B	takes you back a session (in the list of 
+	sessions you have opened).
+
+ALT-C	toggles capture file on and off.
+
+ALT-D	dumps the current screen into the capture 	file.
+
+ALT-E	escapes to a DOS shell.
+
+ALT-F	starts file transfer as if typed:
+	ftp [internet address].
+
+ALT-G	displays the Graphics menu.
+
+ALT-H	displays the Help screen.
+
+ALT-I	sends the internet address to the host.
+
+ALT-K	erases a character.
+
+ALT-N	takes you to  the next session (in the list of sessions 
+	you have open).
+
+ALT-O	aborts output.
+
+ALT-P	changes a parameter; one of: color, capture 
+	file name, backspace, session name, screen 
+	mode, etc.
+
+ALT-Q	sends the query, Are you there?
+
+ALT-R	resets the VT100 screen.
+
+ALT-S	skips scroll and jumps ahead.
+
+ALT-U	erases the line.
+
+ALT-V	copies text from clipboard onto the current 
+	session.
+Key(s)	Action
+
+ALT-W	sends your password when you're FTPing 
+	back to your PC.
+
+ALT-X	closes the connection.
+
+ALT-Y	interrupts the process.
+
+ALT-Z	displays the Message screen.
+
+CTRL-HOME	clears/enters graphics mode.
+	
+CTRL-SHIFT-F3	aborts NCSA Telnet completely. Use of this 
+	command is strongly discouraged
+
+HOME	exits graphics mode.
+
+SCR LOCK	pauses/restarts the screen (do not use 
+	CTRL-NUM LOCK)
+
+SCR LOCK	enters/exits the scrollback mode
+
+
+The following keys allow you to move around the screen while 
+you're in Scroll Lock mode:
+
+•arrow keys (up, down, left, and right)
+
+•PageUp/PageDown (moves up and down by page)
+
+•Home (moves to the beginning of the scrollback buffer)
+
+•End (moves to the end of the scrollback buffer)
+C.1	NCSA Telnet 
+
+Configuration File Summary	C.1
+
+
+National Center for Supercomputing Applications
+
+June 1991
+
+                                                              
+
+June 1991
+
+
+
+
+Appendix C	Configuration File Summary
+
+
+
+This appendix contains a quick reference list of the keyword 
+values which NCSA Telnet allows in its configuration file. 
+
+There are two sections in this appendix. The first list contains the 
+PC configuration entries which apply to the overall program or to 
+all sessions. The second section contains the list of attributes 
+which you may assign to individual sessions. Each keyword has 
+an example value and a one-line summary of its purpose. For 
+details on allowed values, see Chapter 7, "Installation and 
+Configuration." A template CONFIG.TEL file is included on the 
+distribution disk.
+
+
+Local Configuration
+
+address=d000	gives segment address of the Ethernet 
+	board's shared memory in hex.
+
+arptime=3	gives local network timeout for ARP 
+	requests.
+
+bios=no	uses BIOS or write directly to screen.
+
+broadcast=x.x.x.x	uses IP number for broadcast 
+	packets.
+
+capfile="\mycapture"	specifies a name for the capture file.
+
+capfile=prn	specifies capture file is printer device 
+	(PRN).
+
+clock=off	displays clock on screen.
+
+domain="ncsa.uiuc.edu"	gives default domain suffix.
+
+domaintime=2	gives domain lookup timeout per retry.
+
+domainretry=4	gives number of times to query domain 
+	nameserver(s).
+
+ftp=yes	enables or disables FTP server , default is 
+	yes.
+
+hardware=3C501	assigns type of Ethernet hardware to use:  
+	3C501, PCNIC, NI5210, WD8003, 3C523, 
+	NICPS2, etc. (See introduction for 
+	complete list of Ethernet adapter board 
+	list.)
+
+hpfile=COM1	attaches HP plotter to COM1.
+
+hpfile=hp.out	assigns filename for HPGL codes for 
+	graphics to go to.
+
+interrupt=3	gives interrupt number for the Ethernet 
+	board.
+
+ioaddr=360	gives I/O base address of the Ethernet 
+	board in hex.
+
+myip=BOOTP	queries the BOOTP server for my IP 
+	address.
+
+myip=RARP	queries the RARP server for my IP 
+	address.
+
+myip=10.0.0.51	assigns IP address to use for the PC.
+
+netmask=255.255.255.0	sets subnet mask for your local 
+	network. 
+
+passfile="\mypasswd"	gives filename for FTP usernames and
+	passwords.
+
+psfile=ps.out	gives filename for PostScript output.
+
+rcp=yes	enables and disables rcp server, default is 
+	yes.
+
+tekfile=tek.out	assigns filename for Tektronix 4014 codes 
+	when output to disk.
+
+tek=yes	enables and disables Tektronix 
+	graphics mode.
+
+termtype="vt100"	sends terminal type to all machines 
+	you've attempted to connect to.
+
+video=ega	assigns video display to use: cga, ega, 
+	hercules, no9.
+
+windowgoaway=yes	Close the telnet window without 
+	prompting when a machine's session 
+	closes.
+
+wire=thin	determines which type of ethernet 
+	connection (thin or thick) the 3C503 
+	ethernet card is using.
+
+Host-Specific Parameters
+
+NOTE: The keyword name is special because it separates entries.
+
+clearsave=yes	saves cleared screen into scrollback region.
+
+contime=10	sets connection timeout in seconds.
+
+copyfrom=nic	copies all missing parameters from a previous 
+	session.
+
+crmap=4.3BSDCRNUL	changes sets of codes for carriage return.
+
+duplex=half	sets local echo, but sends all character 
+	immediately.
+
+erase=delete	sets BACKSPACE key to "backspace" or 
+	"delete."
+
+gateway=1	sets gateway precedence; starts at 1, goes up by 
+	ones.
+
+host=sri-nic.arpa	sets hostname or alternate name. Usually full 
+	domain name.
+
+hostip=10.0.0.51	sets IP address of the host. Required if 
+	nameserver not used.
+
+maxseg=512	sets limit on incoming packet size, given as TCP 
+	MSS option.
+
+mtu=512	establishes limit on outgoing packet size.
+
+name=nic	sets session name, separates lists of 
+	parameters for sessions.
+
+nameserver=1	sets nameserver precedence; starts at 1, goes up 
+	by ones.
+
+nbcolor=black	gives normal background color.
+
+nfcolor=white	gives normal foreground color.
+
+rbcolor=white	gives reverse background color.
+
+retrans=7	sets initial retransmit timeout in 18ths of a 
+	second.
+
+rfcolor=black	sets reverse, foreground color.
+
+rwin=512	sets TCP receive window, can make up for low 
+	performance hardware.
+
+scrollback=100	establishes number of lines of scrollback for this 
+	session.
+
+ubcolor=black	designates underline, background color. Black, 
+	blue, green, cyan, red, magenta, yellow, white.
+
+ufcolor=blue	designates underline, foreground color.
+
+D.2	NCSA Telnet
+
+
+FTPBIN Command Reference	D.3
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+
+Appendix D	FTPBIN Command Reference
+
+
+
+	This appendix describes the FTPBIN commands that 
+	NCSA Telnet uses.
+
+Command	Action
+
+?	prints  help information.
+
+!	escapes to a MS-DOS shell.
+
+account	allows entering of account data for hosts which 
+	require this information to log in.
+
+ascii	sets the transfer type to ASCII--this command will 
+	do some translation, so do not use this mode to 
+	transfer files which are not ASCII text.
+
+bget	gets (transfers from remote machine to local PC) a 
+	specified file in binary mode.
+
+binary	sets the transfer type to binary--this mode will do 
+	no translation of end-of-line characters, etc., so do 
+	not use it to transfer ASCII text files.
+
+bput	puts (transfers from local PC to remote host) a 
+	specified file in binary mode.
+
+bye	closes any open session and quits FTPBIN.
+
+close	closes any open session, but does not exit FTPBIN.
+
+delete	deletes a file on the remote machine. Prompts for 
+	confirmation if prompting is on.
+
+debug	sets the level of debugging (default 0). This 
+	is mainly for developmental purposes, and 
+	should not be necessary for normal use.
+
+dir	gives a directory listing of the remote directory.
+
+get	gets (transfers form remote host to local PC) a 
+	single specified file.
+
+glob	toggles expansion of wildcard characters in local 
+	filenames.
+
+hash	toggles hashing mode.  If hashing mode is on, 
+	every time a full buffer (usually 1024 bytes-1K 
+	bytes) is transferred, a "#" symbol will be printed.
+help	performs the same function as the "?" command.
+
+interactive	puts FTPBIN into interactive mode--i.e. turns 
+	prompting on.
+
+lls	gives a listing of the local directory.
+
+ls 	gives a listing of the remote directory (same as 
+	dir).
+
+mdelete	sets multiple deletion of remote files.
+
+mdir	lists of multiple remote directories (i.e. runs "ls" on 
+	more than one remote directory).
+
+mget	gets (transfers from remote host to local PC) 
+	multiple files. For example, "mget*" will copy all 
+	files in the current remote directory to the current 
+	local directory.
+
+mkdir	makes a directory on the remote host's drive.
+
+mls	lists the contents of multiple remote directories.
+
+mode	sets file transfer mode. Currently, only stream 
+	mode is supported, so this command does not 
+	function.
+
+more	toggles (or expressly turns "on" or "off", if "on" 
+	or "off" is specified after the more command) the 
+	"more" paging of directories.  That is, if "more" is 
+	turned on, you will see listed directories a page at a 
+	time, instead of all of the data being scrolled 
+	through without stopping.
+
+mput	puts (transfers from local PC to remote host) 
+	multiple files. For example, "mput*" will transfer 
+	all files in the current local directory to the current 
+	remote directory.
+
+noninteractive	puts FTPBIN into non-interactive mode--i.e. turns 
+	prompting off.
+
+open	opens a connection to the specified host.
+
+prompt	toggles the current prompting mode--if prompting 
+	is on, it is turned off, and if it is off, it is turned on. 
+	Prompting means that FTPBIN will prompt you 
+	or every file if you request a multiple file transfer, 
+	deletion, or directory.
+
+put	puts (transfers from local PC to remote host) a 
+	single specified file.
+
+pwd	displays the current directory on the remote 
+	machine.
+quit	closes any open session and quits FTPBIN. (same 
+	as the command "bye").
+
+quote	sends an arbitrary FTP command.
+
+recv	receives a file.
+
+remotehelp	queries the remote host for help information.
+
+rename	renames a file on the remote host.
+
+rm	deletes a file on the remote host.
+
+rmdir	deletes a directory on the remote host.
+
+send 	performs same functions as the "put" command--
+	transfers a file from the local PC to the remote 
+	host.
+
+sendport	toggles the use of the FTP PORT command for 
+	each data connection/transfer.
+
+site	supports the SITE command for hosts that require 
+	SITE information.
+
+slashflip	toggles changing of "\" on outgoing commands.
+
+status	displays the current status of FTPBIN--i.e. 
+	if connected (and to where), current transfer 
+	mode, debugging level, prompting mode, 
+	slashflipping, verbosity, more mode-basically, the 
+	status of anything that can be changed in an 
+	FTPBIN session.
+
+struct	sets the file transfer structure. Currently only file 
+	structure is supported.
+
+type	sets transfer type.  See "binary" and "ascii" 
+	commands.
+
+user	prompts for user information (i.e. login ID and 
+	password)-this command is useful if your first 
+	login attempt fails. Type user and retype your 
+	login information.
+
+verbose	toggles verbose mode (i.e. sets the amount of 
+	information you will receive on your display).
+
+E.1	NCSA Telnet
+
+
+Key-mapping	E.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+
+
+Appendix  E	Key-mapping
+
+
+
+Overview
+NCSA Telnet for the PC incorporates many of the key-mapping 
+elements found in the MS-Kermit program. Because of this 
+adaptation, we've included the following Appendix, which except 
+for minor changes, contains excerpts that appear exactly as they 
+did in the MS-Kermit documentation. Copyright information 
+granting the use of this segment is cited below.
+
+
+Copyright Information
+Copyright (C)  1981, 1988
+Trustees of Columbia University in the City of New York
+
+Permission is granted to any individual or institution to use, copy, 
+or redistribute this document so long as it is not sold for profit, and 
+provided this copyright notice is retained.
+
+
+Kermit Verb Usage
+NCSA Telnet contains a subset of the Kermit verbs listed below. 
+Kermit verbs with a star are supported while unmarked verbs will 
+cause an error if they are in a keyboard mapping file. Also 
+included is a utility from the MS-Kermit 2.32 distribution which 
+will determine what the actual kermit key code is for any 
+combination of keys. Use this in the telnet keyboard mapping file 
+as the code to map from. See the telnet.key file included with this 
+release for an example keyboard mapping file.
+
+NCSA Telnet does not support the extended SET KEY options such 
+as:
+
+SET KEY ON, SET KEY OFF, or SET KEY CLEAR
+
+Also, it is impossible to map the ALT+alphabetical keys to 
+anything with the keyboard mapping interface. NCSA Telnet traps 
+these internally before they actually reach the mapping interface.
+
+
+Set Key
+
+Syntax
+SET KEY key-specified {key-definition}
+
+
+Uses of SET KEY
+•	You're used to having the ESC key in the upper-left corner of the 
+keyboard, but your new PC keyboard has an accent grave (" ' ") 
+key there. You can use SET KEY to make the accent key 
+transmit an ESC, and you can assign accent grave to some other 
+key.
+
+•	You send a lot of electronic mail, and always sign it the same 
+way. You can put your "signature" on a single key to save 
+yourself a lot of repetitive typing.
+
+•	You must set up your PC's function keys or numeric keypad to 
+work properly with a host application.
+
+The SET KEY command does these things and more, while SHOW 
+KEY gives us assistance. A key can be defined to:
+
+•	send a single character other than what it would normally send
+•	send a string of multiple characters
+•	send itself again
+
+SET KEY specifies that when you press the designated key during 
+terminal emulation, the specified character or string is sent or the 
+specified Kermit action verb is performed.
+
+Using the SET KEY command, you create a key-specifier. The 
+key-specifier is the identification of the key expressed in system-
+dependent terms. This key can be a letter, such as Q for the key 
+which produces an uppercase Q, or the numeric ASCII value of the 
+letter in backslash notation (e.g., "\81"), or else the numerical 
+"scan code: observed by the system when the key is pressed (e.g., 
+"\3856" for CTRL-ALT-SHIFT-Q on an IBM PC). Material 
+printed on keycaps is not necessarily a guide to what the key-
+specifier should be.
+
+A string definition is one or more characters, including 8-bit 
+values expressed in backslash form, such as
+
+SET KEY	\315 directory\13	IBM F1 key sends 	
+		"directory<cr>"
+
+SET KEY	S  X	S key sends upper case X
+		(a mean trick)
+
+SET KEY	T  \27 [m	T key sends three bytes:  
+			ESC, [, m
+
+SET KEY	\2336  {del } xxx	ALT-D sends "del"
+SET KEY	\324  \Kexit	F10 escapes back to Kermit-MS> 
+		prompt.
+
+The string begins with the first non-spacing character following 
+the key identification and continues until the end of line, 
+exclusive of any trailing spaces. You can use curly braces, {...} 
+can be used to delimit the string in case you want the definition to 
+include trailing spaces. The program ignores all text after the 
+closing bracket.
+
+This manual does not contain a list of all the scan codes for all the 
+keys on all the keyboards on all the PCs supported by NCSA Telnet. 
+In order to obtain the scancode for a key, you must use the scanchek 
+utility.
+
+
+Kermit Action Verbs
+
+An action verb is the shorthand expression for a named Kermit 
+procedure, such as "generate the proper sequence for a left arrow," 
+"show status," "send a BREAK," and others; verbs are complex 
+actions and each verb has a name. In a key definition precede the 
+verb name by a backslash K (\K) to avoid being confused with a 
+string. You cannot assign verbs and strings together on a key.
+
+Entering the commands:
+
+SET KEY \331 \Klfarr
+SET KEY \2349 \Kexit
+
+makes the IBM keyboard left arrow key execute the verb named 
+lfarr, which sends the proper escape sequence for a VT102 left 
+arrow key (which changes depending on the internal state of the 
+VT102). The leading \K identifies the definition as a Kermit verb, 
+so no string can start as \K or as \{K in upper or lower case (use 
+\92K). The second example has ALT-X invoking the Leave-
+Connect-Mode verb "exit" (same as Kermit escape  character "^]" 
+followed by C).
+
+Each system has its own list of verbs and predefined keys. Table 
+E.1 shows those available for the IBM PC family (there are also 
+some additional verbs for reassigning Heath or VT100 function 
+keys, see section 1.17.2 of the original Kermit documentation). 
+The SET KEY command shows the list of available verbs when a 
+query mark (?)  is given as a definition. 
+
+Table E.1	MS-Kermit Verbs 
+for the IBM PC 
+Family
+Verb	Meaning
+
+\Kupscn	Roll up (back) to previous screen
+\Kdnscn	Roll down (forward) to next screen
+\Khomscn	Roll up to top of screen memory
+\Kendscn	Roll down to end of screen memory (current 
+	position)
+\Kupone	Roll screen up one line
+\Kdnone	Roll screen down one line
+\Kprtscn	Print the current screen
+\Kdump	Append the current screen to dump file
+\Kholdscrn	Toggle hold screen mode
+\Klogoff	Turn off session logging
+\Klogon	Turn on session logging
+\Ktermtype	Toggle terminal type
+\Kreset	Reset terminal emulator to initial state
+\Kmodeline	Toggle modeline off/on
+\Kbreak	Send a BREAK signal
+\Klbreak	Send a "long BREAK" signal
+\Khangup	Drop dTR so modem will hang up phone
+*\Knull	Send a null (ASCII 0)
+\Kdos	"Push" to DOS
+\Khelp	Display CONNECT help message
+\Kstatus	Display STATUS message
+\Kterminals	Invoke user-defined macro TERMIANLS, if any
+\Kterminalr	Invoke user-defined macro TERMINALR, if any
+\Kexit	Escape back from CONNECT mode
+*\Kgold, \Kpf1	VT102 keypad function key PF1
+*\Kpf2..\Kpf4	VT102 keypad function keys
+*\Kkp0..\Kkp9	VT102 keypad numeric keys
+
+Other VT102 keypad keys:
+*\Kkpdot, \Kkpminus, \Kkpcoma, \Kkpenter
+
+VT102 cursor (arrow) keys:
+*\Kuparr, \Kdnarr, \Klfarr, \Krtarr
+
+
+NOTE:  * signifies that NCSA Telnet 2.3 supports the verb.
+
+
+F.1	NCSA Telnet 
+
+
+Obtaining NCSA Software	F.1
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+
+                                                              
+
+
+June 1991
+
+
+
+
+
+Appendix  F	Obtaining NCSA Software
+
+
+
+Overview
+This appendix uses NCSA HDF to outline the procedures for 
+obtaining NCSA software via FTP, an archive server, or by 
+regular mail.
+
+
+Obtaining NCSA Software
+
+FTP
+If you are connected to Internet (NSFNET, ARPANET, MILNET, 
+etc.) you can download HDF software and documentation at no 
+charge from an anonymous file transfer protocol (FTP) server at 
+NCSA. The steps you should follow to do so are enumerated below. 
+If you have any questions regarding the connection or procedure, 
+consult your local system administrator or network expert.
+
+1.	Log on to a host at your site that is connected to Internet and is 
+running software supporting the FTP command.
+
+2.	Invoke FTP on most systems by entering the Internet address of 
+the server:
+
+	%  ftp  ftp.ncsa.uiuc.edu
+
+	or
+
+	%  ftp  141.142.20.50
+
+3.	Log in by entering anonymous for the name.
+
+4.	Enter your e-mail address for the password.
+
+5.	Enter get README.FIRST to transfer the instructions file 
+(ASCII) to your local host.
+
+6.	Enter quit to exit FTP and return to your local host.
+
+7.	Review the README.FIRST file for complete instructions 
+concerning the organization of the FTP directories and the 
+procedures you should follow to download the README files 
+specific to the application you want.
+
+Your login session should resemble the following sample, where 
+the remote user's name is smith and user entries are indicated in 
+boldface type.
+harriet_51%  ftp ftp.ncsa.uiuc.edu
+Connected to zaphod.
+220 zaphod FTP server (Version 4.173 Tue Jan 31 08:29:00 CST 
+1989) ready.
+Name (ftp.ncsa.uiuc.edu: smith):  anonymous
+331 Guest login ok, send ident as password.
+Password:  smith
+230 Guest login ok, access restrictions apply.
+ftp>  get README.FIRST
+200 PORT command successful.
+150 Opening ASCII mode data connection for README.FIRST (10283 
+bytes).
+226 Transfer complete.
+local:  README.FIRST  remote:  README.FIRST
+11066 bytes received in .34 seconds (32 Kbytes/s)
+ftp>  quit
+221 Goodbye.
+harriet_52%
+
+
+The README.FIRST file instructs you to copy the HDF README 
+file to your directory and read it before proceeding. Your FTP 
+session should resemble the one listed below:
+
+ftp>	cd HDF
+250 CWD command successful.
+ftp>	get README
+200 PORT command successful.
+150 Opening ASCII mode data connection for README (10283 bytes)
+226 Transfer complete.
+local:  README	remote:  README
+2080 bytes received in .14 seconds (15 Kbytes/s)
+ftp>	quit
+221 Goodbye.
+harriet_52%
+
+
+The HDF README file explains how to copy the contents of the 
+HDF directory to your home directory via remote login or 
+anonymous FTP. The precise file transfer procedure varies 
+according to the type of operating system under which you will use 
+HDF—UNICOS or other.
+
+
+Archive Server
+To obtain NCSA software via an archive server:
+
+1.	E-mail a request to:
+
+	archive-server@ncsa.uiuc.edu
+
+2.	Include in the subject or message line, the word "help."
+
+3.	Press RETURN.
+
+4.	Send another e-mail request to:
+
+	archive-server@ncsa.uiuc.edu
+
+5.	Include in the subject or message line, the word "index."
+6.	Press RETURN.
+
+For example, if you use the UNIX mailing system, your login 
+session should resemble the following sample, where user entries 
+are indicated in boldface type.
+
+yoyodyne_51% mail archive-server@ncsa.uiuc.edu
+Subject:  help
+
+.
+EOT
+Null message body; hope that's ok
+yoyodyne_52% mail archive-server@ncsa.uiuc.edu
+Subject:  index
+.
+EOT
+Null message body; hope that's ok
+
+
+The information you receive from both the help and index 
+commands will give you further instructions on obtaining NCSA 
+software. This controlled-access server will e-mail the 
+distribution to you one segment at a time.
+
+
+Mail
+HDF software and manuals are available for purchase—either 
+individually or as part of the anonymous FTP reel or cartridge 
+tapes—through the NCSA Technical Resources Catalog. Orders 
+can only be processed if accompanied by a check in U.S. dollars 
+made out to the University of Illinois. To obtain a catalog, contact:
+
+NCSA Documentation Orders
+152 Computing Applications Building
+605 East Springfield Avenue
+Champaign, IL  61820
+(217) 244-0072
+
+
+
+
+
+
+Bugs and Suggestions
+
+Please notify us of any bugs you have found in our software and any 
+suggestions you have for future releases or products.
+
+Using the report form below, mail user feedback, bugs, or software 
+suggestions via U.S. mail to:
+
+NCSA Software Tools Group
+152 Computing Applications Bldg.
+605 East Springfield Avenue
+Champaign, IL 61820
+
+Send reports regarding bugs, software suggestions or comments via 
+electronic mail to:
+
+pctelnet@ncsa.uiuc.edu
+pctelnet@ncsavmsa.bitnet
+
+
+
+Name:			
+
+Institution:		
+
+
+Address (Electronic):		
+
+
+Address (U.S. Mail):		
+
+	
+
+	
+
+
+Telephone:   (          )                   –                           .
+
+Version of NCSA Telnet:	Type machine:	
+
+Version of system software:	
+
+
+Suggestion or description of problem:
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+
+
+
+
+
+Place
+Stamp
+Here
+
+
+NCSA Software Tools Group
+Telnet
+152 Computing Applications Building
+605 East Springfield Avenue
+Champaign, IL 61820
+
+i	NCSA Telnet
+
+Introduction	i
+
+National Center for Supercomputing Applications
+
+June 1991
+
+                                                              
+
+
+June 1991
+
+
+
+Introduction
+
+
+
+
+
+Overview
+
+This introduction presents an overview of the capabilities and 
+features of NCSA Telnet. The organization and use of this manual 
+are described and notational conventions explained.
+
+
+About NCSA Telnet
+
+NCSA Telnet Version 2.3 for the PC provides interactive access 
+from an IBM PC or compatible to telnet hosts on TCP/IP networks. 
+NCSA Telnet is an implementation of DARPA standard telnet 
+with added features that take advantage of the local processing 
+power of the PC.
+
+
+Special Features
+
+Special features of NCSA Telnet for the PC include:
+
+•	VT100 emulation
+•	Local printer support for VT100 emulation
+•	Simultaneous logon to a number of computers
+•	Ability to capture text to the PC disk or printer
+•	File transfer server (standard FTP)
+•	Remote copy server (rcp) for use with UNIX hosts
+•	Ability to take full advantage of PC colors
+•	Topview/Windows compatibility
+•	Tektronix 4014 emulation
+•	Added applications such as:  lpr, lpq, lprm, rexec, rsh, finger, 
+setclock (all similar to UNIX utilities)
+•	Domain name lookup
+•	Optional use of RARP and Bootp for determining PC's IP 
+address 
+•	Support for Linemode protocol
+•	Scrollback with mouse support
+•	Cut and paste capabilities for text between sessions
+•	Keyboard mapping
+•	Text output mapping
+•	Better message routing of telnet options to console screen
+•	Ability to dump screens to a capture file
+
+
+ System Requirements
+
+To use NCSA Telnet you must have the following hardware:
+
+•	IBM PC, PC/XT, PC/AT, IBM PS/2 model 30, or "true" 
+compatible computer with one of the following Ethernet adapter 
+boards:
+
+	Appletalk Card
+	DecNet Card
+	3COM 3C501 Etherlink 
+	3COM 3C503
+	3COM 3C505
+	AT&T Starlan 10
+	Western Digital WD8003EB
+	MICOM NI5210 
+	Ungermann-Bass PC-NIC (same as IBM Baseband Adapter)
+	Western Digital WD8003E EtherCard PLUS
+
+•	or IBM PS/2 models 50,60 or 80, or "true" compatible computer 
+with one of the following Ethernet adapter boards:
+
+	Ungermann-Bass NICps/2
+	3COM 3C523 Etherlink/MC
+	Western Digital WD8003A
+
+•	The following adapters have been tested successfully with 
+packet drivers:
+
+	3Com's 3C501, 3C503, 3C505, 3C507, and 3C523
+	Any SMC-mode ARCnet card
+	Any AT&T Ethernet or StarLAN card
+	D-Link Systems' DE-600 Pocket LAN Adapter
+	Simulated driver over NetWare's IPX
+	BICC Data Networks' ISOLAN
+	Apple Computer's LocalTalk PC Card
+	Sun/TOPS (Sitka) FlashCard
+	Simulated driver over NetBIOS
+	NCR's ET-105B
+	Novell's NE1000, NE2000, and clones
+	Racal-InterLan's NI5010, NI5210, NI6510, and NI9210
+	Ungermann-Bass's NIC and NICps/2
+	All Western Digital's models
+
+•	384K minimum memory
+
+•	Ethernet or Thin Ethernet to connect the PC and other computers
+
+To use NCSA Telnet you must have the following software:
+
+•	PC-DOS or MS-DOS Version 2.0 or later
+•	a standard text editor (helpful when editing the configuration 
+file)
+
+
+Use of This Manual
+
+This section describes the organization of this manual, and the 
+conventions and nomenclature used in developing it.
+
+
+Manual Contents
+This manual is organized into the following chapters:
+
+Chapter 1, "Starting and Quitting NCSA Telnet," describes how to 
+start NCSA Telnet and how to open and close a connection between 
+your PC and one remote host.
+
+Chapter 2, "Introduction to Managing Sessions," introduces NCSA 
+Telnet's capability for multiple connections. It also discusses 
+standard VT100 key emulation, keys used for common EDT 
+operations, and usage of a capture file.
+
+Chapter 3, "More about Managing Sessions," discusses multiple 
+sessions in detail. The Parameters menu options, DOS shell 
+feature, and several advanced functions are also described.
+
+Chapter 4, "Utility Programs," outlines in detail some helpful 
+command programs which you can implement along with NCSA 
+Telnet.
+
+Chapter 5, "File Transfer," outlines procedures for transferring 
+files between a PC and a telnet host.
+
+Chapter 6, "Tektronix 4014 Emulation," discusses NCSA Telnet's 
+ability to emulate a Tektronix 4014 graphics terminal.
+
+Chapter 7, "Installation and Configuration," contains 
+information for system administrators (and other experienced 
+users) to use when installing and customizing a system.
+
+Appendix A, "Error Conditions," describes some of NCSA Telnet's 
+error messages, as well as their causes and solutions.
+
+Appendix B, "NCSA Telnet Command Reference," lists 
+commands available from the PC keyboard.
+
+Appendix C, "Configuration File Summary," lists the keywords 
+for configuration file parameters.
+
+Appendix D, "FTPBIN Command Reference," describes the 
+FTPBIN commands that the program uses.
+Appendix E, "Key-mapping," details the key-mapping elements 
+NCSA Telnet for the PC incorporates from the MS-Kermit 
+program.
+
+Appendix F, "Obtaining NCSA Software," outlines the procedures 
+for obtaining NCSA software via FTP, an archive server, or U.S. 
+mail.
+
+Form of Presentation
+Figure I.1 shows some typical screen/user interactions using the 
+conventions employed in this manual. Those conventions, and 
+others, are explained here.
+
+Figure I.1	Example of 
+Notational 
+Conventions
+C:\> telnet machinename [machinename...]
+
+National Center for Supercomputing Applications
+NCSA Telnet for the PC version 2.2
+(c) Copyright 1987,1988 Board of Trustees of the University of 
+Illinois
+
+ALT-H presents a summary of special keys
+
+
+
+4.2 BSD UNIX (newton)
+
+login:
+
+
+
+dothis	Information shown in courier boldface type 
+	represents user entries.
+
+ALT-key	Press and hold the ALT key and then press the 
+	key designated by key. Then release both 
+	keys at the same time.
+
+variable	Do not enter the actual characters shown. 
+	Command line characters shown in 
+	lowercase courier bold italic type represent an 
+	entry that may consist of different characters 
+	every time you make the entry. In other 
+	words, it is a variable entry. If it indicates a 
+	machine response, it means the actual 
+	wording of the response will vary, depending 
+	on the filename, machinename, and so on.
+
+...	Do not enter an ellipsis. The ellipsis 
+	indicates that you may enter more material 
+	similar to the material preceding the ellipsis.
+
+[ ]	Do not enter square brackets. Material or 
+	actions presented between square brackets is 
+	optional and should be entered only in certain 
+	cases.
+
+
+i 	NCSA Telnet
+
+Table of Contents	i
+
+
+National Center for Supercomputing Applications
+
+
+June 1991
+
+                                                                
+
+
+
+
+
+
+
+
+
+	Table of Contents
+
+
+
+
+Introduction
+Overview  xi
+About NCSA Telnet  xi
+Special Features  xi
+System Requirements  xii
+Use of This Manual  xiii
+Manual Contents  xiii
+Form of Presentation  xiv
+Chapter 1	Starting and Quitting NCSA Telnet
+Chapter Overview  1.1
+Starting the Program  1.1
+Using the Help Screen  1.2
+Quitting NCSA Telnet  1.2
+Chapter 2	Introduction to Managing Sessions
+Chapter Overview  2.1
+Keyboard Usage  2.1
+Multiple Sessions  2.2
+	Opening Multiple Initial Sessions  2.2
+Using the Status Line  2.2
+Opening Additional Sessions  2.2
+Indicating the Host  2.2
+Estimating the Host Response Time  2.3
+Using Scrollback Mode  2.3
+Using the Cut and Paste Functions  2.4
+Switching Between Sessions (ALT-N)  2.4
+Displaying Console Messages (ALT-Z)  2.5
+Exiting the Present Connection (ALT-X)  
+2.5
+Capture File Operations  2.5
+Designating a Capture File  2.5
+Using PRN  2.5
+Using One Capture at a Time  2.6
+Chapter 3	More About Managing Sessions
+Chapter Overview  3.1
+Keyboard Commands  3.1
+	Using the Skip Command (ALT-S) 3.1
+Resetting the VT100 Screen  (ALT-R)  3.1
+Aborting the Program  (CTRL-ALT-F3)  3.1
+Escaping to DOS  Shell  (ALT-E)  3.1
+Parameter Menu  3.2
+Using Screen Text Colors  3.4
+Using Remote Echo and Local Echo  3.4
+Using the Backspace Key  3.5
+Changing the Session Name  3.5
+Changing the Terminal Type  3.5
+Using Line Wrapping  3.6
+Using Output Mapping  3.6
+Changing the Capture Filename  3.6
+Using Screen Mode  3.6
+Using File Transfer Mode  3.6
+Using Clock Mode  3.6
+Chapter 4	Utility Programs
+Chapter Overview  4.1
+finger  4.1
+	Name  4.1
+	Command Line  4.1
+	Description  4.1
+	Options  4.2
+ftp  4.3
+	Name  4.3
+	Command Line  4.3
+	Description  4.3
+	Options  4.3
+	Commands  4.4
+	Aborting a File Transfer  4.10
+	File Naming Conventions  4.10
+	File Transfer Parameters  4.10
+lpq  4.11
+	Name  4.11
+	Command Line  4.11
+	Description  4.11
+	Options  4.11
+	Diagnostics  4.12
+lpr  4.13
+	Name  4.13
+	Command Line  4.13
+	Description  4.13
+	Options  4.13
+	Diagnostics  4.16
+lprm  4.16
+	Name  4.16
+	Command Line  4.16
+	Description  4.16
+	Options  4.17
+	Diagnostics  4.17
+net14  4.17
+	Name  4.17
+	Command Line  4.17
+	Usage  4.18
+	Options  4.18
+rsh  4.18
+	Name  4.18
+	Command Line  4.18
+	Description  4.18
+setclock  4.20
+	Name  4.20
+	Command Line  4.20
+	Description  4.20
+	Options  4.20
+Chapter 5	File Transfer
+Chapter Overview  5.1
+File Transfer Terminology  5.1
+File Transfer Guidelines  5.2
+Full Path Specification:  Conversion of 
+Forward Slashes  5.2
+Simultaneous Activity  5.2
+Rules for Filenames Sent to the PC  5.2
+File Transfer Reports  5.3
+File Transfer Using FTP  5.3
+Setting Up FTP  5.4
+Using FTP  5.4
+Invoking FTP on the Host Computer  5.4
+Invoking FTP Using Alternate
+Methods  5.5
+Using FTP Commands  5.5
+File Transfer Using rcp  5.8
+Setting UP rcp  5.8
+Using rcp  5.9
+Avoiding Use NCSA Telnet's rcp 
+Server  5.9
+Using rcp Between the PC and UNIX  5.9
+Using Wildcards  5.10
+Chapter 6	Tektronix 4014 Graphics
+Chapter Overview  6.1
+Emulating a Tektronix 4014 Graphics 
+Terminal  6.1
+Initializing a Plotter  6.1
+Setting the Configuration File  6.1
+Switching to and from Graphics Mode  6.2
+Graphics Mode  6.2
+Text Mode  6.2
+Using the Graphics Menu (ALT-G )  6.2
+Writing Graphics Files to Disk  6.3
+Renaming Graphics Output Files  6.3
+Setting the Viewing Region 
+(Zoom Factor)  6.3
+Redrawing Last Image  6.4
+Plotting a Stored File   6.4
+Chapter 7	Installation and Configuration
+Chapter Overview  7.1
+Installing the Distribution Files  7.1
+Sample Configuration  7.1
+Required Configuration Information  7.2
+The TELNET.BAT File  7.3
+Command Line Options  7.3
+The Configuration File  7.4
+Overview  7.4
+Syntax for Entries  7.5
+PC Information Entries  7.5
+Host-Specific Parameters  7.10
+Conversion of UNIX /etc/hosts Files  7.14
+Hardware Options  7.14
+Combined Ethernet Drivers  7.14
+Performance Tuning  7.15
+RARP for Dynamic IP Address 
+Assignment  7.16
+BOOTP for Dynamic IP Address
+Assignment  7.16
+Appletalk Hardware  7.16
+Interrupts  7.17
+Domain Name Lookup  7.17
+FTP Password Protection  7.18
+Compatibility Notes  7.19
+Ping  7.19
+VT102  7.19
+FTP  7.19
+Terminate and Stay Resident (TSR) 
+Programs  7.19
+NCSA Telnet  7.19
+Limitations  7.20
+Appendix A	Error Conditions
+Appendix B	NCSA Telnet Command Reference
+Appendix C	Configuration File Summary
+Local Configuration  C.1
+Host-Specific Parameters  C.3
+Appendix D	FTPBIN Command Reference
+Appendix E	Key-mapping
+Overview  E.1
+Copyright Information  E.1
+Kermit Verb Usage  E.1
+Set Key  E.2
+	Syntax  E.2
+	Uses of Set Key  E.2
+Kermit Action Verbs  E.3
+
+Appendix F	Obtaining NCSA Software
+
+Figures
+Figure I.1	Example of Notational Conventions  xv
+Figure 1.1	NCSA Telnet Help Screen  1.2
+Figure 3.1	Parameter Menu  3.3
+Figure 5.1	Put to the PC, ASCII File  5.7
+Figure 5.2	Get from the PC, Binary File  5.7
+Figure 6.1	Graphics Menu  6.2
+Figure 6.2	Sample Viewing Regions  6.4
+Figure 7.1	Displaying the Same Information in 
+Different Entry Formats  7.5
+
+Tables
+Table 2.1	PC Keys Used for VT102 Terminal 
+Emulation  2.1
+Table 5.1	Common FTP Commands  5.6
+Table 7.1	Ethernet Boards Supported by NCSA 
+Telnet  7.14
+Table E.1	MS-Kermit Verbs for the IBM PC 
+Family  E.3
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NCSA Telnet
+for the IBM PC®
+
+Version 2.3
+
+
+June 1991
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+University of Illinois at Urbana-Champaign

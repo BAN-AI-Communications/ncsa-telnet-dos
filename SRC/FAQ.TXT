@@ -1,0 +1,490 @@
+NCSA's PC Telnet Frequently Asked Questions:
+
+----------------------------------------------------------------
+How do I unzip the file?
+
+Files on our server are zipped using pkzip.  If you have version
+204G or later you will be able to unzip any file, while previous
+versions may not unzip all files from our server.  You can
+obtain pkzip in the PC/Telnet/msdos/misc directory of our
+server.
+
+
+---------------------------------------------------------------
+What do I do when Telnet is running out of memory?
+
+The latest version of Telnet takes around 400k to run.  If you
+have memory problems, reduce or comment out the scrollback
+buffer in the the config.tel file.
+
+
+----------------------------------------------------------------
+How do I use packet drivers? 
+
+Packet driver information
+
+To use the packet driver interface:
+You would install the packet driver according to its instructions. In the
+config.tel file, you would use the options:
+
+        hardware=packet
+        ioaddr=[software interrupt of the driver]
+                for example if you are using 0x60 as the software
+                interrupt, it would read ioaddr=60
+
+Places to look for packet drivers:
+
+Crynwr Packet Driver Collection (see the end of this file)
+
+
+---------------------------------------------------------------------------
+
+How do I run Telnet with a Novell network?
+
+
+From a user:
+/********/
+
+There is a packet driver that sits on top of the ODI interface
+called odipkt.  odipkt.com is available from hsdndev.harvard.edu
+(128.103.202.40) in /pub/odipkt.
+
+There is a sample net.cfg file in that dir.  A note should be made that
+the order of the envelope statements is the order that they are assigned.
+(I found the order backwards from the doc).
+
+    load:   lsl
+            (odi driver from vendor or from wsgen disk odi dir)
+            odipkt 1    (If envelope for ethernet_ii is the second one
+                         in the net.cfg file, odipkt 0 otherwise)
+            ipxodi
+            netx
+
+Now telnet and ftp work fine while connected to the novell network.
+
+/******/
+
+-----------------------------------------------------------------------
+
+Will Telnet run in MS Windows?
+
+NCSA's PC Telnet was not designed to be run in MS Windows.  Some users
+have reported success when they increase the size of memory available
+in the PIF file....others have not gotten it to work at all.  Check
+the background option when you load Telnet.
+
+NCSA has a version of Telnet under development for MS Windows.  It is
+currently in its beta version and can be found in the /Telnet/PC/windows
+directory on our ftp server (ftp.ncsa.uiuc.edu).  Although there
+is no official tech support for WinTel, you can send questions or
+comments to wintel@ncsa.uiuc.edu. 
+
+---------------------------------------------------------
+
+Does Telnet support TN3270 teminal emulation?
+
+NCSA's PC Telnet does not support TN3270 but there is hope.
+There is another help file called CUTCP which tells you how to get
+ahold of CUTCP, a variant on our Telnet, that supports TN 3270 terminal
+emulation.  They do not support this version but do have a discussion
+list where you usually can get answers from other users.
+
+We do not plan to have support for TN3270 in the future.
+
+(see the entry on CUTCP at the end of this file)
+
+------------------------------------------------------------------------
+
+Can we modify your source code?
+
+NCSA's PC Telent source is in the public domain and you are welcome to
+modify and redistribute it.   You can get this off of our ftp
+server (ftp.ncsa.uiuc.edu) in the Telnet/DOS directory under
+the file name tel2308s.zip.  If you'd like to send us your modifications
+we'd like to consider them for possible inclusion in our next release
+of PC Telnet.  There is 
+
+-----------------------------------------------------------------------
+
+What are the system requirements for Telnet?
+
+Run DOS 2.0 or later on a machine with 384K minimum memory, install
+ a packet driver or use an ethernet card supported in hardware:
+
+ 3COM 3C501 Etherlink, 3COM 3C503, 3COM 3C505, AT&T Starlan 10,
+ Western Digital WD8003EB, MICOM NI5210,
+ Ungermann-Bass PC-NIC (same as IBM Baseband Adapter)
+ Western Digital WD8003E EtherCard PLUS
+
+IBM Micro Channel boards:
+ Ungermann-Bass NICps/2, 3COM 3C523 Etherlink/MC, Western Digital WD8003A
+
+-------------------------------------------------------------------------
+
+Can I use Telnet over a serial connection (modem)?
+
+Yes, using Crynwr Software's slip8250 packet driver.  You must call the slip
+server with a communications program that has the ability to hold the 
+line when another program is running.  The packet driver will then 'find'
+the open line and when telnet is run, it will interface with the packet
+driver and you will then have the connection you need.
+
+Unfortunately, we do not have any instructions on SLIP.
+(see Cywnr's brochure at the end of this file)   
+
+-------------------------------------------------------------------------
+
+Can I use Telnet with AppleTalk?
+
+From a user:
+
+To load telnet from the dosprompt [nothing telnet-specific in
+config.sys or autoexec.bat we use the following sequence:
+
+lsl.com
+ltalk.com
+atalk.com
+ashare.com
+compat.com
+d:\network\telnet\telbin -n -h d:\network\telnet\config.tel 
+
+where all of the atalk stuff would be in the current directory and all
+of the telnet stuff is in d:\network\telnet.
+
+broadcast=255.255.255.255
+netmask=255.255.255.0
+hardware=atalk          # network adapter board (Appletalk)
+interrupt=60            # I have an Apple or Farralon card and PhoneNET Talk
+			# remember to run COMPAT.COM for NCSA to run on
+			# LocalTalk
+#interrupt=5C           # I have a TOPS Flashcard
+
+mtu=512                 # maximum transmit unit in bytes
+maxseg=512              # largest segment we can receive
+rwin=512                # most bytes we can receive without ACK
+
+=-=-=
+
+Some PhoneNet users have been successful with the 2.3.03
+version of Telnet but not the latest 2.3.05. 2.3.03 is still available
+on our anonymous ftp server or via our archive server in the
+/Telnet/DOS/contributions directory.
+
+Using an Appletalk network involves some special considerations. First,
+you must load the Appletalk driver into memory. Version 1.0 of the
+"ATALK.EXE" driver was used in the development of NCSA Telnet.
+
+The second consideration involves the "interrupt=" line. The "interrupt="
+line in your CONFIG.TEL file refers to the software interrupt the
+Appletalk driver is using, not the hardware interrupt the card is set to.
+For example, if your Appletalk card is set to IRQ2, you should not set
+the "interrupt=" line to "2". Instead, the value should be set to the
+software interrupt, usually "interrupt=60" or "interrupt=5C".
+
+Static addressing does not work at the current time in NCSA Telnet 2.3
+using the AppleTalk driver. Therefore, NCSA Telnet ignores any IP address
+you set in your CONFIG.TEL file, and assigns an IP address to your PC by
+the Appletalk gateway.
+
+-------------------------------------------------------------------------
+
+How do I scroll back the screen?
+
+You can scroll in one line increments using the scroll lock.  Press
+the scroll lock in and use the arrow keys to increment by one line.
+To turn off this feature, just turn off the scroll lock.
+
+
+-------------------------------------------------------------------------
+
+How do I remap keys?
+
+When remapping keys refer to Appendix E of the 2.3 docs.   There is also
+information in chapter 7, Installation and Configuration, page 7.8 and the
+sample config.tel file we provide with Telnet.
+
+ From Chapter 7:
+
+keyfile=filename  "specifies an additional keyboard mapping file to provide
+                   move key definitions.  This file over-rides the definitions
+                   in the telnet.key file."
+
+From the config.tel file:
+
+#keyfile=keymap.key   #pathname of your keyboard re-mapping file.
+
+
+Re-mapping will over-ride the default telnet.key file and you will
+have to include all keys in this new file.  You can easily do this by
+copying the contents of the telnet.key file into the newfile and then
+add the remap information.
+
+There is an ascii version of the documentation in the contributions directory
+on our ftp server (ftp.ncsa.uiuc.edu).
+
+
+--------------------------------------------------------------------------
+
+How should I send bug reports/questions/comments?
+
+As more software has been developed and released by the NCSA
+Software Development Group (SDG), questions and comments from
+users have increased dramatically. Sometimes getting responses
+takes longer than you--or we--would like. There are some things
+you can do to get a quicker response when you send electronic
+mail and phone SDG Technical Support. 
+
+
+WHEN YOU CONTACT SDG TECHNICAL SUPPORT
+
+State the correct name and version number
+Begin with the full name of the product, including version number 
+(i.e., NCSA Telnet for the Macintosh v2.5 or NCSA Telnet for PCs 
+v2.3.08). Macintosh users also need to let us know if you are using 
+MacTCP and if so, what version.
+
+If you are reporting a software problem, including answers to the 
+following questions is also useful:
+
+o	What is your config.tel file?
+
+o	What type of ethernet card or AppleTalk card are you using?
+
+o	What operating system are you using? Which version are you 
+	using (i.e., System 6.0.7 or System 7 for Mac users)?
+
+o	What kind of gateway are you using?
+
+o	What messages are listed on your console screen?
+
+o	What kind of computer were you trying to connect to? A Sun 
+	workstation or a VAX system, for instance?
+
+o	What operating system (including its version number) was 
+	that computer running? UNIX, VMS, or ULTRIX, for instance?
+
+o	What happened? A detailed description of the problem you 
+	encountered is important so we can try to recreate your 
+	experience.
+
+
+Upgrade to latest version
+SDG supports only the current versions of Telnet, so you need to 
+update to the latest official version before you report a problem. 
+Now that Mac Telnet 2.5 has been released, we no longer support 
+version 2.4, and now that PC Telnet 2.3.08 has been released, we no 
+longer support version 2.2. Beta versions are also unsupported. 
+
+
+Be patient
+Do not send a message every day if you have not yet received a 
+response. SDG Technical Support receives many telephone and 
+electronic mail messages a day and sends out approximately [many]
+responses every month. Sometimes it is not possible to respond to 
+every message as quickly as we would like.
+
+
+Please mention if your message is a follow-up to a previous one.
+Sometimes you'll receive an answer that brings up new questions
+or a solution that does not work the way you expect. If you need to
+contact SDG again, do not assume that SDG Technical Support
+remembers that you sent a message earlier. When we know you
+have sent other messages, we can search for your previous
+messages in our database. 
+
+
+Limit your questions to NCSA software
+SDG Technical Support only answers questions about NCSA-
+developed software. We cannot answer questions about variants
+of NCSA Telnet. Because NCSA-developed software is in the public
+domain, others can modify our source code and distribute it as a
+variant. We know there are many variants of NCSA Telnet, but we
+are not familiar with them all. In addition, SDG does not support
+commercial products and is not the source to find out how to
+contact these companies.  NCSA does not support users modifying 
+the source code.
+
+
+Read the manual
+Before contacting SDG Technical support, take a few minutes to check 
+the manual. A large percentage of the answers we send out come 
+directly from the documentation. We would rather spend that time 
+helping you work out bug fixes or considering your suggestions that 
+might improve NCSA software products.
+
+-----------------------------------------------------------------------
+                          HOW TO GET CUTCP
+-----------------------------------------------------------------------
+11/12/90  - How to Copy CUTCP/CUTE 2.2TN/TC-D
+
+You can obtain the latest version of CUTCP/CUTE via
+anonymous FTP or via Email.
+
+
+1. Anonymous FTP to
+        omnigate.clarkson.edu
+        (128.153.4.2)
+
+        in binary mode, retrieve
+
+                pub/cutcp/v2.2-D/cutcp.zoo
+
+        This is a Zoo archive, you may use Zoox.exe to uncompress
+        this file on your DOS machine. If you do not have
+        Zoox, you may also retrieve that file from omnigate
+
+                pub/cutcp/zoo201.exe
+
+2. Send email to
+                archive-server@sun.soe.clarkson.edu
+                Subject:
+
+                send cutcp cutcp.zoo
+
+        If you need to get a copy of zoox.exe, be sure to
+
+                send cutcp zoo201.exe
+
+        For a list of files in this directory, you can ask for
+
+                send cutcp Index
+
+
+        You will receive a collection of files which you should reassemble
+        and decode (uudecode is the default format).
+
+        After decoding, an output file will be placed in your directory.
+        This file has a strange name. You should download the file
+        in binary mode to your PC as 'cutcp.zoo'.
+
+        For additional information on the archive server, send a
+        mail message to the server with the command
+
+                help
+
+-------------------------------------------------------------------------
+                           The Crynwr Packet Collection
+-------------------------------------------------------------------------
+
+
+	Availability
+
+	The Crynwr packet driver collection is available on CD-ROM, by mail,
+	by FTP, by email, by UUCP and by modem.  The drivers are distributed
+	in three files: pktd11.zip, which contains most executables and
+	documentation, pktd11a.zip, which contains the first half of the
+	remaining files, and pktd11b.zip, which contains the second half of
+	the remaining files.
+
+	Mail:
+
+	Columbia University distributes packet drivers on PC diskette by
+	postal mail.  5.25-inch 360K and 3.5" 720K diskettes are available;
+	please specify size.  Two diskette sets are available, and two prices
+	are quoted for each; the first price is for the USA, Canada, and
+	Mexico; the second price is for shipment to all other countries.  All
+	prices are in US dollars.  Prepayment by check, MasterCard, or Visa
+	is accepted.  If your check is not drawn on a US bank, please add $35
+	check-cashing fee.
+
+	  1. Binaries and documentation:        $35  /  $40
+	  2. Source code:                       $60  /  $68
+
+	To order by credit card, please specify MasterCard or Visa, your card
+	number and expiration date, and sign and date your order.  For further
+	information, call +1 212 854-3703, or write to:
+
+	  Kermit Distribution, Dept PD
+	  Columbia University Academic Information Systems
+	  612 West 115th Street
+	  New York, NY  10025
+
+	or send e-mail to kermit@columbia.edu (Internet) or KERMIT@CUVMA
+	(BITNET/CREN/EARN).
+
+	FTP/email:
+
+	The packet driver collection has its own directory devoted to it in
+	the SimTel collection, msdos/pktdrvr.  The drivers are there, along
+	with a number of programs that use the packet drivers.
+
+	For security reasons the SimTel Software Repository is located on a
+	host that is not accessible by Internet users, however its files are
+	available by anonymous ftp from the primary mirror site OAK.Oakland.Edu
+	(141.210.10.117) located in Rochester, Michigan, and from the secondary
+	mirror sites:
+
+	   St. Louis, MO: wuarchive.wustl.edu (128.252.135.4)
+	   Corvallis, OR: archive.orst.edu (128.193.2.13)
+	Falls Church, VA: ftp.uu.net (192.48.96.9
+	       Australia: archie.au (139.130.4.6)
+	         England: src.doc.ic.ac.uk (146.169.2.1)
+	         Finland: ftp.funet.fi (128.214.6.100)
+	         Germany: ftp.uni-paderborn.de (131.234.2.32)
+	          Israel: ftp.technion.ac.il (132.68.1.10)
+	     Switzerland: ftp.switch.ch (130.59.1.40)
+	          Taiwan: NCTUCCCA.edu.tw (140.111.1.10)
+
+	SimTel files may obtained by e-mail from various ftp-mail servers
+	or through the BITNET/EARN file servers.  For details see file
+	/pub/msdos/filedocs/mailserv.inf.  Gopher users can access the
+	collection through Gopher.Oakland.Edu.  World Wide Web (WWW) and
+	Mosaic users can connect to the URL http://www.acs.oakland.edu to
+	access the files on OAK.Oakland.Edu.
+
+	Modem:
+
+	If you cannot access them via FTP or e-mail, most SimTel MSDOS
+	files, including the PC-Blue collection, are also available for
+	downloading from Detroit Download Central (313) 885-3956.  DDC
+	has multiple lines which support 300/1200/2400/9600/14400 bps
+	(103/212/V22bis/HST/V32bis/V42bis/MNP).  This is a subscription system
+	with an average hourly cost of 17 cents.  It is also accessable on
+	Telenet via PC Pursuit and on Tymnet via StarLink outdial.  New files
+	uploaded to SimTel are usually available on DDC within 24 hours.
+
+	CD-ROM:
+
+	Title:  Packet Driver, WinSock & TCP/IP CD-ROM (aka Packet Driver CD)
+	Price:  US$29.95/each
+
+	Brochures and order forms for the CD (paper and electronic versions)
+	will be available from:
+
+	Gopher: gopher.CDPublishing.com
+	FTP:    ftp.CDPublishing.com
+	E-mail: <info@CDPublishing.com>
+	FAX:    604-874-1431
+	Phone:  604-874-1430
+	        800-333-7565
+	Postal: CD Publishing Corporation
+	        4824 Fraser Street
+	        Vancouver, B.C.  V5V 4H4
+	        Canada
+
+	UUCP:
+
+	The packet driver files are available from UUNET's 1-900-GOT-SRCS, in
+	uunet!~/systems/msdos/simtel20/pktdrvr.  Contact UUNET for more details:
+
+	UUNET Technologies, Inc.
+	3110 Fairview Park Drive, Suite 570
+	Falls Church, VA 22042
+	+1 703 204 8000 (voice)
+	+1 703 204 8001 (fax)
+	info@uunet.uu.net
+
+	UK UUCP:
+
+	Steve Kennedy's BBS is on +44 71 483 2454 (Telebit T2500 PEP/V32 ...)
+	                                                2455 (USR HST/DS+)
+
+	Files will be in /pub
+	there will be an anonymous uucp (nuucp) account.
+
+	System name is "marvin"
+
+------------------------------------------------------------------------
+
+
+

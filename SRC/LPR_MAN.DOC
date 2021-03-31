@@ -1,0 +1,554 @@
+
+
+
+
+
+                                   LPR, LPQ, LPRM
+                             Network Printing Utilities
+                               (for MS-DOS Computers)
+
+
+                                    Paul Hilchey
+                           University Computing Services
+                         The University of British Columbia
+
+                                 September 18, 1989
+
+                                 Copyright (C) 1989
+                         The University of British Columbia
+
+
+            Introduction
+
+            These utilities  allow access to printers attached to remote
+            computer  systems   via  a   TCP/IP  network.     They   are
+            implementations of the like named Unix utilities.
+
+
+            Things You Will Need
+
+            You will  need to have access to a computer that will accept
+            print jobs from you.  It must be accessible from the network
+            and support the Berkeley Line Printer protocol (available on
+            most Unix systems).
+
+            Your computer  must  have  a  suitable  network  connection.
+            Either
+
+               1 An Ethernet connection with one of the supported
+                 adapter boards.  For an IBM PC, XT, AT, PS/2 model 30,
+                 or compatible, the supported ethernet adapter boards
+                 are:
+                   y  3COM 3C501 Etherlink
+                   y  MICOM NI5210
+                   y  Ungermann-Bass PC-NIC
+                   y  Western Digital WD8003E
+
+                 For IBM PS/2 models, 50, 60, 70, or 80, or compatible,
+                 the supported boards are:
+                   y  Ungermann-Bass NICps/2
+                   y  3COM 3C523 Etherlink/MC
+
+               2 A hard-wired serial port supporting the SLIP protocol.
+                 A serial connection is slower than an Ethernet
+                 connection, but may still be adequate.
+
+
+            Getting Started
+
+            The software is available by anonymous FTP from mtsg.ubc.ca.
+            Use binary  mode to  get  the  file  LP.EXE  from  the  PC1:
+            directory.
+
+
+
+            Instructions on  how to  install these  utilities are in the
+            appendix.
+
+
+            Problem Reports
+
+            Problem reports may be sent to Paul_Hilchey@mtsg.ubc.ca.
+
+
+            Acknowledgements
+
+            Portions of  this software  were developed  by the  National
+            Centre for  Supercomputer Applications  at the University of
+            Illinois at Urbana-Champaign.
+
+            Portions of  this software were developed by The Educational
+            Resources Center at Clarkson University.
+
+            PostScript is a registered trademark of Adobe Systems Inc.
+            Unix is a registered trademark of AT&T.
+            IBM PC, XT, AT, and PS/2 are registered trademarks of
+            International Business Machines Corporation.
+            MS-DOS is a registered trademark of Microsoft Corporation.
+            NIC is a trademark of Ungermann-Bass.
+            EtherCard PLUS is a trademark of Western Digital
+            Corporation.
+            Ethernet is a trademark of Xerox Corporation.
+            3COM and Etherlink are trademarks of 3COM Corporation.
+
+
+
+
+                                  Printing a File
+
+
+            To print  a file, enter the lpr command followed by the name
+            of the  file.   For  example,  if  you  had  a  file  called
+            readme.txt that you wanted to print, you would use
+
+                 lpr readme.txt
+
+            If all goes well, the file will be sent over the network and
+            then printed.   When  lpr has  finished sending the file, it
+            reports done and returns to the DOS prompt.
+
+            Printing multiple copies
+
+            You can print more than one copy of a file by specifying the
+            -# option.  For example:
+
+                 lpr -#3 readme.txt
+
+            will produce  three copies  of readme.txt.   Note  that  the
+            remote computer  you are  sending your  print files  to  may
+            impose limits on how many copies you can produce.
+
+            Printing files with page breaks and page titles
+
+            To have  your document broken up into pages and printed with
+            page titles, use the -p option.  For example:
+
+                 lpr -p readme.txt
+
+            In this  example, each  page would  have readme.txt  as  the
+            title.   If you  want a  title other than the file name, use
+            the -T option.  For example:
+
+                 lpr -p -T top_secret sdi.doc
+
+            The pages  would be titled with top_secret.  Note that there
+            must not  be any spaces within your title.  The -T option is
+            only of use in combination with the -p option.
+
+            You can  also specify  the page  width to  use with  the  -w
+            option.  For example:
+
+                 lpr -p -w72 readme.txt
+
+            will format the text into lines of up to 72 characters.  The
+            -w option only works in combination with the -p option.
+
+            Indenting
+
+            To have  your output  shifted away from the left margin, use
+            the -i option.  For example:
+
+                 lpr -i readme.txt
+
+
+
+            The printout  will be  shifted to the right by eight spaces.
+            For different  indents, you can specify the number of spaces
+            to use:
+
+                 lpr -i4 readme.txt
+
+            will indent  by four  spaces.   There must  not be  a  space
+            between the -i and the number.
+
+            Printing TeX
+
+            If you  use the TeX text processing package, you can use lpr
+            to print  your .DVI  files.   To do  so, you must use the -d
+            option.  For example:
+
+                 lpr -d sample.dvi
+
+            The remote  computer that is doing your printing for you may
+            or may not be able to print DVI files; check with the system
+            administrator to  find out.  Note also that there will be no
+            opportunity for  you to  do a font substitution when the DVI
+            file is  interpreted, so you must not use any fonts that are
+            not available on the printer.
+
+            Printing PostScript
+
+            If the  printer you will be using understands PostScript, it
+            should automatically  recognize the  `%!' signature found at
+            the start of most PostScript files and print them correctly.
+            You don't need to specify any formatting options.
+
+            Printing several files
+
+            You can  print more  than one  file at  a time; just include
+            each file name with the lpr command.  For example:
+
+                 lpr -p c:\autoexec.bat c:\config.sys -d -#2 thesis.dvi
+
+            As you  can see  in the example, you can intermix formatting
+            options in  with the  files to  be printed.  The options and
+            file names  are processed  from left  to right.    Whichever
+            formatting options  are currently in effect when lpr finds a
+            file name are the ones that are used for that file.  Once an
+            option has  been set,  it remains in effect until changed or
+            over-ridden by another option.
+
+            Using a different printer
+
+            Your output  is normally  sent to  the printer identified by
+            the PRINTER  and SERVER environment variables (see part 4 of
+            the appendix).  You can use a different printer and/or print
+            server by  giving the  -P and/or  -S options.  The -P option
+            changes the  name of  the printer  to use.   The  -S  option
+            changes the  address of  the print  server computer  to use.
+            For example:
+
+                 lpr -P LW-407 -S havarti lp.doc
+
+
+
+            output will be sent to the printer called LW-407 attached to
+            the computer called havarti.
+
+            When you  use the -P and -S options, they apply only to that
+            command.     They  don't   change  the  PRINTER  and  SERVER
+            environment  variables.     If   the  PRINTER   and   SERVER
+            environment variables have not been set, you must use the -P
+            and -S options.
+
+            Miscellaneous options
+
+            Print jobs  are normally  separated by  a `burst page' which
+            identifies the  owner of  the output.   Printed on the burst
+            page are  the job  classification and the job name.  The job
+            classification defaults to your machine name unless set with
+            the -C  option.   The job  name defaults  to the name of the
+            file being  printed unless  set with  the -J  option.    For
+            example:
+
+                 lpr -C my_output -J beaujolais wine.lst
+
+            The job  classification and  job name  must not  contain any
+            spaces.   If a  burst page is not necessary, you can use the
+            -h option to prevent it from being printed.
+
+            The -f  option is  used if  the your  file is formatted with
+            FORTRAN  carriage  control  characters.    FORTRAN  carriage
+            control is seldom used on micro-computers.
+
+            The -l  option is  used if  your file  contains non-printing
+            control characters that the printer can understand.
+
+
+
+
+                       Checking the Status of Your Print Jobs
+
+
+            Since several people may want to use the same printer at the
+            same time,  and each job may take a length of time to print,
+            a  job  that  you  send  may  not  be  printed  immediately.
+            Instead, it may have to wait in a queue until the printer is
+            available.   To find  out if  your output  has been printed,
+            enter the  lpq command.  The remote computer will be queried
+            and the  status  of  the  jobs  it  is  processing  will  be
+            displayed.  For example,
+
+                 lpq
+                 Owner  Files      Job#   Job Name  Status         Size
+                 kent   champagne  34702  caviar    Printing       19192
+                 sue    smongo.c   31241  smongo.c  Printed        27182
+                 paul   games.txt  34789  games     Awaiting Print 84456
+
+            As you  can see  in the example, the status display includes
+            other peoples'  jobs. To check the status of your jobs only,
+            add your name to the lpq command:
+
+                 lpq paul
+
+            Only jobs owned by the user paul would be displayed.
+
+            Periodic update
+
+            To have  the status  display updated  every few seconds, use
+            the + option:
+
+                 lpq +
+
+            The status  will be  displayed and  then refreshed every few
+            seconds.   To stop  the  display,  press  any  key  on  your
+            keyboard.  It will stop automatically when there are no jobs
+            to report on.  You can also set a particular delay interval:
+
+                 lpq +5
+
+            will wait five seconds between display refreshes.
+
+            Using a different printer
+
+            As with  the lpr  command, lpq  normally  uses  the  printer
+            identified by  the PRINTER  and SERVER environment variables
+            (see part  4 of the appendix), but you can use the -P and -S
+            options to  select a different printer.  lpq only checks the
+            queue for the printer selected.
+
+
+
+
+                                 Cancelling Output
+
+
+            If you  change your  mind after sending a file for printing,
+            but before  it has  actually been printed, you can cancel it
+            with the lprm command.  For example:
+
+                 lprm 34789
+
+            would cancel  job 34789.   The  job number  (34789  in  this
+            example) is  assigned when you submit the file for printing,
+            and can  be obtained with the lpq command (described above).
+            You can only cancel your own jobs.
+
+            If you  want to  cancel all  of your  jobs that are awaiting
+            print, use the - option in place of the job number:
+
+                 lprm -
+
+            would cancel any of your jobs that had not yet been printed.
+            lprm will report the names of any files it removes.
+
+            Using a different printer
+
+            As with  the lpr  and lpq  commands, lprm  normally uses the
+            printer identified  by the  PRINTER and  SERVER  environment
+            variables, but you can use the -P and -S options to select a
+            different printer.
+
+
+
+
+                             Appendix A - Installation
+
+
+            These installation  instructions assume  you have a moderate
+            amount of  technical knowledge  of PC's,  MS-DOS, and  local
+            area networks.   You  should have  correctly configured  and
+            installed your  Ethernet adapter before beginning with these
+            instructions.
+
+            1. Unpack archive file
+
+            LP.EXE is  a self-extracting  archive of  the files you will
+            need.  Simply enter LP to extract the files:
+                   lpr.exe      - program for printing files
+                   lpq.exe      - program to check on print status
+                   lprm.exe     - program to cancel a print job
+                   config.tel   - network configuration file
+                   slip8250.com - packet driver for serial port
+                   manual.doc   - this manual
+                   manual.ps    - this manual, in PostScript
+
+            After unpacking  the archive,  you will  want  to  move  the
+            lpr.exe, lpq.exe,  and lprm.exe  files to  a directory along
+            your search path.
+
+            2. Install SLIP packet driver
+
+            If you  do not  have an  Ethernet connection, but do have an
+            asynchronous serial  port connection that supports SLIP (the
+            serial line  internet protocol),  you  can  still  use  this
+            software.   You will,  however, have  to  install  an  extra
+            program called  a packet  driver.    If  you  are  using  an
+            Ethernet connection, skip this section.
+
+            The packet  driver you  need  to  install  is  in  the  file
+            slip8250.com.   It is  a Terminate  and Stay  Resident (TSR)
+            type program; running the program will install it.  You will
+            want to  run the  program from within your autoexec.bat file
+            so it  is loaded every time you re-boot your machine.  To do
+            so,
+
+               1 Copy the slip8250.com file to a directory in your
+                 search path.
+
+               2 Choose an available interrupt number in the range 0x60
+                 to 0x7f.  On most machines, interrupt 0x60 is probably
+                 available and can be used.
+
+               3 Determine which serial port (COM1 or COM2) you are
+                 going to use and at what baud rate.
+
+               4 The command to install the packet driver is of the form
+
+                      slip8250 <interrupt number> slip <irq number>
+                                <port address> <baud rate>
+
+
+
+                 If you are using serial port COM1, the correct values
+                 for <irq number> and <port address> are 4 and 0x3F8.
+                 For COM2, the correct values are 3 and 0x2F8.  For
+                 example, to install the packet driver using COM1 at
+                 9600 baud, you would add the line
+
+                 slip8250 0x60 slip 4 0x3f8 9600
+
+                 to your autoexec.bat file.
+
+            After you  have added  this line  to your autoexec.bat file,
+            you must re-boot your machine to have it take effect.
+
+            3. Modify configuration file
+
+            If you  use the  NCSA Telnet program on your PC, you already
+            have a  config.tel file  and should  use that instead of the
+            one unpacked from the archive.  The only change you may need
+            to make is to define the `myname' entry, which specifies the
+            name that  your machine  is known  by.   Once you  have done
+            that, skip to section 4.
+
+            If you  do not  already have  them, obtain  an IP address, a
+            subnet mask,   and  a name  for your machine from your local
+            network administrator.
+
+            Next,  edit   the  config.tel  file  to  reflect  the  above
+            information, and  also the  type and  configuration of  your
+            network connection.   Only  seven  of  the  entries  in  the
+            config.tel file are essential:
+
+                 myname=fred.phys.ubc.ca
+                      Your machine  must have  a name  that it  is to be
+                      known  by.     Check   with  your   local  network
+                      administrator to find a suitable name.
+
+                 myip=128.189.123.456
+                      Your machine must have a unique address.  Using an
+                      incorrect address  can cause  problems  for  other
+                      people on  the network,  so be  careful.  See your
+                      local network administrator if you need help.
+
+                 netmask=255.255.0.0
+                      Again, see your network administrator.
+
+                 hardware=wd8003
+                      This entry identifies the type of Ethernet adapter
+                      you have, or if you are using a packet driver.
+                      
+                      Value     Ethernet Board           Requires
+                      3C501     3COM 3C501 Etherlink     interrupt,
+                      ioaddr
+                      PCNIC     Ungermann-Bass PC-NIC    address, ioaddr
+                      NI5210    Micom NI5210             address, ioaddr
+                      WD8003    Western Digital WD8003E  address, ioaddr
+                      NICps2    Ungermann-Bass NICps/2   address
+
+
+
+                      3C523     3COM 3C523 Etherlink/MC  address, ioaddr
+                      packet    FTP packet driver        address, ioaddr
+                      
+                      Depending on  the Ethernet  adapter type,  you may
+                      need to  set the  interrupt, ioaddr,  and  address
+                      entries as indicated above.
+
+                 interrupt=5
+                      The hardware  interrupt vector  number  that  your
+                      Ethernet adapter was configured for (Only required
+                      for 3C501 adapter).
+
+                 address=d000
+                      The segment address of the Ethernet board's shared
+                      memory, entered  as four  hexadecimal digits.  Set
+                      to  the   value  that  your  Ethernet  adapter  is
+                      configured for.   If you are using a packet driver
+                      interface, set to 0.
+
+                 ioaddr=360
+                      The I/O  base address  of the  Ethernet  board  in
+                      hexadecimal.   Set to the value that your Ethernet
+                      adapter is  configured for.   If  you are  using a
+                      packet driver  interface,  set  to  the  interrupt
+                      number (do not include the 0x prefix).
+
+            Edit your  autoexec.bat file  to  the  set  the  environment
+            variable CONFIG.TEL  to be  the location  of your  config.tel
+            file.  For example:
+
+                 set configtel=c:\utility\config.tel
+
+            Complete documentation  on the  configuration  file  can  be
+            found in  chapter 6 of NCSA Telnet for the PC, Version 2.2TN
+            and Version 2.2D.
+
+            4. Set up a default printer and server
+
+            In order to use these utilities you need to specify the name
+            or address  of a  print server,  the computer  that receives
+            files from  you and  prints them.   Since a print server may
+            have several  printers attached  to it,  you  also  need  to
+            specify the  name of  the printer that you want to use.  You
+            obtain this information from the system administrator of the
+            machine that is to be your print server.
+
+            You could give the printer name and server address each time
+            you use  one of  the printing  utilities, but  it is usually
+            more convenient  to put  them  in  the  PRINTER  and  SERVER
+            environment variables.   The SERVER environment variable, if
+            defined, gives  the name  or Internet  address of  the print
+            server to  use.   The PRINTER environment variable gives the
+            name of  the printer  on the  server machine  that is  to be
+            used.   You will probably want to set the PRINTER and SERVER
+            variables to suitable values in your autoexec.bat file.  For
+            example:
+
+
+
+                 set printer=cntr
+                 set server=128.189.103.1
+
+            If you  later have  a  file  that  you  want  printed  on  a
+            different printer,  you can either set PRINTER and/or SERVER
+            to that  printer, or  use the  -P and/or -S options with the
+            lpr, lpq, and lprm commands.
+
+
+
+
+                    Appendix B - Notes for System Administrators
+
+
+            These notes  are directed  to the  administrator of  a  Unix
+            system who  wishes to  allow use  of the  system as  a print
+            server.   They briefly  describe the  steps needed under Sun
+            OS, but  other Unix  systems should  be similar.  You should
+            also refer  to sections  12.3 (etc/hosts),  19.4 (hosts.lpd)
+            and chapter  22 (name  server) of the SunOS System & Network
+            Administration manual.
+
+            The first  step is  to add  entries in  the LPD access file,
+            /etc/hosts.lpd, for  the machines  that are  to have access.
+            Edit the  file and insert the names of the machines, one per
+            line.   Note that  an IP  address is  not acceptable, so all
+            microcomputers that  are to  have access  must be assigned a
+            name.
+
+            The second  step is  to add entries to either the /etc/hosts
+            file (if  you are  not using a domain name server) or to the
+            name server  database (if  you are  using  a  name  server).
+            Entries in  the /etc/hosts  file consist of IP addresses and
+            names, one entry per line.
+
+            If you are using a name server, list your named.boot file to
+            find out  what the  relevant hosts  and rev.hosts  files are
+            called.   Next, edit  those files,  being sure to update the
+            serial numbers  at the  start of  them.  To make the changes
+            take effect, use the Unix command:
+
+                 kill -HUP `cat /etc/named.pid`
+
+            This will cause the name server daemon to re-read the files.

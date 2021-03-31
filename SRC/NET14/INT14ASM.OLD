@@ -1,0 +1,1068 @@
+;
+;  Int 14h support routines
+;****************************************************************************
+;*                                                                          *
+;*                                                                          *
+;*      part of NCSA Telnet                                                 *
+;*      by Tim Krauskopf, VT100 by Gaige Paulsen, Tek by Aaron Contorer     *
+;*          Kurt Mahan, Heeren Pathak, Quincey Koziol, & Chris Wilson       *
+;*                                                                          *
+;*      National Center for Supercomputing Applications                     *
+;*      152 Computing Applications Building                                 *
+;*      605 E. Springfield Ave.                                             *
+;*      Champaign, IL  61820                                                *
+;*                                                                          *
+;****************************************************************************
+;
+    NAME    INT14
+;Microsoft EQU 1
+;Lattice EQU 1
+	ifndef Microsoft
+		ifndef Lattice
+			if2
+				%out
+				%out ERROR: You have to specify "/DMicrosoft" or "/DLattice" on the
+				%out 		MASM command line to determine the type of assembly.
+				%out
+			endif
+			end
+		endif
+	endif
+;
+;******************************************************************
+;*
+;*	We need to set up a stack for netsleep when we exit to DOS.
+
+NEWSTACK SEGMENT PARA STACK 'STACK'
+    dw 4096 dup(?)
+STACKEND label far 
+NEWSTACK	ends
+
+X   EQU     6
+PORT    EQU 1
+ifdef Microsoft
+;DGROUP  group _DATA
+;_DATA segment public 'DATA'
+;    assume DS:DGROUP
+.8086
+.MODEL	LARGE
+.DATA
+    else
+	INCLUDE	DOS.MAC
+	SETX
+	DSEG
+endif
+
+OLDSS           dw ?
+OLDSP           dw ?
+
+NUM_COMM_PORTS EQU  4
+
+ifdef Microsoft
+PUBLIC  _INITIALIZED_FLAGS,_CONNECTED_FLAGS,_OPENING_FLAGS       ; FOR DEBUGGING
+PUBLIC  _PORT_BUFFER,_BUFFER_OFFSET       ; FOR DEBUGGING
+PUBLIC  _PNUM,_DATA_BEGIN,_DATA_MAX,_DATA_END,_DATA_START
+EXTRN   _PRINT_INT:PROC         ; FOR DEBUGGING
+EXTRN   _PRINT_INT2:PROC        ; FOR DEBUGGING
+EXTRN   _GET_COMM_CHAR:PROC     ; GET A CHARACTER FROM A COMM BUFFER
+EXTRN   _NETCLOSE:PROC          ; EXTERNAL PROCEDURE TO CLOSE A CONNECTION
+EXTRN   _NETWRITE:PROC          ; EXTERNAL PROCEDURE TO WRITE TO A CONNECTION
+EXTRN   _INT14OPEN:PROC         ; EXTERNAL PROCEDURE TO OPEN A CONNECTION
+_PNUM   DW NUM_COMM_PORTS DUP(0)    ; PORT WE ARE CONNECTED TO
+
+_INITIALIZED_FLAGS DB 0         ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS INITIALIZED (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IF COMM. PORT 1, ETC..)
+_CONNECTED_FLAGS DB 0           ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS CONNECTED (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+_OPENING_FLAGS DB 0             ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS OPENING (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+_PORT_BUFFER    DB  NUM_COMM_PORTS DUP (64 DUP (0)) ; SPECIFY THE FOUR BUFFERS FOR THE CONNECTION NAMES
+_BUFFER_OFFSET  DB  NUM_COMM_PORTS DUP (0)   ; THE OFFSETS INTO THE FOUR PORT BUFFERS
+_CHAR_TO_SEND   DB 0            ; SPACE TO STORE THE CHARACTER TO SEND ON THE NET
+_DATA_BEGIN     DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE BEGINNING OF
+                                ;   THE DATA BUFFER FOR EACH COMM. PORT
+_DATA_END       DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE END OF
+                                ;   THE DATA BUFFER FOR EACH COMM. PORT
+_DATA_MAX       DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE MAX OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+_DATA_START     DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE START OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+else
+PUBLIC  INITIALIZED_FLAGS,CONNECTED_FLAGS,OPENING_FLAGS       ; FOR DEBUGGING
+PUBLIC  PORT_BUFFER,BUFFER_OFFSET       ; FOR DEBUGGING
+PUBLIC  PNUM,DATA_BEGIN,DATA_MAX,DATA_END,DATA_START
+EXTRN   PRINT_INT:PROC          ; FOR DEBUGGING
+EXTRN   PRINT_INT2:PROC         ; FOR DEBUGGING
+EXTRN   GET_COMM_CHAR:PROC      ; GET A CHARACTER FROM A COMM BUFFER
+EXTRN   NETCLOSE:PROC           ; EXTERNAL PROCEDURE TO CLOSE A CONNECTION
+EXTRN   NETWRITE:PROC           ; EXTERNAL PROCEDURE TO WRITE TO A CONNECTION
+EXTRN   INT14OPEN:PROC          ; EXTERNAL PROCEDURE TO OPEN A CONNECTION
+PNUM   DW NUM_COMM_PORTS DUP(0)             ; PORT WE ARE CONNECTED TO
+
+INITIALIZED_FLAGS DB 0          ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS INITIALIZED (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IF COMM. PORT 1, ETC..)
+CONNECTED_FLAGS DB 0            ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS CONNECTED (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+OPENING_FLAGS DB 0              ; A FLAG IN EACH BIT POSITION TO INDICATE THAT
+                                ; COMM. PORT IS OPENING (BIT 0 IS COMM PORT
+                                ; 0, BIT 1 IS COMM. PORT 1, ETC..)
+PORT_BUFFER     DB  NUM_COMM_PORTS DUP (64 DUP (0)) ; SPECIFY THE FOUR BUFFERS FOR THE CONNECTION NAMES
+BUFFER_OFFSET   DB  NUM_COMM_PORTS DUP (0)   ; THE OFFSETS INTO THE FOUR PORT BUFFERS
+CHAR_TO_SEND    DB 0             ; SPACE TO STORE THE CHARACTER TO SEND ON THE NET
+DATA_BEGIN      DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE BEGINNING OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+DATA_END        DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE END OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+DATA_MAX        DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE MAX OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+DATA_START      DD NUM_COMM_PORTS DUP(0); ARRAY OF POINTERS TO THE START OF
+                                ;   THE DATA BUFFERS FOR EACH COMM. PORT
+endif
+
+ifdef Microsoft
+;_DATA ends
+;
+;_TEXT	segment public 'CODE'
+;	assume CS:_TEXT
+.CODE
+else
+	ENDDS
+    PSEG
+endif	
+;
+;**************************************************************************
+;
+;  Routines to install and deinstall a routine which manages the
+;       serial port
+;
+;
+SERIALINT     EQU 4*14H       ; User hook to timer int
+
+ifdef Microsoft
+    PUBLIC  _INT14INST,_INT14DEINST
+    PUBLIC  _INT14CHECK,_INT14RECEIVE
+    PUBLIC  _GO_TSR
+    EXTRN   _int14netsleep:FAR   ; C routine which gets called from handler
+    PUBLIC  _TIMEINST,_TIMEDEINST
+else    
+    PUBLIC  INT14INST,INT14DEINST
+    PUBLIC  INT14CHECK,INT14RECEIVE
+    PUBLIC  GO_TSR
+    EXTRN   int14netsleep:FAR   ; C routine which gets called from handler
+    PUBLIC  TIMEINST,TIMEDEINST
+endif   
+;
+;**************************************************************************
+;
+;  Routines to install and deinstall a timer routine which calls
+;  netsleep(0);
+;  The timer is set to go off every 1/2 second to check for packets 
+;  in the incoming packet buffer.  We use the user-hook into the system 
+;  timer which occurs every 1/18th of a second.
+;
+;
+TIMEINT		EQU	4*1CH		; User hook to timer int
+
+;*************************************************************************
+;
+;  Take out the timer interrupt handler, restore previous value
+;
+ifdef Microsoft
+_TIMEDEINST    PROC    FAR
+else
+TIMEDEINST PROC    FAR
+endif
+	MOV		CX,CS:TIP		; GET OLD IP FROM SAVE SPOT
+	MOV		DX,CS:TCS		; GET OLD CS FROM SAVE SPOT
+	MOV		BX,TIMEINT		; INTERRUPT IN TABLE FOR TIMER
+	PUSH	DS
+	XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+	MOV		DS,AX		
+	CLI
+	MOV		[BX],CX			; STORE OLD IP INTO THE TABLE
+	INC		BX
+	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+	MOV		[BX],DX			; STORE OLD CS INTO THE TABLE
+	STI
+	POP		DS
+	RET
+ifdef Microsoft
+_TIMEDEINST    ENDP
+else
+TIMEDEINST ENDP
+endif
+
+;
+;
+;  install the timer interrupt handler, the handler is technically
+;  part of this procedure.
+;
+ifdef Microsoft
+_TIMEINST  PROC    FAR
+else
+TIMEINST   PROC    FAR
+endif
+	XOR		AX,AX
+    MOV     CS:INTENTER,AL    ; CLEAR THIS FLAG
+	MOV		CS:TMYDS,DS		; STORE FOR USE BY HANDLER
+	MOV		BX,TIMEINT		; INTERRUPT IN TABLE FOR TIMER (1c)
+	PUSH	DS
+	XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+	MOV		DS,AX		
+	MOV		AX,OFFSET THAND	; WHERE THE HANDLER IS
+	CLI
+	MOV		DX,[BX]			; KEEP COPY OF THE IP
+	MOV		[BX],AX			; STORE IP INTO THE TABLE
+	INC		BX
+	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+	MOV		CX,[BX]			; KEEP COPY OF THE CS, TOO
+	MOV		AX,CS
+	MOV		[BX],AX			; STORE NEW CS INTO THE TABLE
+	STI
+	POP	DS
+	MOV	CS:TIP,DX			; STORE THEM AWAY
+	MOV	CS:TCS,CX
+	RET
+;
+;  Code segment addressable data for keeping track of the interrupt handler
+;  stuff
+;
+TMYDS		DW	00H			; THE DATA SEGMENT FOR THIS ASSEMBLY CODE
+TICNT		DB	0			; COUNTER OF 1/18THS SEC
+INTENTER      DB  00
+TIP  		DW  00
+TCS  		DW  00
+;
+;   The handler itself.
+;
+THAND:			       		; not a public name, only handles ints
+	STI
+	PUSH	DS
+	PUSH 	ES
+	PUSH	AX
+	PUSH	BX
+	PUSH	CX
+	PUSH	DX
+	PUSH	DI
+	PUSH	SI
+
+	CLD						; ALL MOVES WILL BE FORWARD
+    MOV     AL,CS:INTENTER
+	OR		AL,AL
+	JNZ		TIME2
+	MOV		AL,1
+    MOV     CS:INTENTER,AL    ; SET FLAG TO INDICATE BUSY
+ifdef FAST
+    INC     CS:TICNT
+    MOV     AL,CS:TICNT     ; COUNTER FOR US
+ifdef QAK
+	AND		AL,7			; SEE IF # MOD 8 = 0
+else
+    AND     AL,3            ; SEE IF # MOD 4 = 0
+endif
+	JNZ		TSKIP			; SKIP 7 OUT OF 8 TIMES
+endif
+;
+	MOV		AL,60H			; EOI FOR TIMER INT
+	OUT		20H,AL			; LET LOWER INTERRUPTS IN
+;
+;  SET UP CORRECT DS
+;
+	MOV		DS,CS:TMYDS		; GET CORRECT DS
+;
+;  do we have to set up our own stack here?
+;
+	MOV		AX,SS
+	MOV		OLDSS,AX
+	MOV		OLDSP,SP
+	CLI
+	MOV		AX,seg NEWSTACK
+	MOV		SS,AX
+	MOV		SP,OFFSET STACKEND
+	STI
+;    XOR     AX,AX
+;    PUSH    AX
+ifdef Microsoft
+    CALL _int14netsleep
+else	
+    CALL int14netsleep
+endif
+;    POP     AX
+	CLI	
+	MOV		AX,OLDSS
+	MOV		SS,AX
+	MOV		SP,OLDSP
+	STI
+TSKIP:
+	XOR		AL,AL
+    MOV     CS:INTENTER,AL    ; REENTER FLAG, DONE NOW
+ifdef QAK
+MOV     AX,65               ; DEBUGGING
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+POP     AX
+endif
+TIME2:
+	POP 	SI
+	POP		DI
+	POP		DX
+	POP		CX
+	POP		BX
+	POP		AX
+	POP		ES
+	POP		DS
+;
+;   forward to any other existing routines
+;
+ifndef QAK
+	JMP 	DWORD PTR CS:TIP
+else
+    IRET
+endif
+ifdef Microsoft
+_TIMEINST      ENDP
+else
+TIMEINST       ENDP
+endif
+
+;*************************************************************************
+;
+;  Go into TSR mode
+;
+ifdef Microsoft
+_GO_TSR    PROC    FAR
+else
+GO_TSR  PROC    FAR
+endif
+    MOV     AX,3100H            ; DOS TSR FUNCTION
+    MOV     DX,3360H            ; THIS IS REALLY, REALLY BAD, NEEDS TO NOT
+                                ; BE A HARDWIRED NUMBER
+    INT     21H                 ; GO TSR
+ifdef Microsoft
+_GO_TSR    ENDP
+else
+GO_TSR  ENDP
+endif
+;*************************************************************************
+;
+;  Check the int14 receive status
+;
+ifdef Microsoft
+_INT14CHECK    PROC    FAR
+else
+INT14CHECK PROC    FAR
+endif
+    MOV     AH,3
+    MOV     DX,PORT
+    INT     14H
+    XOR     AL,AL
+	RET
+ifdef Microsoft
+_INT14CHECK    ENDP
+else
+INT14CHECK ENDP
+endif
+
+;*************************************************************************
+;
+;  Get a character from int14
+;
+ifdef Microsoft
+_INT14RECEIVE    PROC    FAR
+else
+INT14RECEIVE PROC    FAR
+endif
+    MOV     AH,2
+    MOV     DX,PORT
+    INT     14H
+	RET
+ifdef Microsoft
+_INT14RECEIVE   ENDP
+else
+INT14RECEIVE ENDP
+endif
+
+;*************************************************************************
+;
+;  Take out the serial interrupt handler, restore previous value
+;
+ifdef Microsoft
+_INT14DEINST    PROC    FAR
+else
+INT14DEINST PROC    FAR
+endif
+ifdef DEBUG
+MOV     AX,43               ; DEBUGGING
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+POP     AX
+endif
+    MOV     CX,CS:SIP       ; GET OLD IP FROM SAVE SPOT
+    MOV     DX,CS:SCS       ; GET OLD CS FROM SAVE SPOT
+    MOV     BX,SERIALINT    ; INTERRUPT IN TABLE FOR TIMER
+	PUSH	DS
+	XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+	MOV		DS,AX		
+	CLI
+	MOV		[BX],CX			; STORE OLD IP INTO THE TABLE
+	INC		BX
+	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+	MOV		[BX],DX			; STORE OLD CS INTO THE TABLE
+	STI
+	POP		DS
+	RET
+ifdef Microsoft
+_INT14DEINST    ENDP
+else
+INT14DEINST ENDP
+endif
+;
+;
+;  install the serial interrupt handler, the handler is technically
+;  part of this procedure.
+;
+ifdef Microsoft
+_INT14INST  PROC    FAR
+else
+INT14INST   PROC    FAR
+endif
+
+ifdef DEBUG
+MOV     AX,42               ; DEBUGGING
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+POP     AX
+endif
+
+	XOR		AX,AX
+    MOV     CS:INTENTER,AL    ; CLEAR THIS FLAG
+    MOV     CS:SMYDS,DS     ; STORE FOR USE BY HANDLER
+    MOV     BX,SERIALINT    ; INTERRUPT IN TABLE FOR TIMER (1c)
+	PUSH	DS
+	XOR		AX,AX			; SYSTEM INTERRUPT TABLE
+	MOV		DS,AX		
+    MOV     AX,OFFSET SHAND ; WHERE THE HANDLER IS
+	CLI
+	MOV		DX,[BX]			; KEEP COPY OF THE IP
+	MOV		[BX],AX			; STORE IP INTO THE TABLE
+	INC		BX
+	INC		BX				; MOVE POINTER IN INTERRUPT TABLE
+	MOV		CX,[BX]			; KEEP COPY OF THE CS, TOO
+	MOV		AX,CS
+	MOV		[BX],AX			; STORE NEW CS INTO THE TABLE
+	STI
+	POP	DS
+    MOV CS:SIP,DX           ; STORE THEM AWAY
+    MOV CS:SCS,CX
+	RET
+;
+;  Code segment addressable data for keeping track of the interrupt handler
+;  stuff
+;
+SMYDS       DW  00H         ; THE DATA SEGMENT FOR THIS ASSEMBLY CODE
+SICNT       DB  0           ; COUNTER OF 1/18THS SEC
+;SENTER      DB  00
+SIP         DW  00
+SCS         DW  00
+;
+;   The handler itself.
+;
+SHAND:                      ; not a public name, only handles ints
+	STI
+	PUSH	DS
+	PUSH 	ES
+	PUSH	AX
+	PUSH	BX
+	PUSH	CX
+	PUSH	DX
+	PUSH	DI
+	PUSH	SI
+
+	CLD						; ALL MOVES WILL BE FORWARD
+    MOV     BL,CS:INTENTER    ; CHECK FOR RE-ENTRY
+    OR      BL,BL
+    JZ      NO_RE_ENTRY     ;
+    JMP     SERIAL2         ; DON'T RE-ENTER, WE ARE BUSY NOW
+NO_RE_ENTRY:
+    MOV     BL,1
+    MOV     CS:INTENTER,BL    ; SET FLAG TO INDICATE BUSY
+
+;
+ifdef QAK
+	MOV		AL,60H			; EOI FOR TIMER INT
+	OUT		20H,AL			; LET LOWER INTERRUPTS IN
+endif
+;
+;  SET UP CORRECT DS
+;
+    MOV     DS,CS:SMYDS     ; GET CORRECT DS
+;
+;  do we have to set up our own stack here?
+;
+    MOV     BX,SS
+    MOV     OLDSS,BX
+	MOV		OLDSP,SP
+	CLI
+    MOV     BX,seg NEWSTACK
+    MOV     SS,BX
+	MOV		SP,OFFSET STACKEND
+	STI
+ifdef REAL_CODE
+    XOR     AX,AX
+	PUSH 	AX
+ifdef Microsoft
+    CALL _netsleep
+else	
+	CALL netsleep
+endif
+	POP		AX
+else
+
+ifdef DEBUG
+PUSH    DX
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+POP     AX
+POP     DX
+endif
+    MOV     CX,DX           ; MOVE THE COMM. PORT INTO THE CX REGISTER
+    MOV     BL,1            ; MOVE A FLAG INTO THE BL REGISTER
+    SHL     BL,CL           ; SHIFT THE FLAG TO LINE UP WITH THE CORRECT INITIALIZATION FLAG
+    CMP     AH,00           ; CHECK FOR PORT INITIALIZATION
+    JNE     NOT_INIT_COM_PORT   ; JUMP AROUND INITIALIZING THE COMM PORT
+
+INIT_COM_PORT:              ; INITIALIZE THE COMM. PORT
+ifdef Microsoft
+    TEST    BL,_INITIALIZED_FLAGS; CHECK WHETHER THIS CONNECTION HAS BEEN INITIALIZED
+    JNE     PORT_ALREADY_INIT   ; JUMP TO THE CHECK FOR CLOSING THE PORT
+    OR      _INITIALIZED_FLAGS,BL; SET THE INITIALIZED FLAG FOR THIS PORT
+else
+    TEST    BL,INITIALIZED_FLAGS; CHECK WHETHER THIS CONNECTION HAS BEEN INITIALIZED
+    JNE     PORT_ALREADY_INIT   ; JUMP TO THE CHECK FOR CLOSING THE PORT
+    OR      INITIALIZED_FLAGS,BL; SET THE INITIALIZED FLAG FOR THIS PORT
+endif
+    JMP     SHORT RESET_INIT      ; JUMP TO RESETING THE COMM. PORT BUFFER
+
+PORT_ALREADY_INIT:          ; THE PORT HAS ALREADY BEEN INITIALIZED
+ifdef Microsoft
+    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER WE WERE CONNECTED
+else
+    TEST    BL,CONNECTED_FLAGS; CHECK WHETHER WE WERE CONNECTED
+endif
+    JE      RESET_INIT      ; IGNORE RE-INITIALIZATION IF NOT CONNECTED
+    NOT     BL              ; INVERT AL IN PREPERATION FOR TURNING OFF THE FLAGS
+ifdef Microsoft
+    AND     _INITIALIZED_FLAGS,BL; RESET THE INITIALIZATION FLAG FOR THIS PORT
+    AND     _CONNECTED_FLAGS,BL  ; RESET THE CONNECTED FLAG FOR THIS PORT
+else
+    AND     INITIALIZED_FLAGS,BL; RESET THE INITIALIZATION FLAG FOR THIS PORT
+    AND     CONNECTED_FLAGS,BL  ; RESET THE CONNECTED FLAG FOR THIS PORT
+endif
+
+ifdef Microsoft
+    MOV     SI,OFFSET _PNUM ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+else
+    MOV     SI,OFFSET PNUM  ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+endif
+    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    ADD     SI,DX           ; TWICE BECAUSE THESE ARE INTEGERS, NOT BYTES
+    PUSH    DX
+    PUSH    [SI]            ; PUSH THE NETWORK PORT NUMBER
+ifdef Microsoft
+    CALL    _NETCLOSE       ; CLOSE THE CONNECTION
+else
+    CALL    NETCLOSE        ; CLOSE THE CONNECTION
+endif
+    ADD     SP,2            ; GET RID OF THE PARAMETER WE PASSED
+    POP     DX
+
+RESET_INIT:
+ifdef Microsoft
+    MOV     SI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    MOV     SI,OFFSET BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    MOV     BYTE PTR [SI],0     ; ZERO OUT THE BUFFER OFFSET FOR THE COMM. PORT
+
+INIT_FINISHED:
+    MOV     AX,61B0H        ; MOVE THE RS-232 CONNECTED FLAGS INTO THE RETURN VALUE
+    JMP     SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+
+NOT_INIT_COM_PORT:
+    CMP     AH,01           ; CHECK FOR SEND CHARACTER
+    JE      SEND_CHARACTER  ; JUMP TO SENDING THE CHARACTER
+    JMP     NOT_SEND_CHARACTER; JUMP AROUND SENDING THE CHARACTER
+
+SEND_CHARACTER:             ; SEND A CHARACTER
+ifdef Microsoft
+    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+    JE      DONT_NET_SEND   ; CONNECTION NOT OPEN YET, DON'T SEND THE CHARACTER
+    JMP     NET_SEND        ; OK, THE CONNECTION IS INITIALIZED, SEND THE CHARACTER
+DONT_NET_SEND:
+    TEST    BL,_OPENING_FLAGS; IF THE OPENING FLAG IS SET FOR THE PORT, CACHE THE CHARACTER IN A BUFFER
+else
+    TEST    BL,CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+    JE      DONT_NET_SEND   ; CONNECTION NOT OPEN YET, DON'T SEND THE CHARACTER
+    JMP     NET_SEND        ; OK, THE CONNECTION IS INITIALIZED, SEND THE CHARACTER
+DONT_NET_SEND:
+    TEST    BL,OPENING_FLAGS; IF THE OPENING FLAG IS SET FOR THE PORT, CACHE THE CHARACTER IN A BUFFER
+endif
+    JNE     CACHE_PORT_NAME ; GO CACHE THE CHARACTER
+    CMP     AL,02           ; CHECK WHETHER THIS IS THE BEGINNING OF A PORT NAME
+    JE      START_PORT_NAME ; START CACHING THE PORT NAME
+ifdef DEBUG
+.286
+PUSH    2048h
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+.8086
+endif
+ifdef DEBUG
+PUSH    BX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+endif
+ifdef DEBUG
+MOV     AL,_OPENING_FLAGS
+XOR     AH,AH
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+endif
+    MOV     AH,80H          ; REPORT ERROR CONDITION
+    JMP     SEND_FINISHED   ;
+
+START_PORT_NAME:            ; INITIALIZE THE PORT NAME CACHING
+ifdef Microsoft
+    OR      _OPENING_FLAGS,BL; SET THE OPENING FLAG
+else
+    OR      OPENING_FLAGS,BL; SET THE OPENING FLAG
+endif
+ifdef DEBUG
+.286
+PUSH    2047h
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+.8086
+endif
+ifdef DEBUG
+PUSH    BX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+endif
+ifdef DEBUG
+MOV     AL,_OPENING_FLAGS
+XOR     AH,AH
+PUSH    AX
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+endif
+    JMP     SEND_DONE       ; INDICATE A SUCCESSFUL CHARACTER SEND, BUT DON'T REALLY
+
+CACHE_PORT_NAME:            ; STUFF THE CHARACTER INTO A BUFFER, OR OPEN A CONNECTION
+    CMP     AL,03H          ; CHECK WHETHER THIS IS THE TERMINATING CHARACTER IN A PORT NAME
+    JE      NET_OPEN        ; GO, OPEN THE CONNECTION
+ifdef Microsoft
+    MOV     DI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    MOV     DI,OFFSET BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    ADD     DI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    MOV     CL,AL           ; SAVE THE CHARACTER TEMPORARILY
+    MOV     AL,64           ; MOVE THE SIZE OF THE PORT NAME BUFFER INTO AL
+    MUL     DL              ; GET THE OFFSET OF THE PORT BUFFER TO USE
+    ADD     AX,DS:[DI]      ; GET THE OFFSET TO STORE THE CHARACTER AT
+    INC     BYTE PTR DS:[DI]    ; INCREMENT THE BUFFER OFFSET FOR THE COMM. PORT
+    CMP     BYTE PTR DS:[DI],64 ; CHECK WHETHER WE HAVE TOO LONG OF A NAME
+    JE      NAME_TOO_LONG   ; JUMP FOR TOO LONG OF A NAME
+ifdef Microsoft
+    MOV     SI,OFFSET _PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    MOV     SI,OFFSET PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    ADD     SI,AX           ; GET THE CORRECT OFFSET TO STORE THIS CHARACTER AT
+    MOV     AL,CL           ; RESTORE THE CHARACTER TO STORE
+    MOV     [SI],AL         ; APPEND THE CHARACTER TO THE PORT NAME
+ifdef DEBUG
+.286
+PUSH    2044h
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+.8086
+endif
+    JMP     SEND_DONE       ; INDICATE A GOOD TRANSFER
+
+NAME_TOO_LONG:              ; THE PORT NAME WAS TOO LONG
+    MOV     BYTE PTR DS:[DI],0  ; RESET THE LENGTH OF THE PORT NAME
+    NOT     BL              ;
+ifdef Microsoft
+    AND     _OPENING_FLAGS,BL; RESET THE OPENING FLAG
+else
+    AND     OPENING_FLAGS,BL; RESET THE OPENING FLAG
+endif
+    MOV     AL,CL           ; RESTORE THE CHARACTER TO SEND
+ifdef DEBUG
+.286
+PUSH    2045h
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+.8086
+endif
+    MOV     AH,80H          ; INDICATE ERROR CONDITION
+    JMP     SHORT SEND_FINISHED   ; JUMP TO THE END OF THE ROUTINE
+
+NET_OPEN:                   ; OPEN THE CONNECTION TO THE NETWORK
+    NOT     BL              ;
+ifdef Microsoft
+    AND     _OPENING_FLAGS,BL; RESET THE OPENING FLAG
+    MOV     DI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    AND     OPENING_FLAGS,BL; RESET THE OPENING FLAG
+    MOV     DI,OFFSET BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    ADD     DI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    MOV     CL,AL           ; SAVE THE CHARACTER TEMPORARILY
+    MOV     AL,64           ; MOVE THE SIZE OF THE PORT NAME BUFFER INTO AL
+    MUL     DL              ; GET THE OFFSET OF THE PORT BUFFER TO USE
+    ADD     AX,DS:[DI]      ; GET THE OFFSET TO STORE THE CHARACTER AT
+ifdef Microsoft
+    MOV     SI,OFFSET _PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    MOV     SI,OFFSET PORT_BUFFER; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    PUSH    BX              ; SAVE THE COMM. PORT FLAGS
+    ADD     SI,AX           ; GET THE CORRECT OFFSET TO STORE THIS CHARACTER AT
+    MOV     AL,CL           ; RESTORE THE CHARACTER TO STORE
+    MOV     BYTE PTR [SI],0 ; APPEND THE TERMINATING ZERO
+    PUSH    DX              ; PUSH THE COMM. PORT WE ARE OPENING
+ifdef Microsoft
+    CALL    _INT14OPEN      ; OPEN THE CONNECTION
+else
+    CALL    INT14OPEN       ; OPEN THE CONNECTION
+endif
+    POP     DX              ; RECOVER THE COMM. PORT WE USED
+    POP     BX              ; RECOVER THE COMM. PORT FLAGS
+    CMP     AX,1            ; CHECK FOR GOOD OPENING
+    JNE     BAD_NET_OPEN    ; CONNECTION DIDN'T OPEN
+
+    NOT     BL              ;
+ifdef Microsoft
+    OR      _CONNECTED_FLAGS,BL; SET THE CONNECTED FLAG
+    MOV     SI,OFFSET _BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+else
+    OR      CONNECTED_FLAGS,BL; SET THE CONNECTED FLAG
+    MOV     SI,OFFSET BUFFER_OFFSET; GET THE OFFSET INTO THE COMM. PORT BUFFER
+endif
+    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    MOV     BYTE PTR [SI],0     ; ZERO OUT THE BUFFER OFFSET FOR THE COMM. PORT
+    JMP     SHORT SEND_DONE       ; INDICATE A SUCCESSFUL CONNECTION OPENING
+
+BAD_NET_OPEN:
+ifdef DEBUG
+.286
+PUSH    2046h
+ifdef Microsoft
+CALL    _PRINT_INT
+else
+CALL    PRINT_INT
+endif
+ADD     SP,2
+.8086
+endif
+    MOV     AX,80           ; INDICATE A BAD NETWORK OPEN
+    JMP     SHORT SEND_FINISHED   ; RETURN FROM THE INTERRUPT
+
+NET_SEND:                   ; SEND THE CHARACTER IN AL ONTO THE NET
+ifdef Microsoft
+    MOV     _CHAR_TO_SEND,AL ; STORE THE CHARACTER TO SEND ON THE NET
+else
+    MOV     CHAR_TO_SEND,AL ; STORE THE CHARACTER TO SEND ON THE NET
+endif
+    MOV     AX,1            ; THE NUMBER OF CHARACTERS TO DROP ONTO THE NET
+    PUSH    AX
+    PUSH    DS              ; PUSH THE SEGMENT ADDRESS OF THE CHARACTER TO SEND
+    MOV     AX,OFFSET _CHAR_TO_SEND ; PUSH THE ADDRESS OF THE CHARACTER TO SEND
+    PUSH    AX
+ifdef Microsoft
+    MOV     SI,OFFSET _PNUM ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+else
+    MOV     SI,OFFSET PNUM  ; GET THE OFFSET INTO THE COMM. PORT NETWORK PORT NUMBERS
+endif
+    ADD     SI,DX           ; INCREMENT TO THE CORRECT COMM. PORT OFFSET
+    ADD     SI,DX           ; TWICE BECAUSE THESE ARE INTEGERS, NOT BYTES
+    PUSH    [SI]            ; PUSH THE NETWORK PORT NUMBER
+ifdef Microsoft
+    CALL    _NETWRITE       ; CLOSE THE CONNECTION
+else
+    CALL    NETWRITE        ; CLOSE THE CONNECTION
+endif
+    ADD     SP,8            ; RESTORE THE STACK FRAME
+;   JMP     SEND_DONE       ; INDICATE A SUCCESSFUL DATA SEND
+
+SEND_DONE:                  ; INDICATE A SUCCESSFUL CHARACTER SEND
+    MOV     AH,21           ; INDICATE A HAPPY CHARACTER SEND
+SEND_FINISHED:
+    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+
+NOT_SEND_CHARACTER:
+    CMP     AH,02           ; CHECK FOR RECEIVING CHARACTER
+    JNE     NOT_RECEIVE_CHARACTER;  JUMP AROUND RECEIVING A CHARACTER
+
+RECEIVE_CHARACTER:          ; GET A CHARACTER
+ifdef Microsoft
+    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+else
+    TEST    BL,CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+endif
+    JNE     GET_PORT_CHARACTER; GET A CHARACTER FROM THE PORT
+    MOV     AH,80H          ; REPORT ERROR CONDITION
+    JMP     SHORT RECEIVE_FINISHED   ;
+
+GET_PORT_CHARACTER:
+ifndef QAK
+    PUSH    DX                      ; PUSH THE PORT NUMBER
+ifdef Microsoft
+    CALL    _GET_COMM_CHAR          ; CALL A C ROUTINE TO GET THE CHARACTER
+else
+    CALL    GET_COMM_CHAR           ; CALL A C ROUTINE TO GET THE CHARACTER
+endif
+    ADD     SP,2                    ; REMOVE PARAMETER
+else
+ifdef Microsoft
+    MOV     SI,OFFSET _DATA_BEGIN   ; GET THE POINTER TO THE BEGINNING OF THE DATA BUFFER
+    MOV     DI,OFFSET _DATA_END     ; GET THE POINTER TO THE END OF THE DATA BUFFER
+else
+    MOV     SI,OFFSET DATA_BEGIN    ; GET THE POINTER TO THE BEGINNING OF THE DATA BUFFER
+    MOV     DI,OFFSET DATA_END      ; GET THE POINTER TO THE END OF THE DATA BUFFER
+endif
+    SHL     DX,1                    ; MULTIPLY THE PORT NUMBER BY 4 TO GET THE
+    SHL     DX,1                    ;   OFFSET TO THE CORRECT ARRAY ELEMENT
+    ADD     SI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+    ADD     DI,DX
+WAIT_FOR_CHARACTER:
+ifdef QAK
+    MOV     AX,DS:[SI+2]            ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+    CMP     AX,DS:[DI+2]            ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+else
+    MOV     AX,DS:[SI]              ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+    CMP     AX,DS:[DI]              ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+endif
+    JE      WAIT_FOR_CHARACTER      ; IF THE TWO POINTERS ARE THE SAME, THEN WAIT FOR DATA
+
+    PUSH    DS
+    MOV     DI,AX                   ; SAVE THE OFFSET OF THE BEGINING POINTER
+ifdef QAK
+    MOV     AX,DS:[SI]              ; GET THE SEGMENT OF THE BEGINNING POINTER
+else
+    MOV     AX,DS:[SI+2]            ; GET THE SEGMENT OF THE BEGINNING POINTER
+endif
+    MOV     DS,AX
+    MOV     AL,BYTE PTR DS:[DI]     ; GET THE CHARACTER FROM THE BEGINNING OF THE QUEUE
+    POP     DS                      ; RECOVER THE DATA SEGMENT
+ifdef Microsoft
+    MOV     DI,OFFSET _DATA_MAX     ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+else
+    MOV     DI,OFFSET DATA_MAX      ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+endif
+    ADD     DI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+ifdef QAK
+    INC     WORD PTR DS:[SI+2]      ; INCREMENT THE BEGINNING OF THE QUEUE
+    MOV     CX,DS:[SI+2]            ; GET THE BEGINNING OF THE QUEUE
+    CMP     CX,DS:[DI+2]            ; CHECK FOR WRAPPING AROUND
+else
+    INC     WORD PTR DS:[SI]        ; INCREMENT THE BEGINNING OF THE QUEUE
+    MOV     CX,DS:[SI]              ; GET THE BEGINNING OF THE QUEUE
+    CMP     CX,DS:[DI]              ; CHECK FOR WRAPPING AROUND
+endif
+    JL      NOT_WRAPPED             ; JUMP AROUND WRAP-AROUND FIX
+ifdef Microsoft
+    MOV     DI,OFFSET _DATA_START   ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+else
+    MOV     DI,OFFSET DATA_START    ; GET THE POINTER TO THE MAX OF THE DATA BUFFER
+endif
+    ADD     DI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+ifdef QAK
+    MOV     CX,DS:[DI+2]            ; GET THE START OF THE QUEUE
+    MOV     DS:[SI+2],CX            ; MOVE THE BEGINNING OF THE QUEUE AROUND
+else
+    MOV     CX,DS:[DI]              ; GET THE START OF THE QUEUE
+    MOV     DS:[SI],CX              ; MOVE THE BEGINNING OF THE QUEUE AROUND
+endif
+endif
+
+NOT_WRAPPED:
+    MOV     AH,21           ; REPORT SUCCESS
+
+RECEIVE_FINISHED:
+    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+
+NOT_RECEIVE_CHARACTER:
+    CMP     AH,03           ; CHECK FOR READ STATUS
+    JNE     SSKIP           ; A COMMUNICATION REQUEST WHICH WE DON'T HANDLE
+
+READ_STATUS:                ; CHECK FOR A CHARACTER
+ifdef Microsoft
+    TEST    BL,_CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+else
+    TEST    BL,CONNECTED_FLAGS; CHECK WHETHER THIS PORT IN CONNECTED
+endif
+    JNE     GET_PORT_STATUS ; GET THE PORT STATUS
+;    MOV     AX,7ABFH          ; REPORT ERROR CONDITION
+    MOV     AX,2000H           ; REPORT ERROR CONDITION
+    JMP     SHORT STATUS_FINISHED ;
+
+GET_PORT_STATUS:
+ifdef Microsoft
+    MOV     SI,OFFSET _DATA_BEGIN   ; GET THE POINTER TO THE BEGINNING OF THE DATA BUFFER
+    MOV     DI,OFFSET _DATA_END     ; GET THE POINTER TO THE END OF THE DATA BUFFER
+else
+    MOV     SI,OFFSET DATA_BEGIN    ; GET THE POINTER TO THE BEGINNING OF THE DATA BUFFER
+    MOV     DI,OFFSET DATA_END      ; GET THE POINTER TO THE END OF THE DATA BUFFER
+endif
+    SHL     DX,1                    ; MULTIPLY THE PORT NUMBER BY 4 TO GET THE
+    SHL     DX,1                    ;   OFFSET TO THE CORRECT ARRAY ELEMENT
+    ADD     SI,DX                   ; INCREMENT TO THE CORRECT ARRAY ELEMENT
+    ADD     DI,DX
+
+ifdef QAK
+    MOV     AX,DS:[SI+2]            ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+    CMP     AX,DS:[DI+2]            ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+else
+    MOV     AX,DS:[SI]              ; GET THE OFFSET INTO THE DATA BUFFER OF THE BEGINNING
+    CMP     AX,DS:[DI]              ; CHECK WHETHER THERE ARE CHARACTERS IN THE BUFFER
+endif
+    JE      CHARACTER_NOT_READY     ; IF THE TWO POINTERS ARE THE SAME, THEN THERE IS NO DATA
+    MOV     AX,2100h                ; SET THE DATA READY FLAG
+;    JMP     STATUS_FINISHED
+    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+CHARACTER_NOT_READY:
+    MOV     AX,2000H                  ; RESET THE DATA READY FLAG
+
+STATUS_FINISHED:
+    JMP     SHORT SSKIP2          ; JUMP TO THE END OF THE ROUTINE
+
+endif
+
+SSKIP:
+
+ifdef DEBUG
+PUSH    AX                  ; DEBUGGING
+ifdef Microsoft
+CALL    _PRINT_INT2
+else
+CALL    PRINT_INT2
+endif
+POP     AX
+endif
+
+    XOR     BL,BL
+    MOV     CS:INTENTER,BL    ; REENTER FLAG, DONE NOW
+    CLI
+    MOV     BX,OLDSS        ; restore the old stack
+    MOV     SS,BX
+    MOV     SP,OLDSP
+	STI
+SERIAL2:
+    POP     SI
+	POP		DI
+	POP		DX
+	POP		CX
+	POP		BX
+	POP		AX
+	POP		ES
+	POP		DS
+    JMP     SHORT LEAVE_SERIAL    ; JUMP TO THE END OF THE SERIAL ROUTINES
+
+SSKIP2:
+    XOR     BL,BL
+    MOV     CS:INTENTER,BL    ; REENTER FLAG, DONE NOW
+    CLI
+    MOV     BX,OLDSS        ; restore the old stack
+    MOV     SS,BX
+	MOV		SP,OLDSP
+	STI
+SERIAL3:
+    POP     SI
+	POP		DI
+	POP		DX
+	POP		CX
+	POP		BX
+    POP     ES              ; POP AX INTO ES TO PRESERVE THE RETURN VALUE IN AX
+	POP		ES
+	POP		DS
+;
+;
+;   forward to any other existing routines
+;
+LEAVE_SERIAL:
+ifdef QAK
+    JMP     DWORD PTR CS:SIP
+else
+    IRET
+endif
+ifdef Microsoft
+_INT14INST      ENDP
+else
+INT14INST       ENDP
+endif
+ifdef Microsoft
+;_TEXT ends
+
+else
+	ENDPS
+endif
+	END

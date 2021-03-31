@@ -1,0 +1,242 @@
+Introduction & Disclaimer: I stole this chunk of description from the 
+	MS-Kermit documentation without Cristine Gianone or Joe Doupnik's
+	permission after trying to get a hold of them through e-mail.  If
+	either of them really protest I will re-write it.  I do note their
+	copyright notice here however:
+
+                            Copyright (C) 1981,1988
+            Trustees of Columbia University in the City of New York
+
+     Permission is granted to any individual or institution to use, copy,
+    or redistribute this document so long as it is not sold for profit, and
+                  provided this copyright notice is retained.
+
+	NCSA Telnet contains a subset of the kermit verbs listed here.
+	Kermit verbs with a star are supported and the others will cause an
+	error if they are in a keyboard mapping file.  I have also included
+	a utility from the MS-Kermit 2.32 distribution which will determine
+	what the actual kermit key code is for any combination of keys.  Use
+	this in the keyboard mapping file as the code to map from.  See the
+	telnet.key file included with this release for an example keyboard
+	mapping file.
+
+	NCSA Telnet does not support the extended SET KEY options such as:
+		SET KEY ON
+		SET KEY OFF
+			or
+		SET KEY CLEAR
+
+	Also, it is impossible to map the ALT+alphabetical keys to anything
+	with the keyboard mapping interface.  NCSA Telnet traps these internally
+	before they actually reach the mapping interface.
+
+SET KEY
+
+Syntax: SET KEY key-specifier [key-definition]
+  Also: SET KEY {ON, OFF, CLEAR}
+
+    WARNING: The format and functions of this command have changed substan-
+    tially since version 2.29B and earlier.  The changes were made in order
+    to allow key redefinition to work on a wider  variety  of  systems  and
+    keyboards  without  customization  of  the program source code for each
+    configuration.  See section 1.12 for further details.
+
+Typical uses of SET KEY:
+
+   - You're used to having the ESC key in the upper  left  corner  of  the
+     keyboard,  but  your new PC keyboard has an accent grave ("`") there.
+     You can use SET KEY to make the accent key transmit an ESC,  and  you
+     can assign accent grave to some other key.
+
+   - You  send  a lot of electronic mail, and always sign it the same way.
+     You can put your "signature" on a single key to save yourself  a  lot
+     of repetitive typing.
+
+   - You  must  set  up  your PC's function keys or numeric keypad to work
+     properly with a host application.
+
+   - You have trouble with Kermit's  2-character  escape  sequences  (like
+     Ctrl-]  C),  and  you  want to assign these functions to single keys,
+     like F10.
+
+The SET KEY command does these things and more, and SHOW KEY  gives  us  assis-
+tance.  A key can be defined to:
+
+   - send a single character other than what it would normally send,
+   - send a string of multiple characters,
+   - invoke a CONNECT-mode Kermit action verb,
+   - send itself again.
+
+SET KEY specifies that when the designated key is struck during terminal emula-
+tion, the specified character or string is sent or the specified Kermit  action
+verb  is  performed.    Key  definitions  operate  only  during CONNECT, not at
+Kermit-MS> or DOS command level.
+
+The key-specifier is the identification of the key expressed in  system-depend-
+ent  terms.   This can be a letter, such as Q for the key which produces an up-
+percase Q, or the numeric ASCII value of the letter in backslash notation (e.g.
+"\81"),  or  else the numerical "scan code" observed by the system when the key
+is pressed (e.g. "\3856" for Ctrl-Alt-Shift-Q on an IBM PC).  Material  printed
+on  keycaps  is  not  necessarily  a guide to what the key-specifier should be.
+When the word CLEAR is used in place of a key-specifier,  all  key  definitions
+are cleared and then any built-in definitions are restored.
+
+A string definition is one or more characters, including 8-bit values expressed
+in backslash form, such as
+
+    SET KEY \315 directory\13     IBM F1 key sends "directory<cr>"
+    SET KEY S X                   S key sends upper case X (a mean trick)
+    SET KEY T \27[m               T key sends three bytes: ESC [ m
+    SET KEY \2336 {del }xxx       Alt-D sends "del "
+    SET KEY \324 \Kexit           F10 escapes back to Kermit-MS> prompt.
+
+The string begins with the first non-spacing character following the key  iden-
+tification  and  continues  until  the  end  of line, exclusive of any trailing
+spaces.  If a semicolon comment is used and the definition is given in  a  TAKE
+file,  the  line  ends  at the last non-spacing character before the semicolon.
+Curly braces, {...}, can be use to delimit the string  in  case  you  want  the
+definition  to  include trailing spaces.  All text after the closing bracket is
+ignored.
+
+This manual does not contain a list of all the scan codes for all the  keys  on
+all  the  keyboards  on  all  the PCs supported by MS-Kermit -- that would be a
+manual in itself.  Rather, in order to obtain the key-specifier for the SET KEY
+command, you must type a SHOW KEY command and then press the desired key or key
+combination.  This will report a  scan  code  that  you  can  use  as  the  key
+specifier  in  a  SET  KEY  command.    To do this for many keys is a laborious
+process, so you should collect all your SET KEY commands into a file, which you
+can TAKE, or put them in your MSKERMIT.INI file.
+
+If  you enter SET KEY by itself, with no key specifier, the command will prompt
+you to press the selected key and again for the  definition  string.    Certain
+characters,  like ESC and CR, may not be entered literally into the string, but
+can be included by inserting escape codes of the form \nnn,  a  backslash  fol-
+lowed by a 1- to 4-digit number corresponding to the ASCII value of the desired
+character.  Where an ASCII digit follows directly  after  a  backslash  number,
+confusion can be avoided by placing curly braces {} around the backslashed num-
+ber; thus, \{27}5 represents the two ASCII characters ESC and 5.
+
+Here is an example of the use of SET KEY to assign ESC (ASCII 27) to the accent
+grave key.  First the user gets the key-specifier for the key:
+
+    Kermit-MS>show key
+      Push key to be shown (? shows all): `
+      ASCII char: ` \96 decimal is defined as
+      Self, no translation.
+    Free space: 129 key and 100 string definitions, 837 string characters.
+
+The  free  space report says that 129 more keys may be redefined, and up to 100
+of them may have multi-character strings assigned to them (as opposed to single
+characters),  and  that  there  are 837 bytes left for these strings, in total.
+Confident that there is enough space left for a new key  definition,  the  user
+proceeds:
+
+    Kermit-MS>set key
+      Push key to be defined: `
+      Enter new definition: \27
+
+Once  a key definition is constructed and tested, it may be entered on a single
+line in a command file (such as MSKERMIT.INI):
+
+    set key \96 \27
+
+To prevent accidents, SET KEY shows the current definition before asking for  a
+new one; enter a Control-C to keep the current definition, or a carriage return
+to undefine the key, or a query mark (?) to see available choices.
+
+The keyboard can be restored to its startup state, that  is  all  redefinitions
+removed  and  all  built-in  defitions  restored, by using the keyword CLEAR in
+place of the key identification:
+
+    SET KEY CLEAR
+
+Undefined keys which do not send ASCII characters are trapped by  the  keyboard
+translator  and  are rejected; a beep results from using an undefined non-ASCII
+key.
+
+SET KEY OFF directs MS-Kermit to read keycodes from DOS, rather than  BIOS,  so
+that  console  drivers  like ANSI.SYS that operate at the DOS level may be used
+during Kermit CONNECT sessions.  This would also apply to any special  keyboard
+replacements that come with DOS-level drivers.  SET KEY ON turns key definition
+back on, and returns Kermit to processing keystrokes at the BIOS level.
+
+
+Kermit Action Verbs
+
+An action verb is the shorthand expression for a named Kermit  procedure,  such
+as  "generate  the  proper  sequence  for a left arrow," "show status," "send a
+BREAK," and others; verbs are complex actions and each verb has a name.   In  a
+key  definition  the  verb name is preceeded by backslash K (\K) to avoid being
+confused with a string.  Verbs and strings cannot be used together on a key.
+
+    SET KEY \331 \Klfarr
+    SET KEY \2349 \Kexit
+
+makes the IBM keyboard left arrow key execute the verb named lfarr which  sends
+the  proper escape sequence for a VT102 left arrow key (which changes depending
+on the internal state of the VT102).  The leading \K identifies the  definition
+as a Kermit verb, so no string can start as \K or as \{K in upper or lower case
+(use \92K).  The second example has Alt-X invoking the Leave-Connect-Mode  verb
+"exit" (same as Kermit escape character "^]" followed by C).
+
+Each  system  has  its  own list of verbs and predefined keys.  Table 1-6 shows
+those available for the IBM PC family (there are also some additional verbs for
+reassigning  Heath  or  VT100  function keys, see section 1.17.2).  The SET KEY
+command shows the list of available verbs when a query mark (?) is given  as  a
+definition.    SHOW  KEY  displays  all  currently defined keys or individually
+selected ones; SHOW KEY can be executed only interactively.
+
+-------------------------------------------------------------------------------
+
+
+  Verb           Meaning
+  \Kupscn        Roll up (back) to previous screen
+  \Kdnscn        Roll down (forward) to next screen
+  \Khomscn       Roll up to top of screen memory
+  \Kendscn       Roll down to end of screen memory (current position)
+  \Kupone        Roll screen up one line
+  \Kdnone        Roll screen down one line
+  \Kprtscn       Print the current screen
+  \Kdump         Append the current screen to dump file
+  \Kholdscrn     Toggle hold screen mode
+  \Klogoff       Turn off session logging
+  \Klogon        Turn on session logging
+  \Ktermtype     Toggle terminal type
+  \Kreset        Reset terminal emulator to initial state
+  \Kmodeline     Toggle modeline off/on
+  \Kbreak        Send a BREAK signal
+  \Klbreak       Send a "long BREAK" signal
+  \Khangup       Drop DTR so modem will hang up phone
+* \Knull         Send a null (ASCII 0)
+  \Kdos          "Push" to DOS
+  \Khelp         Display CONNECT help message
+  \Kstatus       Display STATUS message
+  \Kterminals    Invoke user-defined macro TERMINALS, if any
+  \Kterminalr    Invoke user-defined macro TERMINALR, if any
+  \Kexit         Escape back from CONNECT mode
+* \Kgold,\Kpf1   VT102 keypad function key PF1
+* \Kpf2..\Kpf4   VT102 keypad function keys
+* \Kkp0..\Kkp9   VT102 keypad numeric keys
+* \Kkpdot,\Kkpminus,\Kkpcoma,\Kkpenter   Other VT102 keypad keys
+* \Kuparr,\Kdnarr,\Klfarr,\Krtarr   VT102 cursor (arrow) keys
+
+               Table 1-6:  Kermit-MS Verbs for the IBM PC Family
+
+* - supported in NCSA Telnet 2.3b10
+
+-------------------------------------------------------------------------------
+
+Some systems have preset key definitions when Kermit first  begins  (those  for
+the  IBM  PC  are  shown in section 1.17.2).  You can find out what they are on
+your system by typing SHOW KEY, and then question mark on the next line.    You
+may supplement or change the predefined keys with SET KEY commands typed inter-
+actively or in MSKERMIT.INI or other command files.
+
+The MS-Kermit CONNECT command may be used in conjunction with  certain  console
+drivers  that  do  their  own  key  redefinitions.   Since MS-Kermit intercepts
+keystrokes at the BIOS level, drivers like ANSI.SYS which work at the DOS level
+will  have no effect during CONNECT, even though they work at MS-Kermit command
+level.  Other drivers, like SuperKey and ProKey, work at the  BIOS  level,  and
+their  key  assignments  will remain effective during Kermit terminal sessions,
+and additional Kermit SET KEY assignments may be made "on top" of them.
+

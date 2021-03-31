@@ -1,0 +1,26 @@
+NCSA does not support Telnet source code.
+
+With that in mind, here is some info from a user, who managed to compile
+under Borland C.
+
+*** helpful hint:
+
+if you run out of space in DGROUP, its because your compiler doesn't
+place each 'far' data object in its own segment. To make things work,
+you need to make the raw packet buffer be in its own segment.
+Here's how:
+in include/pcdefs.h search for:
+
+-->  unsigned char far raw[17000];
+
+ (the 17000 might be some other number... smaller, if someone tried to
+  fix this before)
+ and change to
+
+-->  unsigned char far raw[17000]={0,0};	/* force into own segment */
+
+***
+
+If you have compiled NCSA with different systems, and would like to help
+other people by submitting your hints/success-stories, mail
+pctelnet@ncsa.uiuc.edu and we will include relevant information in this file.

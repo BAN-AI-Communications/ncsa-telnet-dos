@@ -1,0 +1,22 @@
+Someone asked:
+   "Can you explain rwin, mss, and mtu in the config.tel file?"
+
+Sure, Rwin is the TCP sliding window.  The window allows transfers to
+proceed without waiting for an acknowldgement for every packet, but
+rather transmitting (up to) a window of data before waiting for
+acknowlegments.  If the window size equals the mss, then there is no
+window, because every packet must be acknowledged.  If large windows
+are selected and data is lost, the entire window may have to be resent,
+hence the warning that larger is not always better.  During a transfer,
+both sides of the connection continually advertise what their free
+space in the window is, so that the transfer side can control data flow
+to only send what the receiving side can accept.
+
+Mss is the maximum segment size that the TCP connection advertises to
+the other side.  The other side then sends packets up to this size.  In FTP,
+all of the data packets except the last will probably be this big.
+
+Mtu is the maximum size of outgoing packets on the TCP connection.  When
+transmitting FTP data to a host, packets will be this big, unless the
+host advertizes a smaller mss.  For Telnet and the FTP control connection,
+packets are sent per character, so this is never an issue.

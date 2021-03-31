@@ -1,0 +1,84 @@
+2.3.07 (and later versions)
+There is a new background FTP feature:
+hierarchical permissions
+
+FTP connections to your PC are now more secure, because you can define
+which directories are available to specific users, if you have set up
+a password file.  You may also define whether they may read and write
+to these directories.
+
+This allows the normal FTP setup of an incoming directory which everyone
+can write to, and public directories which can be read from, while
+leaving the rest of your PC private.  There is also a new option added
+to the config.tel file (ftpwrt=yes|no) to completely disable writes to
+your machine from FTP.  The Alt-W key still toggles full access for the
+next FTP connection, as long as FTP is enabled, no matter what the other
+permissions are.
+
+The password file is created with Telpass, and it is *Not Compatable With
+Older Versions*, so you need to make a new file.  The Telpass interface
+isn't too hot for editing, so anyone with a current password file may want
+to see the section below on updating the password file with a text editor.
+You must use the telpass program to create new users though.
+
+Any directories specified for a user will be accessable, as well as any
+subdirectories, unless they are specifically denied in the password file.
+Each directory in a user's entry has it's own permissions.  There
+is also a root mode, which gives the same access as the Alt-W bypass.
+See the note below about changing permissions for subdirectories.  Root
+access is denoted with the word "root" instead of any directory names.
+From telpass, enter the word "root" instead of any drive/directory.
+If FTP is enabled, there is no way to disable writes for those with
+root access.  When the user completes the connection, they are placed
+in the first directory on the list.  The directory is different from the
+usual Unix ftp server, where the user begins in a directory mapped to "/".
+If the first directory does not exist, the user will be denied any connection.
+
+The directories should be specified with a full path, including drive.
+For full access to the c: drive while retaining control over write
+permissions, set up a user for c: or c:\ instead of "root".  If the
+drive is omitted the search will fail.  If many directories have the
+same ending, you can cut the path short.
+
+If the password file is not specified, all users are granted access.
+Therefore, set your password file in your config.tel.  Regardless
+of the contents of the pasword file, any user sitting at the computer
+can use the Alt-W sequence to disable password checking for the next
+FTP access.  You can still disable all FTP transfers from the config.tel
+file.
+
+FTP messages are printed on the status screen (Alt-Z if a Telnet
+connection is open).  The messages describe the connection:
+whether write permission is granted for the starting directory. and
+whether the password was skipped.
+
+=-=-=
+
+Note 1:  Text editing the pasword file
+You cannot create a new file or add users without running the Telpass
+program, but you can easily change existing user's directory permissions
+with any text editor.  The directory trees a user has access to are
+listed below the user.  In front of each tree is a bitmask that specifies
+permission, just like the Unix "chmod" command, only with one digit.
+possible values follow:
+0 do not allow access
+1 allow changing to the directory, but not reading (listing) or writing (put)
+2 allow writing only (invalid, because you can't get to the directory anyway)
+3 allow changing to and writing, but not reading
+4 allow reading (invalid also)
+5 allow changing to and reading
+6 allow read & write (invalid)
+7 allow all access
+bit 0 allows changing to the directory, bit 1 allows writes, 2 allows read.
+The number 7 (1+2+4) allows all access.  If this confuses you, use the
+telpass program to edit the permissions, because it's simpler.
+
+
+Note 2:  Specifying subdirectory permissions
+The most specific line in the password file matching the desired directory
+is used to read the permissions from.  This means that access to c:\pub
+could be read only, and c:\pub\incoming could be write only, if the
+password file contains both directories.  If c:\pub\incoming were not listed
+but c:\pub were, it would default to the same access permissions as it's
+parent directory, c:\pub.
+

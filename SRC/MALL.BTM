@@ -1,0 +1,68 @@
+echo Making all Telnet binaries from scratch...
+
+@rem ** wipe to insure that all the #ifdefs are properly checked
+
+echo. > faux.out
+echo Telnet "make everything" script >> faux.out
+echo It is now %_date %_time >> faux.out
+timer /2 on >> faux.out
+
+call wipe
+make tmake.msc >& make.out
+chime
+dir /km telbin.exe >> faux.out
+
+call wipe
+make ftpmake.msc          >>& make.out
+chime
+dir /km ftpbin.exe >> faux.out
+
+call wipe
+make sclkmake.msc         >>& make.out
+qchime
+dir /km setclock.exe >> faux.out
+
+call wipe
+make netmake.msc          >>& make.out
+qchime
+dir /km net14.exe >> faux.out
+
+call wipe
+make fingmake.msc         >>& make.out
+qchime
+dir /km finger.exe >> faux.out
+
+call wipe
+make lprmake.msc          >>& make.out
+qchime
+dir /km lpr.exe >> faux.out
+dir /km lprm.exe >> faux.out
+dir /km lpq.exe >> faux.out
+
+call wipe
+make minimake.msc         >>& make.out
+qchime
+dir /km minitel.exe >> faux.out
+
+call wipe
+make passmake.msc         >>& make.out
+qchime
+dir /km telpass.exe >> faux.out
+
+call wipe
+make rexmake.msc          >>& make.out
+qchime
+dir /km rexec.exe >> faux.out
+
+call wipe
+make rshmake.msc          >>& make.out
+qchime
+dir /km rsh.exe >> faux.out
+
+call wipe
+make whomake.msc          >>& make.out
+qchime
+dir /km whois.exe >> faux.out
+chime
+timer /2 >> faux.out
+

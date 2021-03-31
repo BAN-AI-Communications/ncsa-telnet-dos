@@ -1,0 +1,6 @@
+st.exe
+
+Very small program to send chatacters out on comm port 1, via INT14.
+Used to test int14.exe, to establish a connection for other stuff,
+whatever.  End with ^C.
+

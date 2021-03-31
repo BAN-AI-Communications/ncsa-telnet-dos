@@ -1,0 +1,1162 @@
+NCSA Telnet
+Developers Guide
+
+This is an ASCII-printable version of the developers' documentation.
+
+
+Version 2.3 release
+National Center for Supercomputing Applications
+The code and documentation are in the public domain.
+
+
+Compiler Notes
+
+This version was compiled with Microsoft C version 7.0.  The Macro Assembler
+code was assembled using MASM 5.1, although it also assembles with MASM 6.0.
+
+
+----------------------
+TCP Kernel Calls
+
+Tim Krauskopf                                           July 11, 1988
+
+netsetip(ipnum)
+char ipnum[4];          IP address to use.
+Set my IP address.  This routine must be called before
+calling netinit, in order for netinit to know what return
+address to use during initialization.  Usually called by a
+session layer routine.
+
+netconfig(hw)
+char *hw;               Hardware type - string of <10 chars.
+This call tells the kernel what type of hardware to use,
+"AppleTalk" or "Ether" on the Mac, for example.  When
+multiple hardware types are supported, the lower layer must
+be informed of which type to use.  Called by Snetinit()
+after the value is read from the configuration file.
+
+netparms(irq,address,ioaddr)
+int irq;          Hardware parameter,  irq is the interrupt request level
+int address;      Shared memory segment address to use for starting
+                  Ethernet driver
+int ioaddr;       Hardware I/O address parameter
+   Set hardware dependent network configuration.  The address
+and I/O address parameters only apply if the hardware needs
+them.  These values are filled in by the Session layer in
+most cases.
+
+neteventinit()
+Initializes network event queue so that errors and
+connection information can be posted.  VERY IMPORTANT.
+Called by Snetinit().
+
+netarptime(secs)
+int secs;         Amount of time in seconds to try to find local hosts or
+                  local gateways.
+A particularly slow machine may take five seconds to respond
+to an ARP request.  Most return an answer within 1/2 second.
+This timeout produces the "local host not responding" error.
+
+netsetmask(mask)
+char mask[4];           Subnet mask to use for future gateway calculations
+Set the subnetting mask.  If this is not called before
+netinit(),  netinit() will install the default addressing
+mask for the class A,B or C network according to the address
+in netsetip.
+
+netgetmask(mask)
+char mask[4];           location to put the copy of the subnet mask
+Copies the subnetting mask.  Not very useful if called
+before the network initialization.  Session layer routines
+are typically used to set the value before you try to call
+netgetmask().
+
+netgetip(ipnum)
+char ipnum[4];          Location to place IP address
+Get my IP address.  Used when one session layer routine sets
+the IP address but another one needs to know the value.  Any
+time after netsetip, netgetip can obtain a copy of the
+address.
+
+char *neterrstring(errno)
+int errno;              error number of look up
+Get a pointer to the error string associated with "errno".
+Your custom error handler can use this to look up a "canned"
+error message.  Copy the message, print it, whatever.  Don't
+worry if the errno is -1, that is a special case that works
+OK.  Neterrstring will always return a valid string.
+
+netinit()
+Sets up the hardware and initializes vars.  Must be called
+before netopen.  Use of Snetinit() is recommended instead of
+netinit().  It calls Sreadhosts(), netinit() and Ssetgates()
+for you.
+
+netsetgate(ipnum)
+char ipnum[4];          IP address of gateway
+Install this IP number as a gateway.  Does an ARP request
+immediately, because we assume we will need its Ethernet
+address.
+
+dl = netdlayer(ipnum)
+char *dl;               48-bit Ethernet address or psuedo-address from ARP cache
+char  ipnum[4];         IP number to look up with ARP.
+Queries the network with a broadcast ARP request every
+second and returns the Ethernet address for the requested IP
+address.  Returns NULL on failure.  Blocks for arptime
+seconds or until the response arrives.  One of the very few
+blocking calls, only done this way because it is easier and
+ARP is so quick.
+
+netgetrarp()
+Pulls the local Ethernet address stored during the netinit()
+and sends a RARP packet every second.  Waits for the
+response and returns 0 for success or negative for failure.
+If a valid response comes in, then netgetip() will return
+the new IP number.  Unfortunately, to get everything to
+work, the combination netgetip(); netsetip() must be
+executed to set all of the internal variables.
+
+netsegsize(size)
+int size;               new segment size to use for future connection attempts
+Set the maximum segment size (for incoming packets).  This
+value will take affect on all future opening connections,
+whether from netopen() or netlisten().  Can be changed any
+time, but cannot affect current connections, only future
+ones.  Netlisten takes this value when called, not when the
+connection eventually opens.
+
+netquench(limit)
+int limit;              largest TCP window that can be advertised.
+Set the maximum window (for incoming packets) that future
+connections should allow.   Will have no effect when set to
+a value over the program's maximum.
+
+netfromport(port)
+int port;               TCP protocol number to use for next netopen request.
+When netopen starts a connection, the destination port
+number is requested by the application, i.e. 23 for the
+well-known telnet port.  The return (local) port number is
+usually randomly generated to be unique from all local ports
+in use.  If the application needs a specific local port
+number (as the default port for FTP data transfers
+requires), this call can force a particular number.  The
+setting goes away after the next netopen call.
+
+pn = netopen(ipnum,service)
+char ipnum[4];          Address of machine to connect to, in binary
+int service;            TCP port to attempt to connect to, often the WKA for a
+service
+int pn;                 port number for use in later calls to just about every
+routine available
+Open a connection to another machine (up to 30 times).
+Returns a file descriptor to use in later calls.  Netopen is
+often used only in a session layer routine which does name
+to IP address translation before calling netopen.  See
+Snetopen() for open which includes name translation.
+
+cnt = netread(pn,buf,len)
+int pn;                 port number from netopen()
+char *buf;              pointer to data space to read into
+int len;                        maximum length of data to read
+int cnt;                        returns # of bytes read, -1 on closed connection, 0
+for waiting
+Similar to UNIX read, but using a file descriptor from
+netopen().  Does not block EVER.
+
+cnt = netwrite(pn,buf,len)
+int pn;                 port number from netopen()
+char *buf;              pointer to data space to write from
+int len;                        length of data to try to write
+int cnt;                        returns # of bytes written, -1 on closed connection, 0
+for waiting
+
+Similar to UNIX write, but using a file descriptor from
+netopen().  Does not block EVER.
+
+netclose(pn)
+int pn;                 port number from netopen()
+Close a connection, like closing a file.  You must make sure
+(with netpush()) that all data which went through netwrite()
+to this file descriptor has been sent before closing.
+Before closing, you will also want to read all of the
+available data from the connection if you don't want to lose
+it.
+
+netshut()
+Shut down communication, disable interrupts.  It is not wise
+to call any network routines at all after calling netshut().
+
+netsleep(secs)
+int secs;               number of seconds to wait before returning
+This is what keeps the network drivers alive.  It makes sure
+that any required ACKs are sent.  Often called with a
+parameter of zero, but can be made to wait some # of secs.
+Has a resolution of 1/18th of a second on PC, 1/60th on Mac.
+
+netest(pn)
+int pn;                 port number from netopen()
+Returns 0 if the connection is in established mode, <0 if
+one side or the other has closed the connection.
+
+cnt = netpush(pn)
+int pn;                 port number from netopen()
+int cnt;                        number of bytes still waiting to be delivered
+(outgoing)
+Sets push bit on transmit, returns size of output queue
+(unacknowledged data).  Check to see that this value is zero
+before calling netclose().  Unless you don't care.
+
+netqlen(pn)
+int pn;                 portnumber from netopen()
+Returns the number of bytes waiting to be read (incoming)
+which have been acked, but have not been taken from the
+queue.
+
+netroom(pn)
+int pn;                 port number from netopen()
+Get information on buffer space from a port.  netroom
+returns the number of bytes available for a netwrite()
+command to write into.  If the TCP is caught up, this will
+be WINDOWSIZE, if we are loaded, this could be zero.
+
+netgetftp(a,pn)
+int a[8];               return values
+int pn;                 port number from netopen()
+Get information about an active connection.  Returns the IP
+address of the other machine which is connected to you and
+the incoming and outgoing  TCP port numbers in use.  a[0] to
+a[3] is the IP number of the other host.  Note that these
+are integers, not characters!  a[4]  and a[5] are the high
+and low bytes (yet stored in integers) of your local port
+number.  a[6] and a[7] are the high and low bytes of the
+other side's port number for this connection.
+
+pn = netlisten(service)
+int service;            TCP port number to listen to.
+int pn;                 Returns a port number equivalent to a netopen() port
+number
+Listen to a TCP port number.  The TCP will establish the
+connection for you automatically.   You will be notified
+with an event when the connection occurs.  Try not to get
+the TCP port number confused with the netopen() port number.
+The TCP port number defines the network connection between
+machines while the netopen() port number is a local
+descriptor for a given connection.
+
+netusend(ipnum,port,retport,buf,len)
+char *ipnum[4]; IP number of other machine
+int port,retport;               to and from ports for the other machine's UDP socket
+char *buf;              data to be sent in the packet
+int len;                        number of bytes of data to send, must fit in 512 byte
+packet
+Send a UDP packet to another machine, to a certain port,
+with the data in buf, length n.
+
+netulisten(port)
+int port;               port to be sensitive about
+Listen for a UDP packet on a certain incoming port.  Often
+port is the same as retport on a netusend().  Any packets
+for this port will be kept for reading later.  Another
+packet for this port before a neturead will overwrite the
+last one.  This should be expanded later to give similar
+socket addressing as TCP uses.
+
+theevent = netgetevent(class,theclass,dat)
+int class;              Classes to search for (OR combination)
+int *theclass;          Actual class of the event returned (return value)
+int *dat;               Data which tags the event
+int theevent;           Which event has occurred
+Receive the next event in the queue.  Classes are in
+whatami.h.  Not usually called by the user because the user
+will want the session layer handling of Sgetevent().
+Returns 0 on no event available.
+
+netputevent(class,event,dat)
+int class;              Class of the event to post
+int event;              Which event within that class to post
+int dat;                        The data to carry in the event queue
+Place an event into the event queue to be picked up later.
+The user may want to define classes to be posted this way.
+See Sgetevent().
+
+netputuev(class,event,dat)
+int class;              Class of the event to post
+int event;              Which event within that class to post
+int dat;                        The data to carry in the event queue
+Place an event into the event queue.  First checks to see if
+there already is an identical such event.  If so, another
+copy will not be posted.
+
+netposterr(enum)
+int enum;               Error number in errorclass.
+Post a user error message.  The error message is one from
+the list in TOOLS.C.  This message will wait in the queue
+until an ERRORCLASS event is requested.
+
+cnt = neturead(buf)
+char *buf;              data area to drop the UDP packet (<512 bytes)
+int cnt;                        actual length of the packet which is ready
+Reads the data from a UDP packet which was received.
+Returns the number of bytes read into buf, or -1 if there is
+no packet available to read.  Automatically clears the
+incoming UDP buffer for the next read.
+
+Session Layer routines
+
+hostform.h
+Include file which contains the structure of the machine
+information record and the configuration information record.
+Use these structures with the following calls to read or
+manipulate machine specific information.  Includes struct
+machinfo and struct config.
+whatami.h
+Currently contains the definition of PC vs. Mac in terms of
+program and compiler settings to get the code to compile on
+both the Mac and PC.  Also includes netevent.h.
+netevent.h
+Contains the list of event types, both low-level event types
+used internally, and the events which the application
+program will pay attention to.   See documentation section
+on rules for event handling that explain what you can do
+with events.
+
+
+Sgetconfig(conp)
+struct config *conp;    Pointer to a config structure which will receive a
+copy of current data
+Copies the config structure to user memory.  The hosts file
+contains a lot of configuration information that the
+application may need to know.  The structure of the data
+area is in hostform.h.
+
+mp = Shostlook(name)
+char *name;             name of machine to get information about
+struct machinfo *mp;    Pointer to machine information record
+Takes a machine name (standard ASCII string) and returns a
+pointer to the machine information record associated with
+that name.  Searches the sname field first, then the hname
+field.  Returns NULL if not found.  The structure definition
+is in hostform.h.  Take care when writing to fields in this
+structure (i.e. don't).  If you mess up the data, strange
+things may happen.  Shostlook does  a simple lookup on the
+name field, so the "default" record can be looked up if
+necessary.
+
+mp = Sgethost(name)
+char *name;             name or IP number of machine to get information about
+struct machinfo *mp;    Pointer to machine information record
+Takes a machine name or IP number in ASCII format
+(192.17.20.10) or a special shorthand form (#10) and returns
+a pointer to the machine information record associated with
+that name.   Uses Shostlook() to look up name if number is
+not used.  Returns NULL if not found.  The structure
+definition is in hostform.h.  Sgethost guarantees that the
+record returned has a valid IP number which Snetopen() will
+accept.  Sgethost should be the primary lookup call to
+determine whether the domain name server is required or not.
+If the IP number is given, a pointer to the "default"
+machine is returned with a temporary IP number installed.
+"default" cannot be returned as a real machine because
+Sgethost guarantees a real IP number in the machine record.
+
+mp = Slooknum(mnum)
+int mnum;               Machine number to look for
+struct machinfo *mp;    Pointer to machine information record
+Used primarily for domain lookups, this number is unique for
+all entries in the memory host list.
+
+mp = Slookip(ipnum)
+char *ipnum;            IP number of the host to look for
+struct machinfo *mp;    Pointer to machine information record
+Look up host information when you know the host's IP number.
+Used by background ftp server.
+
+mp = Smadd(name)
+char *name;             ASCII name of the host to add to the memory host list
+struct machinfo *mp;    Pointer to machine information record
+Adds a machine to the host list, generating a unique host
+number for it.  Copies the configuration information from
+"default".  Returns a pointer to the machine record created.
+Returns NULL if no memory could be allocated.  Be careful
+updating the information in the machine record.  If the name
+already exists somewhere as a session or host name, it just
+returns that record pointer.
+
+Shostfile(newname)
+char *newname;  pointer to new configuration file name
+Takes a pointer to static storage of the host file name.
+The storage associated with the name must remain allocated.
+Default is "config.tel".  Typically called with an argv[]
+parm.
+
+Snetinit()
+Calls Sreadhosts(), netinit(), neteventinit(), and
+Ssetgates() for you and initializes the timer queue.
+Returns non-zero on error.  Sreadhosts() sets up the config
+structure, so Sgetconfig() can be called after Snetinit().
+RARP handling is done in Snetinit() - if RARP fails,
+Snetinit returns -2 -- this condition requires a netshut()
+to clear any interrupt drivers.  A -1 return means that the
+netinit() never succeeded so the interrupt drivers were
+never installed.
+
+Sreadhosts()
+Reads the hosts file, using the filename provided by
+nethostfile().  Uses the new type of config file.  Sets
+Smachlist to NULL before reading the file and creating the
+list.  Processes and logs all information to the config
+structure or into the machinfo list.  Calls some of the
+setup options for ftp, rcp, screen modes, etc.  Called by
+Snetinit, user does not need to call this routine.
+
+Ssetgates()
+This routine is called by Snetinit() automatically.  It sets
+the netmask with the field read from the hosts file, turns
+on ftp and rcp if they are specified in the hosts file, and
+traverses the machinfo list to set up any gateways which are
+marked.
+
+pn = Snetopen(mp,tport)
+struct machinfo *mp;    Machine information record obtained from Sgethost()
+int tport;              TCP port to attempt connection with
+int pn;                 Port number passed through from netopen()
+Tries to connect to the specified port on that machine and
+returns the port descriptor for netread and netwrite.
+Should be used instead of netopen().  Calls netopen() and
+uses any special configuration information found in the
+machinfo record.  Sets a timer for the connection timeout
+which will be posted in an event.  You cannot access this
+connection until you are notified with an event that shows
+the connection opened or failed.
+
+Sdomain(name)
+char *name;             name of the machine to look up, s/b in DOMAIN format
+Tries to use the DOMAIN name server to look up the IP number
+of the named host.   Sdomain() posts appropriate events to
+notify you of the results.  If the name does not have any
+periods, the default suffix from the config structure is
+added to the lookup.  All domain events return a machine
+number which can be looked up with Slooknum() to find out
+which machine is referred to.   Remember, the local host
+file lookup is faster, so look up the machine name with
+Sgethost() first.  Returns 0 on success, -1 if there is no
+name server to query.
+
+Snewns()
+Rotate name servers.  If there is more than one nameserver
+in the machine list, the one with the next highest number
+will become the current nameserver.  Wraps to nameserver 1
+when there are no more nameservers.
+
+Ssetns(ipn)
+char ipn[4];            IP number of nameserver to become primary nameserver.
+For situations when your primary nameserver is not indicated
+in the config file, but is obtained over the network
+somehow, this sets that host up as nameserver #1.  The ns #1
+set by Snewns() will rotate to ns #2 as necessary.
+
+Stask()
+Should be called instead of netsleep() to support the timer
+queue and network updates.   Sgetevent() calls Stask() for
+you.  The FTP server can't function without repeated Stask()
+calls.
+
+Stimerset(class,event,dat,howlong)
+int class;              Class of event which should be posted
+int event;              Event number which should be posted
+int dat;                        Associated data which should be posted
+int howlong;            Seconds to wait before posting this event
+Stimerset() adds events to the timer queue.  Stask()
+contains the checks to post any events which have come due.
+
+Stimerunset(class,event,dat)
+int class;              Class of event which should be dequeued
+int event;              Event number which should be dequeued
+int dat;                        Associated data which should be dequeued
+Searches the timer queue for a matching entry and removes
+the entry from the queue without generating an event.  The
+timer may have just gone off with the event in the event
+queue.  This procedure will not prevent that event from
+occurring, only those which have unexpired timers are
+removed.
+
+theevent = Sgetevent(class,theclass,dat)
+int class;              Classes to search for (OR combination)
+int *theclass;          Actual class of the event returned (return value)
+int *dat;               Data which tags the event
+int theevent;           Which event has occurred
+Sgetevent() does the background processing of ftp, rcp and
+domain name lookup.  Events are posted with netputevent()
+and are usually posted by lower layer routines.  Calling
+Snetopen() will guarantee that you will get either a CONOPEN
+or CONFAIL event depending on how things went.  The
+associated data for CONXXXX events is always the port number
+of the connection involved.  The routine will return 0 if
+there are no events available.  Class types are in whatami.h
+and the user may define new events and classes as described
+under "events".
+Currently, it is quite common to receive undesired extra
+events which are for ports which you don't have defined.
+Check the data tag for validity.
+
+FILE *Sopencap()
+Opens the capture file with the previously stored name.
+Returns a file pointer or NULL if there is an error.  Use
+Snewcap() to change the name.  Always opens for append.
+Snewcap(name)
+char *name;             Name to use for a capture file
+Copies the name into private storage for use by Sopencap().
+Limit of 80 chars on name length (no warning).
+
+Stekmode(m)
+Sftpmode(m)
+Srcpmode(m)
+Scwritemode(m)
+int m;                  Value of boolean flag to set
+Sets modes and turns switches for the session layer.  Tek is
+tektronix mode.  FTP and rcp turn the listeners on and off.
+When writemode is 1 (true), direct writes to the screen
+should be enabled.  Tek and writemode are simply services to
+the upper layers, they only store the boolean flag.
+
+Stmode()
+Sfmode()
+Srmode()
+Scmode()
+Returns the value of the boolean flag set above.
+
+Snewpsfile(s)
+Snewhpfile(s)
+Snewtekfile(s)
+char *s                 new file name to use
+For each of the graphic options, Postscript, tek and HPGL,
+the configuration structure maintains a filename as a
+service to higher layers.  These routines change those
+filenames.  Pointers to the filenames are obtained through
+the structure copy which is retrieved from Sgetconfig().
+
+Scheckpass(user,passwd)
+char *user;             User name to check the password of
+char *passwd;           The password to check the validity of
+Returns true if the passwd associated with the user field
+matches the value in the password file associated with
+telnet.  If there is a password file and the username is not
+present, returns false.  If no password file is specified in
+the hosts file, returns true.
+
+Sneedpass()
+Returns a boolean flag indicating whether we need to check
+FTP passwords.  The determination is made depending upon
+whether there has been a filename specified with the
+passfile option in the config file.
+
+Scompass(password,encrypt)
+char *password; The password to compare
+char *encrypt;          The encryption to check against
+Checks to see if the encrypted string has been encrypted
+from a particular password string.   Returns true or false.
+
+Sftpname(s)
+char *s;                Space to copy the name of the file being transferred
+The name of the current file being transferred by FTP is
+stored internally.  Use Sftpname() to get a copy of that
+internal name.
+
+Sftphost(host)
+char *host;             Space to copy the name of the host involved.
+The IP number of the FTP client for FTP transfers is stored
+internally.  Use Sftphost() to get a copy of that internal
+number.  Then you can look up the host's name with
+Slookip().
+
+Sftpuser(user)
+char *user;             Space to copy the username.
+The name field from the FTP USER command is stored
+internally.  Use Sftpuser() to get a copy of that name.
+
+Sftpstat(bytes)
+long *bytes;            Pointer to long, number of bytes
+The value copied into this long int returns number of bytes
+transferred or left to transfer in the currently active ftp
+transfer.  Used to update status displays.
+
+
+
+Events -- how to use them
+
+The routines netgetevent() (at a low level) and
+Sgetevent()(at the session level) look for events which are
+stored in NCSA Telnet's event queue.  Sgetevent() calls
+netgetevent(), so if you are using the session layer
+library, you will never call netgetevent().  Sgetevent()
+sifts through the events and captures events related to the
+background name serving and ftp file transfers.  All other
+events are passed through to the application.
+Classes
+Events are divided into classes to help different portions
+of the application look for only certain kinds of events.
+When you call one of the getevent routines, the class which
+you pass to the routine is a mask of the OR combination of
+the classes that you want to retrieve from the event queue.
+When the routine returns with a greater than zero event
+number, that mask will have been transformed into the exact
+class to which the returned event belongs.  The classes are
+defined below.
+Events
+For each class, several events are defined.  They are
+documented individually, along with the use of the data
+value which is returned from the getevent call.
+User-defined events
+Applications programmers are welcome to use class 0x80 (128)
+for their own events.  Events in each of the predefined
+classes in the range 128-255 are also available for use.
+Specifically, use events 128-255 of the USERCLASS because
+they will be more convenient to use.  Use of any events or
+classes not in these ranges may conflict with future NCSA
+software.  If you want certain events to be defined by NCSA,
+let us know.  The official "defined events" list will be
+updated periodically.
+Timer events
+Stimerset() and Stimerunset() control a separate queue from
+the event queue.  The important thing to know is that when a
+timer goes off, it places its specific event into the event
+queue.  You may use user-defined event types to set timers
+for yourself in this queue.  Some events like DOMFAIL and
+CONFAIL are caused by timers if something doesn't occur to
+unset the timers for those events.
+minitel.c
+Look at minitel.c for the simplest possible telnet.  This
+one doesn't even have a telnet command parser and it only
+talks to BSD hosts.  It does show you how to handle events
+for the simple cases.
+
+The following events are defined in netevent.h:
+
+
+#define USERCLASS       1
+#define ICMPCLASS       2
+#define ERRCLASS        4
+#define SCLASS  8
+#define CONCLASS    0x10
+
+#define ERR1            1       /* an error message is waiting, ERRCLASS */
+
+#define IREDIR  1       /* ICMP redirect, ICMPCLASS */
+
+#define CONOPEN         1       /* connection has opened, CONCLASS */
+#define CONDATA         2      /* there is data available on this connection */
+#define CONCLOSE        3       /* the other side has closed its side of the connection */
+#define CONFAIL         4       /* connection open attempt has failed */
+
+#define UDPDATA         1       /* UDP data has arrived on listening port, USERCLASS */
+#define DOMOK           2       /* domain name ready */
+#define DOMFAIL         3       /* domain name lookup failed */
+#define FTPCOPEN        20     /* FTP command connection has opened */
+#define FTPCLOSE        21     /* FTP command connection has closed */
+#define FTPBEGIN        22     /* FTP transfer beginning, dat =1 for get, 0 for put */
+#define FTPEND          23     /* FTP transfer ending */
+#define FTPLIST         24     /* FTP file listing taking place */
+#define FTPUSER         25     /* FTP user name has been entered */
+#define FTPPWOK         26      /* FTP password verified */
+#define FTPPWNO         27      /* FTP password failed */
+#define RCPBEGIN        30      /* RCP beginning */
+#define RCPEND  31      /* RCP ending */
+
+#define UDPTO   1       /* UDP request from DOMAIN timed out, SCLASS */
+#define FTPACT  2       /* FTP transfer is active, keep sending */
+#define TCPTO   3       /* TCP for DOMAIN timed out */
+#define RCPACT  4       /* rcp is active, needs CPU time */
+#define RETRYCON        5       /* retry connection packet, might be lost */
+
+
+
+Class USERCLASS
+Event UDPDATA
+To get this event you must have already called netulisten
+with a port number.  A UDP packet with some data has arrived
+for you on that port.  The data field for the event is the
+UDP port number which you were listening to.  In the future,
+you will be able to listen to multiple ports and the data
+field will become important.  Port 998 is arbitrarily used
+by our domain name server.
+Event DOMOK
+To get this event, you must have already placed a domain
+name request.  You may get more than one DOMOK for one
+request.  The data field contains the machine number of the
+name you looked up.  You can look up the machine record with
+Slooknum() now.  The IP number has been placed into the
+record.  A Snetopen() with that machine record should
+succeed now.
+Event DOMFAIL
+To get this event, you must have already placed a domain
+name request.  You may get more than one DOMFAIL for one
+request.  The data field contains the machine number of the
+name you looked up.  That machine name could not be
+resolved.   You may also have an error event waiting for you
+which explains why the resolve failed.
+Event FTPCOPEN
+A command connection has been established to your background
+FTP server.  NCSA Telnet uses this to post informative
+messages.
+Event FTPCLOSE
+The command connection for your server FTP has closed.
+Event FTPBEGIN
+A file transfer to or from your machine has begun.  The data
+field=1 for get (transfer from) and 0 for put (transfer to)
+transfers.
+Event FTPEND
+A file transfer or a LIST command has ended.
+Event FTPLIST
+A LIST command has begun for your background FTP.
+Event FTPUSER
+A USER command has been entered for the background FTP.
+Event FTPPWOK
+An FTP PASS command has been entered and verified by
+comparing to the entries in the password file.
+Event FTPPWNO
+An FTP PASS command has been entered and rejected by failing
+to match anything in the password file.
+Event RCPBEGIN
+Someone has started an rcp transfer to or from your
+computer.
+Event RCPEND
+That rcp has ended.
+Class ICMPCLASS
+Event IREDIR
+The netsleep() routine automatically does a netgetevent()
+for ICMP redirect messages and performs the addressing
+change required by the ICMP redirect.  When an ICMP redirect
+packet is received, this event is posted by the ICMP
+routine.  Bugfix in 2.2 makes sure ALL redirects are
+registered.
+Class ERRCLASS
+Event ERR1
+There is currently only one error event which pertains to
+all of the possible errors.  These events should be
+reclassified as ERRWARNING, ERRINFO, ERRFATAL, etc., so the
+rest of this class is reserved.  The data field contains the
+error number which can be looked up with neterrstring().
+Class SCLASS (session class)
+The entire SCLASS is for special session layer events.  You
+will not receive these events from Sgetevent() because they
+are always removed.
+Event UDPTO
+The current UDP domain request timed out.
+Event FTPACT
+When FTP is active, it uses as much CPU as it can get.  To
+get more CPU it posts events back to itself.
+Event TCPTO
+not used, we don't need TCP lookups.
+Event RCPACT
+rcp posts this event back to itself when it needs CPU.
+Event RETRYCON
+Snetopen() posts this in a timer to send multiple SYN
+packets if the first one is lost.
+Class CONCLASS
+Event CONOPEN
+A connection has just opened.  This may be a connection
+which you are listening to, or one which you are trying to
+open with Snetopen().  Remember Snetopen() does not block
+until the connection is open.  The data field returns the
+port number (descriptor) of the connection.
+Event CONDATA
+Data has arrived for a certain port number.  The data field
+contains that port number.  Because this event always comes
+up when there is data in the incoming TCP buffer, you never
+have to poll netread() to find out if there is data to be
+read.  If you get CONDATA events, there is data to be read,
+if you are not getting CONDATA events, then there won't be
+data to be read.  Unless you drop an event, of course.
+CONDATA events which arrive after a CONCLOSE event or a
+netclose() call may get a -1 return from netread(),
+indicating that the connection has no more data or does not
+exist.
+Event CONCLOSE
+If the host you are talking to decides to drop the
+connection, or reset it, then you may get a CONCLOSE event.
+This can be interpreted as the last CONDATA event that you
+will get.  There may be a large amount of data waiting for
+you to pick it up with netread() even after receiving a
+CONCLOSE event.  The correct procedure is to take data from
+netread() until you receive a 0 or -1 return code and then
+call netclose() to finalize your side of the connection.
+Event CONFAIL
+The timer ran out on a connection which you tried to open.
+This does not mean that you are done.  You must netclose()
+to allow the memory for that port to be re-used.
+
+
+Virtual Screen Kernel Calls
+
+Gaige B. Paulsen                                                        October 31, 1987
+                                                                        updated July 14,
+1988
+
+int VSinit(max)
+int max;                Maximum number of Virtual screens to allow.
+Initializes the Virtual Screen Kernel for use with up to max
+screens.
+Returns 0 if successful.
+
+VSscrn *VSwhereis(i)
+int i;                  Virtual Screen to examine.
+Returns the current address of the virtual screen control
+record.  This is used for debugging.
+
+int VSnewscreen( maxlines, screensave, maxwid, IDC)
+int maxwid;             How wide can this window be.  Only tested for 80 and 132.
+int maxlines;           Maximum number of lines to save.
+int screensave; Is scrollback enabled at start?
+int IDC;                Do we have support for insert and delete of characters.
+
+Creates a new screen if possible.   VSnewscreen returns a
+number >=0 if it succeeds, which is to be used as the window
+parameter(w) in all subsequent calls to vs routines.  If the
+return value is <0, there was an error, and no screen was
+created.
+
+VSdestroy(w)
+int w;                  Window number to destroy.
+Destroy the window corresponding to w.  Returns an error if
+applicable.
+
+VSdetatch(w)
+int w;                  Window number to detach.
+Detach the window corresponding to w.  Returns an error if
+applicable.  Note that this function currently just calls
+VSdestroy(w).  Previously and hopefully sometime in the
+future as well, it did/will allow for the destruction of a
+screen without freeing memory.
+
+VSredraw(w,x1,y1,x2,y2)
+int w;                  Window number to redraw.
+int x1, y1,x2,y2;       Bounds of the rectangle to be drawn, in local window
+coordinates.
+Redraw the portion of window w which lies within (x1,y1) -
+(x2,y2).  The coordinates are local to the window and should
+NOT be adjusted for scrollback, as most of scrollback is
+handled by the VS routines and not the RS.
+
+VSwrite(w,ptr,len)
+int w;                  Window number to write to.
+int  len;               How many characters to write.
+char *ptr;              Where to get the characters.
+The big routine.  This one is called to write a character
+stream to the virtual screen w.  VSwrite calls VSem to parse
+the emulation.
+
+VSclear(w)
+int w;                  Window number to clear.
+Clear the virtual screen of window w.
+
+char VSkbsend(w,k,echo)
+int w;                  Window number to send the characters from.
+int echo;               Boolean - whether to local echo the key.
+unsigned char k;        VT-100 key code to send
+Sends the VT-102 representation of the key represented by k.
+This routine uses somewhat of a hack by calling RSsendstring
+which is supposed to know how to send characters to
+whichever port corresponds to window w.  The echo flag only
+applies to special keys (like arrows) and will cause them to
+echo on the local screen as they are transmitted.
+
+VSclearall(w)
+int w;                  Window number to clear all of.
+This routine currently does nothing.  It was originally
+intended clear the current screen and all of the scrollback
+as well as setting the top of the scrollback to the top of
+the available storage space, but this was deemed
+unnecessary.....at least for now.
+
+VSreset(w)
+int w;                  Window number to reset.
+Resets the virtual screen (w) with respect to VT-100 modes.
+Changes the wrap mode to off and clears the screen as well
+as setting all other modes to their ORIGINAL POWER-ON
+defaults as specified by the VT-100 programmers manual.
+
+char *VSgetline(w,y)
+int w;                  Window number to get line from.
+int  y;                 Line from which to get the pointer
+This routine in now out of date and SHOULD NOT BE USED
+unless you really know what you are doing.  It retrives a
+pointer to the data string associated with line (y) of the
+screen (w).  This ONLY works with lines that are on the
+active vt100 screen (lines 0-23).
+
+VSsetrgn(w,x1,y1,x2,y2)
+int w;                  Window number to set the display region for.
+int x1,y1,x2,y2;        The vs's bounding rectangle in GLOBAL VS coordinates .
+Set the current display region for window w to (x1,y1)-
+(x2,y2).  This will perform
+scrollback/scrollforward/scrollleft/scrollright/etc. as
+necessary to make the current screen reflect the values of
+the passed display region.  It restricts you from doing
+anything really stupid (I hope).
+
+VSgetrgn(w,x1,y1,x2,y2)
+int w;                  Window number to scroll forward in.
+int *x1,*y1,*x2,*y2;    Where to retrieve the display region into.
+
+Get the current value of the display region (as set by
+setrgn and/or modified by the scroll routines as well as
+auto--scroll).  Pass pointers to the integers you would like
+to have the values put into.
+
+VSscrolback(w,in)
+int w;                  Window number to scroll back in.
+int in;                 Number of lines to scroll back.
+Scroll back in lines in window w if possible.  Note that
+this routine will prevent you from scrolling back beyond the
+top of the buffer, so it is safe to call it whenever you get
+a request to scroll back further, even if you don't know if
+there is data left to scroll back into.
+
+VSscrolforward(w,n)
+int w;                  Window number to scroll forward in.
+int n;                  Number of lines to scroll forward.
+Scrolls forward n lines in window w.  See VSscrolback for
+details.
+
+VSscrolright(w,n)
+int w;                  Window number to scroll right in.
+int n;                  Number of columns to scroll right.
+Scrolls right n columns in window w.  See VSscrolback for
+details.
+
+VSscrolleft(w,n)
+int w;                  Window number to scroll forward in.
+int n;                  Number of columns to scroll left.
+Scrolls left n columns in window w.  See VSscrolback for
+details.
+
+VSscrolcontrol(w,scrolon,savescroll)
+int w;                  Window number to set scroll variables for.
+int scrolon;            Do we scroll or don't we?
+int savescroll;         Save cleared lines into scrollback.
+Changes the value of the scrolon variable in window w,
+therefore disabling and enabling scrollback, not really
+necessary.  If savescroll is on, all clearscreen commands
+will load the text into the scrollback buffer.
+
+VSsnapshot(w)
+int w;                  Window number to take snapshot of.
+Currently does nothing.  Will/should eventually make a copy
+of the current screen into the scrollback buffer.  This is
+most easily done by sending 24 line feeds and then copying
+the values of lines (-24) - (-1) into 0-24.  But, I hope to
+do this before  2.1 and the source release.
+
+int VSmaxwidth(w)
+int w;                  Window number to retrieve the maximum width of.
+Retrieves the current maximum width of window w.  Used
+primarily to get the maximum possible size of a selection
+for copying. NOTE: a 132 column window in 80 column mode
+returns 80.
+
+long VSgettext(w, x1, y1, x2, y2, charp, max, EOLS)
+int w;                  Window number to get text from.
+int x1,y1,x2,y2;        The starting and ending points of the text in global VS
+coordinates .
+char *charp;            Pointer to the destination of the gotten text.
+char  *EOLS;            Pointer to the string to be used for end of line.
+long max;               Maximum number of characters charp can hold.
+Copies a section of text from window w, which corresponds to
+an area starting from the x1th character of line y1 to the
+x2th character of line y2, inclusive of all of the
+characters on lines y1+1 to y2-1  into a buffer pointed at
+by charp to exceed no more than max and inserting the string
+pointed at by EOLS whenever there is a line transition.
+(...whew...) This is mainly used for copy and print of VS
+data.  Extraneous blanks are ommitted at the end of lines by
+searching backward to the beginning of the line.
+
+Global  VS coordinates vs. local coordinates
+
+Global
+Global coordinates are used to represent a range of
+information that can span the entire VS space as it
+currently exists.   To accurately portray the area, we must
+have some standard method of referring to scrollback.  For
+this, we have chosen to refer to the top of the currently
+active VT-102 screen as line 0, the bottom of the active
+screen as line 23, and the lines of scrollback as negative
+offsets from line 0.  Hence, a line that has been scrolled
+off by a CR-LF would be seen as line -1.  To perform actions
+such as scrolling back to the top of the virtual screen, you
+would ask for lines from (top of buffer) to (top of buffer
++length of display window).  Similarly, if you wished to
+scroll to make the right hand side of a 132 column window
+visible, you would ask for the columns from (maxwidth -20)
+to (maxwidth).
+Local
+Local coordinates are used to represent things that happen
+relative to the area being displayed by the Virtual Screen.
+An example would be a portion (or all) of the virtual screen
+being made visible.  This action would cause whichever lines
+are in the visible area to be redrawn, therefore you will
+need to inform the VS routines to do this.  Since the VS
+routines attempt to maintain as much of the information
+about scrollback by themselves so as not to burden you with
+extraneous information, you pass these coordinates as local
+to the currently active screen.  Therefore, a full redraw
+would be line 0 character 0 through line 23 character 79,
+which would then be translated by VSredraw to whatever
+global coordinates are appropriate.
+
+Replacing the Terminal Emulation package in the VS
+routines.
+
+The VS routines can be used as a basis for just about any 24 line screen
+terminal emulator.  This document shows how to use the internal routines in
+vsintern.c to construct a  vsem.c file as a basis for a new terminal emulator.
+
+VSem(c,ctr) -
+char *c         pointer to the buffer to use as input to the emulator
+int ctr         how many characters to read from the input buffer
+
+This is the main emulation routine.  It is the entry point from VSwrite and
+should be the only thing that needs to be replaced when changing the terminal
+emulation.
+
+        escflg: current escape state
+                0 - normal character wait
+                1 - have escape, waiting for next character
+                2 - escape '[' sequence, waiting for parameters
+                3 - escape '#' sequence
+                4 - escape '(' sequence
+                5 - escape ')' sequence
+        c:      pointer to character currently being parsed
+        VSIw: points to the window structure for the current window.
+        VSIwn: is the current window number
+
+VSI routines from vsintern.c for use in emulation
+
+VSIreset()                      - Cause a terminal reset
+VSItabinit()            - Initialize tabs to default stat (every 8
+                characters)
+VSItabclear()           - Clear the tab at the current position
+
+VSIdellines(n,s)                - delete n lines at s (current line if s<0)
+VSIinslines(n,s)                - insert n lines at s (current line if s<0)
+
+VSIeeol()                       - erase to end of line
+VSIebol()                       - erase to beginning of line
+VSIel(s)                        - erase the entire line s (current line if s<0)
+VSIeeos()                       - erase to end of screen
+VSIebos()                       - erase to beginning of screen
+VSIes()                 - erase the whole screen
+
+VSIrange()                      - check and resolve range errors for x and y
+
+VSIdraw( VSIwn, x, y, a, len, c)
+                                - draw len characters at (x,y) in attribute a
+                                        with the chars at c
+VSIinsstring(len,start) - insert len characters at the current position
+                        with the chars at start
+
+VSIdelchars(x)          - delete x characters at the current position
+VSIinschar(x)           - insert x blank characters at the current position
+VSItab()                        - move to next tab stop
+VSIsave()                       - save current x, y, a
+VSIrestore()                    - restore previous x,y,a
+
+VSIindex()                      - index one line
+VSIrindex()                     - reverse index one line
+
+VTsendpos()                     - Send the VT-100 cursor report
+VTsendstat()                    - Send the VT-100 status report
+VTsendident()           - Send the VT-100 identity report
+VSIsetoption(toggle)    - Set the VT-100 option depending on toggle
+
+
+
+How to write a new PC driver
+
+There are six routines which must be provided in a new
+driver.  All of these routines are currently provided in
+assembly language in one file.   When you write a new
+driver, you will probably take a current driver and replace
+each of the six routines in the file.  The current examples
+are in the ENET subdirectory and the three best examples
+are:
+
+NET501.ASM
+3COM 3C501 driver.  Uses interrupts,  and will be a
+reasonable template for other interrupt-driven drivers.  I
+highly discourage trying to improve this driver for the
+3C501.  I've tried.
+NETUB.ASM
+Ungermann-Bass (IBM) NIC board driver.  Does not use
+interrupts.  This driver may be a good template for simple
+shared-memory boards which divide the memory into pages.
+NET5210.ASM
+MICOM NI5210 driver.  The NI5210 uses the Intel 82586 chip.
+You will need the Intel databook for this chip in order to
+understand the driver.  This driver should be directly
+applicable to all boards which are built around the 82586.
+Works with 8K or 16K boards.  Only uses 8K of a 16K board,
+so save your money.
+
+With dual-ported RAM and intelligent chipsets, interrupts are entirely
+unnecessary.  The board will automatically buffer a certain number of packets
+which are picked up when NCSA Telnet has time to process incoming packets.
+TCP takes care of preventing overruns.
+
+The six routines are described below.  They generally return -1 on error.
+getaddr() is usually called first and etopen must be called next for any of
+the other routines to make sense.  Function pointers for the routines are
+declared and installed in PCTOOLS.C.  A new driver should install new pointers
+right alongside the existing ones.
+
+etopen(eaddr,irq,addr,ioaddr)
+char  eaddr[6];         Hardware ethernet address to use on board.
+int irq;                        Interrupt request level from configuration file.
+int addr;               Shared memory base segment address from configuration file.
+int ioaddr;             I/O address from configuration file.
+This routine must do all of the initializations for the
+Ethernet board.  Any interrupt drivers must be placed,
+interrupts turned on, base register variables set up,
+packets initialized and the address set for the board.  Do
+not return until you are receiving packets.  Most drivers
+will ignore some of the fields provided.  Map them to
+whatever values are appropriate for your hardware.
+
+getaddr(eaddr,addr,ioaddr)
+char eaddr[6];          Buffer to place address.
+int addr;               Base segment address for shared memory
+int ioaddr;             Base I/O address for board
+Some of these parameters are also ignored, depending upon
+the hardware.  The hardware address from the board's EPROMs
+should be copied into the eaddr buffer.  This address is
+generally given back to etopen, so getaddr cannot depend on
+etopen's initialization.
+
+etclose()
+Shut down Ethernet board.  Primarily to turn off interrupts.
+This routine can be just a RET for non-interrupt boards.
+
+recv()
+Receive a packet.  Used only for boards that do not use
+interrupts.  The interrupt handler generally replaces the
+need for recv().  The interrupt handler or recv() must use
+my undocumented buffering scheme.  Generally, keep the same
+code and replace the board handling side.
+
+xmit(packet,size)
+char *packet;           Address of packet to transmit.
+int size;               Size of packet to transmit, including all headers.
+Send out one packet.  This is generally not interrupt
+driven.  The packet size may be smaller than the minimum
+Ethernet packet size.  If so, this routine must take care of
+the details.  The frame to transmit always includes the
+entire Ethernet frame header, so non-802.3 drivers may need
+to strip the header to modify higher layer code.
+
+etupdate()
+Remove one packet from the buffer.  This routine is
+generally unmodified from driver to driver.  The incoming
+packet is not copied from the buffer until fully processed,
+so the driver must wait until etupdate() is called before
+freeing the space back to the buffer.

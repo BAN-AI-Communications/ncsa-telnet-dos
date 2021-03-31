@@ -1,0 +1,10 @@
+open vmd.cso.uiuc.edu
+anonymous
+me@here.com
+bin
+hash
+cd wx
+lcd /in
+get cir.gif
+get cvis.gif
+get sa.gif
