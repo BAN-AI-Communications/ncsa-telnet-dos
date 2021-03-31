@@ -1,0 +1,51 @@
+          Supplemental User documentation for the packet driver collection
+                                   Heeren Pathak
+                  National Center for Supercomputing Applications 
+                                 Champaign, IL 61820
+                                pathak@ncsa.uiuc.edu 
+
+
+Here at NCSA, we have had a lot of questions on how to correctly install
+packet drivers.  Most of the questions occur because people have failed
+to recognize that the PACKET DRIVERS PARAMETERS ARE ASSUMED TO BE IN DECIMAL.
+Below is an example on installing the 3C501 packet driver.  The other drivers
+are installed in a similar fashion.
+
+The packet driver usage for the 3C501 is:
+        3C501 <packet_int_no> <int_no> <io_addr>
+
+I want to install the packet driver at software interrupt 60h (hex).
+The relationship between the settings and packet driver parameters is:
+
+Setting                           |               Parameter 
+----------------------------------+------------------------------------
+HARDWARE INTERRUPT=3h (hex)       |               <int_no>
+BASE IO ADDRESS=360h (hex)        |               <io_addr>
+SHARED MEMORY ADDRESS=d800h (hex) |               <base_addr>
+SOFTWARE INTERRUPT 60h (hex)      |               <packet_int_no> 
+
+
+Note the Ethernet card uses a hardware interrupt while the packet driver
+uses a software interrupt.
+
+The 3C501 packet drivers needs the software interrupt, hardware interrupt, 
+and base io address.  It does NOT need the shared memory address.  Also note 
+that each of the parameters are hex numbers, not decimal numbers.  If 
+decimal numbers are going to be used the hex numbers need to be converted
+to decimal.  
+
+To install the driver with the above settings, the following is entered 
+at the DOS command line:
+
+3C501 0x60 0x3 0x360
+
+Note the "0x" in front of each parameter signifies a hex number.  
+To use decimal numbers, the following would have been entered:
+
+3C501 96 3 864
+
+The hex numbers were converted to decimal and then used.
+
+
+This document is only a supplement to "drivers.doc".  For the parameters 
+required by each packet driver, refer to "drivers.doc" file.
