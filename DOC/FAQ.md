@@ -1,17 +1,16 @@
-NCSA PC Telnet FAQ
-==================
+# NCSA PC Telnet FAQ
 
-### **NCSA Telnet** Frequently Asked Questions 
+## **NCSA Telnet** Frequently Asked Questions 
 
 _**NOTE:**_ **NCSA Telnet** for *DOS* development and technical
 support has been discontinued, effective Feb. 1, 1995.
 
-#### What are the system requirements for Telnet? 
+### What are the system requirements for Telnet? 
 
 A iX286 running a minimum of *DOS* 2.0 or later using a packet driver for
 the Network adapter or modem.
 
-#### What are packet drivers? 
+### What are packet drivers?
 
 A packet driver is program that allows Telnet to send and receive data
 packets through a network adapter or communications card. For example,
@@ -30,19 +29,19 @@ directly are:
 Most of these cards were built during the *Stone Age* (*1988*-*1991*\'ish) and
 are probably associated with the iX286 and early iX386 systems. Due to
 the increasing number of cards that came to market and the creation of
-the Packet Driver Specification (PDS) developed by FTP Software, we got
+the Packet Driver Specification (*PDS*) developed by *FTP* *Software*, we got
 out of driver development. If you have a card other than the few
 mentioned above, you will need to download a packet driver. These
 drivers are freely available at the anonymous ftp site oak.oakland.edu
 in the /SimTel/msdos/pktdrvr directory.
 
-#### How do I use packet drivers? 
+### How do I use packet drivers? 
 
 To use a packet driver with **NCSA Telnet**, you would install the driver
 according to its instructions. Next edit your `config.tel` file to reflect
 the following information:
 
-1.  Ensure all other hardware= options are commented out. To comment out
+1.  Ensure all other `hardware=` options are commented out. To comment out
     a line in you `config.tel` place the pound symbol, \#, at the
     beginning of the line.
 2.  Add or Edit these lines:
@@ -81,7 +80,7 @@ There is a sample `net.cfg` file in that dir. A note should be made that
 the order of the envelope statements is the order that they are
 assigned. (I found the order *backwards* from the documentation).
 
-load:
+Load:
 * `lsl` (odi driver from vendor or from wsgen disk odi dir)
 * `odipkt 1` (If envelope for ethernet\_ii is the second one in the `net.cfg` file, `odipkt 0` otherwise)
 * `ipxodi`
@@ -89,7 +88,7 @@ load:
 
 Now *Telnet* and *FTP* work fine while connected to the Novell network.
 
-#### Will Telnet run in Windows? 
+### Will Telnet run in Windows? 
 
 NCSA\'s PC Telnet was not designed to be run in MS Windows. Some users
 have reported success when they increase the size of memory available in
@@ -113,7 +112,7 @@ released it as *CUTCP*. For more information about the latest release of
 *omnigate.clarkson.edu*. You can find the file in the `/pub/cutcp`
 directory.
 
-#### Can I obtain and modify the source code? 
+### Can I obtain and modify the source code? 
 
 NCSA\'s PC Telnet source code is in the **public domain**, and you are
 welcome to **modify and redistribute** it.
@@ -152,30 +151,34 @@ server in the `/Telnet/DOS/contributions` directory.
 
 One of our users wrote:
 
-To load telnet from the dosprompt \[nothing telnet-specific in
-`config.sys` or `autoexec.bat` we use the following sequence:
+To load Telnet from the DOS prompt, with nothing Telnet-specific in
+the `config.sys` or `autoexec.bat`, we use the following sequence:
 
-* `lsl.com`
-* `ltalk.com`
-* `atalk.com`
-* `ashare.com`
-* `compat.com`
-* `d:\network\telnet\telbin -n -h d:\network\telnet\config.tel`
+```text
+lsl.com
+ltalk.com
+atalk.com
+ashare.com
+compat.com
+d:\network\telnet\telbin -n -h d:\network\telnet\config.tel
+```
 
 where all of the atalk stuff would be in the current directory and all
 of the telnet stuff is in `d:\network\telnet`.
 
-`broadcast=255.255.255.255`
-`netmask=255.255.255.0`
-`hardware=atalk # network adapter board (AppleTalk)`
-`interrupt=60   # I have an Apple or Farralon card and PhoneNET Talk`
-`               # remember to run COMPAT.COM for NCSA to run on LocalTalk`
-`#interrupt=5C  # I have a TOPS Flashcard`
-`mtu=512        # maximum transmit unit in bytes`
-`maxseg=512     # largest segment we can receive`
-`rwin=512       # most bytes we can receive without ACK`
+```text
+broadcast=255.255.255.255
+netmask=255.255.255.0
+hardware=atalk # network adapter board (AppleTalk)
+interrupt=60   # I have an Apple or Farralon card and PhoneNET Talk
+               # remember to run COMPAT.COM for NCSA to run on LocalTalk
+#interrupt=5C  # I have a TOPS Flashcard
+mtu=512        # maximum transmit unit in bytes
+maxseg=512     # largest segment we can receive
+rwin=512       # most bytes we can receive without ACK
+```
 
-#### What do I do when Telnet is running out of memory? 
+### What do I do when Telnet is running out of memory? 
 
 The latest version of Telnet takes around 400k to run. If you have
 memory problems, reduce or comment out the number of lines that set the
@@ -184,30 +187,32 @@ scrollback buffer in the the `config.tel` file. For example:
 `scrollback=100 # number of lines of scrollback per session`
 `               # Default is (0)`
 
-#### How do I scroll back the screen? 
+### How do I scroll back the screen? 
 
 You can scroll in one line increments using the scroll lock. Press the
 scroll lock in and use the arrow keys to increment by one line. To turn
 off this feature, just turn off the scroll lock.
 
-#### How do I remap keys? 
+### How do I remap keys? 
 
 When remapping keys refer to *Appendix E* of the 2.3 docs. There is also
 information in chapter 7, *Installation and Configuration*, page 7.8 and
 the sample `config.tel` file we provide with Telnet.
 
 From Chapter 7:
--   `keyfile=filename  # specifies an additional keyboard mapping file to provide move key definitions. This file over-rides the definitions in the telnet.key file.`
+-   `keyfile=filename`
+  - Specifies an additional keyboard mapping file to provide move key definitions. This file over-rides the definitions in the telnet.key file.
 
 From the `config.tel` file:
--   `keyfile=keymap.key #pathname of your keyboard re-mapping file.`
+-   `keyfile=keymap.key`
+  - Pathname of your keyboard re-mapping file.
 
 Re-mapping will override the default `telnet.key` file and you will have
 to include all keys in this new file. You can easily do this by copying
 the contents of the telnet.key file into the newfile and then add the
 key remap information.
 
-#### Can you explain rwin, mss, and mtu in the `config.tel` file? 
+### Can you explain rwin, mss, and mtu in the `config.tel` file? 
 
 Rwin is the TCP sliding window. The window allows transfers to proceed
 without waiting for an acknowldgement for every packet, but rather
@@ -222,14 +227,14 @@ receiving side can accept.
 
 Mss is the maximum segment size that the TCP connection advertises to
 the other side. The other side then sends packets up to this size. In
-FTP, all of the data packets except the last will probably be this big.
+*FTP*, all of the data packets except the last will probably be this big.
 
 Mtu is the maximum size of outgoing packets on the TCP connection. When
-transmitting FTP data to a host, packets will be this big, unless the
-host advertizes a smaller mss. For Telnet and the FTP control
+transmitting *FTP* data to a host, packets will be this big, unless the
+host advertizes a smaller mss. For Telnet and the *FTP* control
 connection, packets are sent per character, so this is never an issue.
 
-#### Can I capture what I see into a file or send it to the printer? 
+### Can I capture what I see into a file or send it to the printer? 
 
 Text that appears on the screen can be captured and sent to a file or
 the local printer. When you press *Alt-C* capture is turned on. Pressing
@@ -250,7 +255,7 @@ session screen into the capture file.
 
 **NOTE**: You cannot paste from the capture file into a Telnet session.
 
-#### How do the cut and paste features of **NCSA Telnet** work? 
+### How do the cut and paste features of **NCSA Telnet** work? 
 
 The cut and paste functions allow you to copy blocks of text from one
 session to another, or within the same session. To use these functions,
@@ -289,17 +294,17 @@ text should appear as if you typed it in.
 **Note:** You cannot paste from the capture file. The capture file and
 scrollback buffer are NOT the same.
 
-#### Can I FTP or rcp to my PC from a remote site? 
+### Can I FTP or rcp to my PC from a remote site? 
 
 Yes, if you are using Telnet\'s server mode. Invoking telnet with the -s
 option enters the server mode. In this mode, you can establish remote
 connections as usual with telnet, except that telnet stays active even
 when all remote sessions have been closed. The reason for this is that
-when in server mode Telnet waits for external FTP and rcp requests. This
+when in server mode Telnet waits for external *FTP* and *rcp* requests. This
 allows you to leave your PC and access files there from a remote
 location.
 
-#### Can I restrict access to my machine when in server mode? 
+### Can I restrict access to my machine when in server mode? 
 
 If you want to restrict access to your machine when in server mode, you
 will need to run telpass and create a password file. Start up Telpass
@@ -317,29 +322,29 @@ You must include the full path to the password file.
 Example:
 `passfile="c:\bat\ftppass"`
 
-#### Can I permanently change my screen colors? 
+### Can I permanently change my screen colors? 
 
 You can make color changes permanent for particular sessions. To do so,
 simply add the options below to the host information contained in the
 `config.tel` file.
 
 * `nfcolor=white`
-# (normal forground)
+  - (normal forground)
 
 * `nbcolor=black`
-# (normal background)
+  - (normal background)
 
 * `rfcolor=black`
-# (reverse forground)
+  - (reverse forground)
 
 * `rbcolor=white`
-# (reverse background)
+  - (reverse background)
 
 * `ufcolor=blue`
-# (underline forground)
+  - (underline forground)
 
 * `ubcolor=black`
-# (underline background)
+  - (underline background)
 
 Put these options after the keyword name, to associate colors to the
 named session. The parameters are installed whenever a connection is
@@ -354,7 +359,7 @@ These colors are in all caps, and for the forground colors they are the
 highlighted version of the lowercase colors. For background colors, they
 make the foreground blink.
 
-#### What does the Local host or gateway not responding error mean? 
+### What does the Local host or gateway not responding error mean? 
 
 The possible reasons for this message are:
 
@@ -374,11 +379,11 @@ The possible solutions to this problem are:
 5.  Check to make sure that your computer is attached to the network.
 6.  Check the integrity of the network cable.
 
-#### Why can\'t I get BOOTP working on the latest version of telnet? 
+### Why can\'t I get BOOTP working on the latest version of telnet? 
 
 We have heard reports that *BOOTP* may still be broken, so that some
 systems cannot use it. If you are having problems, you may want to try
-2.3.03 instead. This version is available via our ftp site in the
+*2.3.03* instead. This version is available via our ftp site in the
 `/Telnet/DOS/contributions` directory.
 
 -----------------------------------------------------------------------------
