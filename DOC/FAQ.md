@@ -1,11 +1,11 @@
 # NCSA PC Telnet FAQ
 
-## **NCSA Telnet** Frequently Asked Questions 
+## **NCSA Telnet** Frequently Asked Questions
 
 _**NOTE:**_ **NCSA Telnet** for *DOS* development and technical
 support has been discontinued, effective Feb. 1, 1995.
 
-### What are the system requirements for Telnet? 
+### What are the system requirements for Telnet?
 
 A iX286 running a minimum of *DOS* 2.0 or later using a packet driver for
 the Network adapter or modem.
@@ -20,11 +20,11 @@ the 3Com509 card is one such network adapter or comm card.
 communications cards that are in use. The cards that Telnet supports
 directly are:
 
--   3Com501, 3Com503, 3Com523
--   Western Digital WD8003A, WD8003E, WD8003EB
--   AT&T Starlan 10
--   Ungermann-Bass PC-NIC, Ungermann-Bass NICps/2
--   Micom NI5210
+- 3Com501, 3Com503, 3Com523
+- Western Digital WD8003A, WD8003E, WD8003EB
+- AT&T Starlan 10
+- Ungermann-Bass PC-NIC, Ungermann-Bass NICps/2
+- Micom NI5210
 
 Most of these cards were built during the *Stone Age* (*1988*-*1991*\'ish) and
 are probably associated with the iX286 and early iX386 systems. Due to
@@ -35,24 +35,24 @@ mentioned above, you will need to download a packet driver. These
 drivers are freely available at the anonymous ftp site oak.oakland.edu
 in the /SimTel/msdos/pktdrvr directory.
 
-### How do I use packet drivers? 
+### How do I use packet drivers?
 
 To use a packet driver with **NCSA Telnet**, you would install the driver
 according to its instructions. Next edit your `config.tel` file to reflect
 the following information:
 
-1.  Ensure all other `hardware=` options are commented out. To comment out
+1. Ensure all other `hardware=` options are commented out. To comment out
     a line in you `config.tel` place the pound symbol, \#, at the
     beginning of the line.
-2.  Add or Edit these lines:
-    -   `hardware=packet`
-    -   `ioaddr=[software interrupt of the driver]`
+2. Add or Edit these lines:
+    - `hardware=packet`
+    - `ioaddr=[software interrupt of the driver]`
 
 For example if you load the packet driver using 0x60 for the software
 interrupt, the entry would read:
 
--   `hardware=packet`
--   `ioaddr=60`
+- `hardware=packet`
+- `ioaddr=60`
 
 For more information about which software interupt to select, see the
 installation instruction of your packet driver for the default setting.
@@ -68,7 +68,7 @@ command at the *DOS* prompt:
 
 `3c509 /?`
 
-#### How do I run Telnet with a Novell network? 
+#### How do I run Telnet with a Novell network?
 
 NCSA doesn\'t use a Novell LAN. However, one of our users wrote:
 
@@ -81,14 +81,18 @@ the order of the envelope statements is the order that they are
 assigned. (I found the order *backwards* from the documentation).
 
 Load:
-* `lsl` (odi driver from vendor or from wsgen disk odi dir)
-* `odipkt 1` (If envelope for ethernet\_ii is the second one in the `net.cfg` file, `odipkt 0` otherwise)
-* `ipxodi`
-* `netx`
+
+- `lsl` (odi driver from vendor or from wsgen disk odi dir)
+
+- `odipkt 1` (If envelope for ethernet\_ii is the second one in the `net.cfg` file, `odipkt 0` otherwise)
+
+- `ipxodi`
+
+- `netx`
 
 Now *Telnet* and *FTP* work fine while connected to the Novell network.
 
-### Will Telnet run in Windows? 
+### Will Telnet run in Windows?
 
 NCSA\'s PC Telnet was not designed to be run in MS Windows. Some users
 have reported success when they increase the size of memory available in
@@ -103,7 +107,7 @@ program at the anonymous ftp site *oak.oakland.edu* in the
 anonymous ftp server. You can find `qvtws398.zip` in the
 `/PC/Windows/Contrib` directory of *ftp.ncsa.uiuc.edu*.
 
-#### Does Telnet support TN3270 teminal emulation? 
+#### Does Telnet support TN3270 teminal emulation?
 
 NCSA\'s PC Telnet does not support *TN3270*. However, Clarkson University
 has modified our source code to support the *TN3270* and they have
@@ -112,7 +116,7 @@ released it as *CUTCP*. For more information about the latest release of
 *omnigate.clarkson.edu*. You can find the file in the `/pub/cutcp`
 directory.
 
-### Can I obtain and modify the source code? 
+### Can I obtain and modify the source code?
 
 NCSA\'s PC Telnet source code is in the **public domain**, and you are
 welcome to **modify and redistribute** it.
@@ -120,13 +124,13 @@ welcome to **modify and redistribute** it.
 The source code was developed using Microsoft\'s
 C/C++, version 7.0 and MASM 5.0.
 
-#### Can I use Telnet over a serial connection (modem)? 
+#### Can I use Telnet over a serial connection (modem)?
 
 Yes, you can find a number of *SLIP* drivers and dialers available from
 the `/SimTel/msdos/pktdrvr` directory of the anonymous ftp site
 *oak.oakland.edu*. Select a *SLIP* packet driver from the 00\_index.txt file.
 
-#### Can I use Telnet with AppleTalk? 
+#### Can I use Telnet with AppleTalk?
 
 Using an *AppleTalk* network involves some special considerations. First,
 you must load the *AppleTalk* driver into memory. Version 1.0 of the
@@ -178,33 +182,35 @@ maxseg=512     # largest segment we can receive
 rwin=512       # most bytes we can receive without ACK
 ```
 
-### What do I do when Telnet is running out of memory? 
+### What do I do when Telnet is running out of memory?
 
 The latest version of Telnet takes around 400k to run. If you have
 memory problems, reduce or comment out the number of lines that set the
 scrollback buffer in the the `config.tel` file. For example:
 
 `scrollback=100 # number of lines of scrollback per session`
-`               # Default is (0)`
+`# Default is (0)`
 
-### How do I scroll back the screen? 
+### How do I scroll back the screen?
 
 You can scroll in one line increments using the scroll lock. Press the
 scroll lock in and use the arrow keys to increment by one line. To turn
 off this feature, just turn off the scroll lock.
 
-### How do I remap keys? 
+### How do I remap keys?
 
 When remapping keys refer to *Appendix E* of the 2.3 docs. There is also
 information in chapter 7, *Installation and Configuration*, page 7.8 and
 the sample `config.tel` file we provide with Telnet.
 
 From Chapter 7:
--   `keyfile=filename`
+
+- `keyfile=filename`
   - Specifies an additional keyboard mapping file to provide move key definitions. This file over-rides the definitions in the telnet.key file.
 
 From the `config.tel` file:
--   `keyfile=keymap.key`
+
+- `keyfile=keymap.key`
   - Pathname of your keyboard re-mapping file.
 
 Re-mapping will override the default `telnet.key` file and you will have
@@ -212,7 +218,7 @@ to include all keys in this new file. You can easily do this by copying
 the contents of the telnet.key file into the newfile and then add the
 key remap information.
 
-### Can you explain rwin, mss, and mtu in the `config.tel` file? 
+### Can you explain rwin, mss, and mtu in the `config.tel` file?
 
 Rwin is the TCP sliding window. The window allows transfers to proceed
 without waiting for an acknowldgement for every packet, but rather
@@ -234,7 +240,7 @@ transmitting *FTP* data to a host, packets will be this big, unless the
 host advertizes a smaller mss. For Telnet and the *FTP* control
 connection, packets are sent per character, so this is never an issue.
 
-### Can I capture what I see into a file or send it to the printer? 
+### Can I capture what I see into a file or send it to the printer?
 
 Text that appears on the screen can be captured and sent to a file or
 the local printer. When you press *Alt-C* capture is turned on. Pressing
@@ -255,37 +261,37 @@ session screen into the capture file.
 
 **NOTE**: You cannot paste from the capture file into a Telnet session.
 
-### How do the cut and paste features of **NCSA Telnet** work? 
+### How do the cut and paste features of **NCSA Telnet** work?
 
 The cut and paste functions allow you to copy blocks of text from one
 session to another, or within the same session. To use these functions,
 follow these steps:
 
-1.  Enter Scrollback mode via Scrl\_Lock or the right mouse button.
-2.  Move the cursor to the beginning position of the text you wish to
+1. Enter Scrollback mode via Scrl\_Lock or the right mouse button.
+2. Move the cursor to the beginning position of the text you wish to
     copy, and press the space bar.
-3.  Move the cursor to the end of the text and press the space bar
+3. Move the cursor to the end of the text and press the space bar
     again. This action selects the area to copy.
-4.  Press *ALT-C* while still in scrollback mode. This action copies the
+4. Press *ALT-C* while still in scrollback mode. This action copies the
     text into a buffer.
-5.  Exit Scrollback mode, and switch sessions by pressing *ALT-N* or
+5. Exit Scrollback mode, and switch sessions by pressing *ALT-N* or
     *ALT-B*, if you desire.
-6.  Position the cursor where you wish to insert the text, and press
+6. Position the cursor where you wish to insert the text, and press
     *ALT-V*. This action inserts the text at the current position as if
     you had typed it in.
 
 You can use the copy and paste functions without touching the keyboard
 if you have a Microsoft-compatible mouse attached and driver loaded.
 
-1.  Press the right mouse button to enter Scrollback mode.
-2.  Scroll to the beginning of the text you wish to copy, and press the
+1. Press the right mouse button to enter Scrollback mode.
+2. Scroll to the beginning of the text you wish to copy, and press the
     left mouse button.
-3.  Move the cursor to the end of the text, and press the left mouse
+3. Move the cursor to the end of the text, and press the left mouse
     button again.
-4.  Press and hold the left mouse button, press the right mouse button,
+4. Press and hold the left mouse button, press the right mouse button,
     then release both buttons. This action copies the text into the
     buffer.
-5.  Exit Scrollback mode by pressing the right mouse button.
+5. Exit Scrollback mode by pressing the right mouse button.
 
 To paste the buffer to the screen, press and hold the right mouse
 button, then press the left mouse button, then release them both. The
@@ -294,7 +300,7 @@ text should appear as if you typed it in.
 **Note:** You cannot paste from the capture file. The capture file and
 scrollback buffer are NOT the same.
 
-### Can I FTP or rcp to my PC from a remote site? 
+### Can I FTP or rcp to my PC from a remote site?
 
 Yes, if you are using Telnet\'s server mode. Invoking telnet with the -s
 option enters the server mode. In this mode, you can establish remote
@@ -304,14 +310,15 @@ when in server mode Telnet waits for external *FTP* and *rcp* requests. This
 allows you to leave your PC and access files there from a remote
 location.
 
-### Can I restrict access to my machine when in server mode? 
+### Can I restrict access to my machine when in server mode?
 
 If you want to restrict access to your machine when in server mode, you
 will need to run telpass and create a password file. Start up Telpass
 from *DOS* with the name of the password file that you wish to edit.
 
 Example:
-* `C:\telpass pwfile`
+
+- `C:\telpass pwfile`
 
 Follow the instructions in Telpass to create/edit the password file.
 
@@ -322,28 +329,28 @@ You must include the full path to the password file.
 Example:
 `passfile="c:\bat\ftppass"`
 
-### Can I permanently change my screen colors? 
+### Can I permanently change my screen colors?
 
 You can make color changes permanent for particular sessions. To do so,
 simply add the options below to the host information contained in the
 `config.tel` file.
 
-* `nfcolor=white`
+- `nfcolor=white`
   - (normal forground)
 
-* `nbcolor=black`
+- `nbcolor=black`
   - (normal background)
 
-* `rfcolor=black`
+- `rfcolor=black`
   - (reverse forground)
 
-* `rbcolor=white`
+- `rbcolor=white`
   - (reverse background)
 
-* `ufcolor=blue`
+- `ufcolor=blue`
   - (underline forground)
 
-* `ubcolor=black`
+- `ubcolor=black`
   - (underline background)
 
 Put these options after the keyword name, to associate colors to the
@@ -359,27 +366,27 @@ These colors are in all caps, and for the forground colors they are the
 highlighted version of the lowercase colors. For background colors, they
 make the foreground blink.
 
-### What does the Local host or gateway not responding error mean? 
+### What does the Local host or gateway not responding error mean?
 
 The possible reasons for this message are:
 
-1.  Network problem
-2.  Configuration file problem
-3.  Host is down
-4.  Gateway is down
+1. Network problem
+2. Configuration file problem
+3. Host is down
+4. Gateway is down
 
 The possible solutions to this problem are:
 
-1.  Check to see that the network is up and running
-2.  If the computer is not on your local network, check to see if the
+1. Check to see that the network is up and running
+2. If the computer is not on your local network, check to see if the
     gateway is up and running.
-3.  Ask the system administrator to check the specification of the
+3. Ask the system administrator to check the specification of the
     gateway (`gateway=`) in your configuration file.
-4.  Check the IP number of the computer you are trying to connect to.
-5.  Check to make sure that your computer is attached to the network.
-6.  Check the integrity of the network cable.
+4. Check the IP number of the computer you are trying to connect to.
+5. Check to make sure that your computer is attached to the network.
+6. Check the integrity of the network cable.
 
-### Why can\'t I get BOOTP working on the latest version of telnet? 
+### Why can\'t I get BOOTP working on the latest version of telnet?
 
 We have heard reports that *BOOTP* may still be broken, so that some
 systems cannot use it. If you are having problems, you may want to try
