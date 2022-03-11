@@ -1,7 +1,5 @@
 # NCSA Telnet for MS-DOS
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/3a88f2fd173745ecbb06840427b046f8)](https://app.codacy.com/gh/BAN-AI-Communications/ncsa-telnet-dos?utm_source=github.com&utm_medium=referral&utm_content=BAN-AI-Communications/ncsa-telnet-dos&utm_campaign=Badge_Grade_Settings)
-
 ## Overview
 
 - **NCSA Telnet** for _MS-DOS_
